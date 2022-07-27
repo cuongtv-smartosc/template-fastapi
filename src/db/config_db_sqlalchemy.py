@@ -3,13 +3,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-import settings
 from typing import Any
 
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 
+from settings import EnvDB
+
 engine = create_engine(
-    settings.DB_URL
+    EnvDB.DB_URL
 )
 
 db_session = scoped_session(

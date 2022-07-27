@@ -18,10 +18,12 @@ ENVIRONMENT = os.getenv('ENVIRONMENT')
 
 API_PREFIX = "/api"
 
+
 # get env db
-DB_URL = os.getenv('DB_URL')
-DB_USER = os.getenv('DB_USER')
-DB_PASS = os.getenv('DB_PASS')
-DB_NAME = os.getenv('DB_NAME')
-DB_HOST = os.getenv('DB_HOST')
-DB_POST = os.getenv('DB_POST')
+class EnvDB:
+    DB_URL = os.getenv('DB_URL')
+    DB_USER = os.getenv('DB_USER')
+    DB_PASS = os.getenv('DB_PASS')
+    DB_NAME = os.getenv('DB_NAME')
+    DB_HOST = os.getenv('DB_HOST')
+    DB_POST = os.getenv('DB_POST')
