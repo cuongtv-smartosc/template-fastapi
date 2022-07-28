@@ -30,3 +30,4 @@ typer==0.6.1
 typing_extensions==4.3.0
 urllib3==1.26.10
 uvicorn==0.18.2
+factory_boy==3.2.1
