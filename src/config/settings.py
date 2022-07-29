@@ -1,15 +1,8 @@
-import logging.config
 import os
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s.%(msecs)03d - %(name)s : %(levelname)s | %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S')
-logger = logging.getLogger("API")
-logger.setLevel(logging.INFO)
 
 env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
@@ -27,3 +20,10 @@ class EnvDB:
     DB_NAME = os.getenv('DB_NAME')
     DB_HOST = os.getenv('DB_HOST')
     DB_POST = os.getenv('DB_POST')
+
+
+TITLE = "Template FastApi"
+DESCRIPTION = "Template fast api"
+ORIGINS = ["*"]
+BASE_PATH = "/Users/tranvancuong/Project/template-fastapi/src/"
+VERSION = "0.1.0"

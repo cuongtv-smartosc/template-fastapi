@@ -2,6 +2,7 @@ from typing import Union
 from fastapi.responses import JSONResponse, Response
 from fastapi.encoders import jsonable_encoder
 from fastapi import status as http_status
+from pydantic import BaseModel
 
 
 class Resp(object):
@@ -15,7 +16,8 @@ class Resp(object):
         return self
 
 
-def success(*, data: Union[list, dict, str] = None, pagination: dict = None, msg: str = "success") -> Response:
+def success(*, data: list | dict | str | BaseModel = None, pagination: dict = None,
+            msg: str = "success") -> Response:
     return_dict = {
         'status': 200,
         'msg': msg,

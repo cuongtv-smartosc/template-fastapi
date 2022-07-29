@@ -3,8 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-
-from settings import EnvDB
+from src.config.settings import EnvDB
 
 engine = create_engine(
     EnvDB.DB_URL

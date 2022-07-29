@@ -3,8 +3,6 @@ import datetime
 import math
 
 from src.db.config_db_peewee import db
-from src.db.config_db_sqlalchemy import DBBaseCustom
-from sqlalchemy import Column, String, DATETIME
 
 
 class BaseModelPeewee(Model):
