@@ -2,15 +2,14 @@ from typing import Optional
 
 from pydantic import BaseModel
 from sqlalchemy import Column, String
-from sqlalchemy.orm import Session
 
-from src.db.config_db_sqlalchemy import DBBaseCustom, ActiveSession
+from src.db.config_db_sqlalchemy import DBBaseCustom
 
 
 class VehicleModel(DBBaseCustom):
     __tablename__ = "tabElectric Vehicle Model"
-    name = Column(String, unique=True, index=True, primary_key=True)
-    description = Column(String)
+    name = Column(String(255), unique=True, index=True, primary_key=True)
+    description = Column(String(255))
 
 
 class ChargerResponse(BaseModel):
