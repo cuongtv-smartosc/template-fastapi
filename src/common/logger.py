@@ -5,7 +5,7 @@ import logging.config
 
 from src.config import settings
 
-log_path = os.path.join(settings.BASE_PATH, 'logs')
+log_path = os.path.join(settings.BASE_PATH, 'src/logs')
 if not os.path.exists(log_path):
     os.mkdir(log_path)
 

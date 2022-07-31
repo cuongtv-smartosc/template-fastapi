@@ -1,0 +1,48 @@
+default: &default
+  DB_DATABASE: EV
+  DB_HOST: localhost
+  DB_POST: 3306
+  DB_URL: mysql+pymysql://root:123456@localhost:3306/EV
+  DB_USER: root
+  DB_PASS: 123456
+  ENVIRONMENT: local
+  API_PREFIX: "/api"
+  ORIGINS: ["*"]
+  TITLE: "Template FastApi"
+  DESCRIPTION: "Template fast api"
+  VERSION: "0.1.0"
+
+local:
+  <<: *default
+
+
+local_test:
+  <<: *default
+  DB_DATABASE: db_test
+  ENVIRONMENT: local_test
+  SQLALCHEMY_ECHO: False
+
+local_dev:
+  <<: *default
+  DB_DATABASE: local_dev
+  ENVIRONMENT: local_dev
+
+test:
+  <<: *default
+  DB_DATABASE: test
+  ENVIRONMENT: test
+
+develop:
+  <<: *default
+  DB_DATABASE: develop
+  ENVIRONMENT: develop
+
+stage:
+  <<: *default
+  DB_DATABASE: stage
+  ENVIRONMENT: stage
+
+production:
+  <<: *default
+  DB_DATABASE: product
+  ENVIRONMENT: product
