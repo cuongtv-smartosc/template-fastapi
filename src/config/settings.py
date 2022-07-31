@@ -3,6 +3,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from src.config import config
 
 env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
@@ -22,8 +23,23 @@ class EnvDB:
     DB_POST = os.getenv('DB_POST')
 
 
+BASE_PATH = os.getenv('BASE_PATH')
+
 TITLE = "Template FastApi"
 DESCRIPTION = "Template fast api"
 ORIGINS = ["*"]
-BASE_PATH = "/Users/tranvancuong/Project/template-fastapi/src/"
 VERSION = "0.1.0"
+
+
+class Settings:
+
+    def __init__(self, env):
+        self.env = env
+
+    def get_config_env(self):
+        yml = config.YMLConfig(env=self.env, config_file_path=f"{BASE_PATH}/src/config/config_env.yml")
+        yml.get_yml_config()
+        return yml.yml_config
+
+
+setting = Settings(env="default")

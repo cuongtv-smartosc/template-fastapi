@@ -6,8 +6,6 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from src.config import settings
 from src.db.config_db_peewee import db
-from src.db.config_db_sqlalchemy import DBBaseCustom, engine
-from src.models.charger_model import ChargerModel
 from src.router.v1_router import api_v1_router
 
 
@@ -30,14 +28,14 @@ def create_app() -> FastAPI:
 
     register_init(app)
 
-    create_tables()
+    # create_tables()
 
     return app
 
 
-def create_tables():
-    DBBaseCustom.metadata.create_all(bind=engine)
-    db.create_tables([ChargerModel])
+# def create_tables():
+#     DBBaseCustom.metadata.create_all(bind=engine)
+#     db.create_tables([ChargerModel])
 
 
 def register_router(app: FastAPI) -> None:
