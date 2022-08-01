@@ -4,7 +4,6 @@ import pymysql
 
 
 class ScriptRunner:
-
     def __init__(self, connection, delimiter=";", autocommit=True):
         self.connection = connection
         self.delimiter = delimiter
@@ -22,7 +21,11 @@ class ScriptRunner:
                     self.delimiter = ";"
                     continue
 
-                if strip_line and not strip_line.startswith("//") and not strip_line.startswith("--"):
+                if (
+                    strip_line
+                    and not strip_line.startswith("//")
+                    and not strip_line.startswith("--")
+                ):
                     script += line + "\n"
                     if strip_line.endswith(self.delimiter):
                         if self.delimiter == "$$":
@@ -32,7 +35,12 @@ class ScriptRunner:
                         script = ""
 
             if script.strip():
-                raise Exception("Line missing end-of-line terminator (" + self.delimiter + ") => " + script)
+                raise Exception(
+                    "Line missing end-of-line terminator ("
+                    + self.delimiter
+                    + ") => "
+                    + script
+                )
 
             if not self.connection.get_autocommit():
                 self.connection.commit()
@@ -42,7 +50,7 @@ class ScriptRunner:
             raise
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-dir", "--dir_file", help="path file argument.")
     parser.add_argument("-host", "--host", help="host connect database.")
@@ -50,7 +58,12 @@ if __name__ == '__main__':
     parser.add_argument("-pass", "--password", help="pass file argument.")
     args = parser.parse_args()
     if args.dir_file:
-        connection = pymysql.connect(host=args.host, user=args.user, password=args.password, autocommit=True)
+        connection = pymysql.connect(
+            host=args.host,
+            user=args.user,
+            password=args.password,
+            autocommit=True,
+        )
         print("process import data...")
         # dir_file = os.path.dirname(os.path.abspath(__file__))
         file = open(args.dir_file)

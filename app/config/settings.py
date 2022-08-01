@@ -8,20 +8,22 @@ from app.config import config
 env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
 
-ENVIRONMENT = os.getenv('ENVIRONMENT')
+ENVIRONMENT = os.getenv("ENVIRONMENT")
 
 API_PREFIX = "/api"
 
-BASE_PATH = os.getenv('BASE_PATH')
+BASE_PATH = os.getenv("BASE_PATH")
 
 
 class Settings:
-
     def __init__(self, env):
         self.env = env
 
     def get_config_env(self):
-        yml = config.YMLConfig(env=self.env, config_file_path=f"{BASE_PATH}app/config/config_env.yml")
+        yml = config.YMLConfig(
+            env=self.env,
+            config_file_path=f"{BASE_PATH}app/config/config_env.yml",
+        )
         yml.get_yml_config()
         return yml.yml_config
 

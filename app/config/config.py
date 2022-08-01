@@ -1,4 +1,5 @@
 import os
+
 import yaml
 
 from app.common import logger
@@ -17,7 +18,6 @@ class ConfigReader:
 
 
 class YMLConfig:
-
     def __init__(self, env, config_file_path=None):
         self.env = env
         self.config_file_path = config_file_path
@@ -25,7 +25,8 @@ class YMLConfig:
         self.custom_config = {}
 
     def get_yml_config(self):
-        if self.config_file_path is None or not os.path.isfile(self.config_file_path):
+        config_file_path = self.config_file_path
+        if config_file_path is None or not os.path.isfile(config_file_path):
             return {}
         return ConfigReader.read_yml(self.config_file_path).get(self.env)
 

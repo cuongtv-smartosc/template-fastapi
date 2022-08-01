@@ -1,7 +1,6 @@
-from typing import Union
-from fastapi.responses import JSONResponse, Response
-from fastapi.encoders import jsonable_encoder
 from fastapi import status as http_status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel
 
 
@@ -16,27 +15,33 @@ class Resp(object):
         return self
 
 
-def success(*, data: list | dict | str | BaseModel = None, pagination: dict = None,
-            msg: str = "success") -> Response:
+def success(
+    *,
+    data: list | dict | str | BaseModel = None,
+    pagination: dict = None,
+    msg: str = "success"
+) -> Response:
     return_dict = {
-        'status': 200,
-        'msg': msg,
-        'data': data,
+        "status": 200,
+        "msg": msg,
+        "data": data,
     }
     if pagination:
         return_dict["pagination"] = pagination
 
     return JSONResponse(
         status_code=http_status.HTTP_200_OK,
-        content=jsonable_encoder(return_dict)
+        content=jsonable_encoder(return_dict),
     )
 
 
 def fail(resp: Resp) -> Response:
     return JSONResponse(
         status_code=resp.code,
-        content=jsonable_encoder({
-            'status': resp.status,
-            'msg': resp.msg,
-        })
+        content=jsonable_encoder(
+            {
+                "status": resp.status,
+                "msg": resp.msg,
+            }
+        ),
     )

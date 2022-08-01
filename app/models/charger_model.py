@@ -1,5 +1,6 @@
 from peewee import CharField
 from pydantic import BaseModel
+
 from app.models.base_model import BaseModelPeewee, paginator
 
 
@@ -12,7 +13,7 @@ class ChargerModel(BaseModelPeewee):
     model = CharField()
 
     class Meta:
-        table_name = 'tabCharger Model'
+        table_name = "tabCharger Model"
 
     @classmethod
     def fetch_all(cls, page: int = 1, page_size: int = 10):
