@@ -15,7 +15,7 @@ cd template-fastapi
 - [ ] Logging request params and db query (namvh)
 - [ ] Custom built-in swagger with more information (dungnv)
 - [ ] CORS setup (daocm)
-- [ ] Install Pre-commit to setup convention (cuongtv)
+- [✓] Install Pre-commit to setup convention (cuongtv)
 
 # Requirements
 1. `>= Python 3.10`
@@ -53,7 +53,18 @@ or
 http://127.0.0.1:8010/redoc
 ```
 
-## Run test
+## Run pre-commit
+Trước khi commit phải chạy lệch này để đúng định dạng pep8
+```
+pre-commit run --all-files
 ```
 
+## Run test
+Create new database for test and update in config.yml file
+```
+DB_DATABASE="db_test"
+```
+Run test
+```
+pytest
 ```

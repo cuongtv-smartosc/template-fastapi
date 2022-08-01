@@ -1,14 +1,15 @@
-from fastapi import Depends
-from fastapi.encoders import jsonable_encoder
-from fastapi.routing import APIRouter
-from sqlalchemy.orm import Session
+# from fastapi import Depends
+# from fastapi.encoders import jsonable_encoder
+# from fastapi.routing import APIRouter
+# from sqlalchemy.orm import Session
+
+# from app.schemas.response import resp
 
 # from src.crud.vehicle_model_crud import vehicle_model_crud
 # from src.db.config_db_sqlalchemy import get_db
 
-from app.schemas.response import resp
 
-vehicle_model = APIRouter()
+# vehicle_model = APIRouter()
 
 #
 # @vehicle_model.get("/vehicle-model")

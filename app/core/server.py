@@ -1,9 +1,6 @@
-import io
-import logging
-import os
-
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+
 from app.config.settings import setting
 from app.db.config_db_peewee import db
 from app.router.v1_router import api_v1_router
@@ -86,7 +83,7 @@ def register_init(app: FastAPI) -> None:
     # async def init_connect():
     #     db.connect()
 
-    @app.on_event('shutdown')
+    @app.on_event("shutdown")
     async def shutdown_connect():
         if not db.is_closed():
             db.close()

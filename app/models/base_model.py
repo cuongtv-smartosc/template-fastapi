@@ -1,6 +1,7 @@
-from peewee import Model, SQL, DateTimeField, CharField, ModelSelect
 import datetime
 import math
+
+from peewee import SQL, CharField, DateTimeField, Model, ModelSelect
 
 from app.db.config_db_peewee import db
 
@@ -15,7 +16,12 @@ class BaseModelPeewee(Model):
         database = db
 
 
-def paginator(query: ModelSelect, page: int, page_size: int, order_by: str = "id ASC"):
+def paginator(
+    query: ModelSelect,
+    page: int,
+    page_size: int,
+    order_by: str = "id ASC",
+):
     count = query.count()
     if page < 1:
         page = 1
@@ -40,7 +46,7 @@ def paginator(query: ModelSelect, page: int, page_size: int, order_by: str = "id
         "count": count,
         "current_page": page,
         "pre_page": page - 1 if page > 1 else page,
-        "next_page": page if page == total_pages else page + 1
+        "next_page": page if page == total_pages else page + 1,
     }
 
     return list(query.dicts()), paginate
