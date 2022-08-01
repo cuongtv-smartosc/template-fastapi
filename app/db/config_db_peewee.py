@@ -2,10 +2,13 @@ from peewee import _ConnectionState
 from contextvars import ContextVar
 from playhouse.pool import PooledMySQLDatabase
 
-from settings import EnvDB
+from app.config.settings import EnvDB, setting
+from app.utils.util import init_config_env_db
 
 db_state_default = {"closed": None, "conn": None, "ctx": None, "transactions": None}
 db_state = ContextVar("db_state", default=db_state_default.copy())
+
+env_yml = init_config_env_db()
 
 
 class PeeweeConnectionState(_ConnectionState):
@@ -20,13 +23,26 @@ class PeeweeConnectionState(_ConnectionState):
         return self._state.get()[name]
 
 
+def connect_db(env_yml):
+    db = PooledMySQLDatabase(
+        database=env_yml.get("DB_DATABASE"),
+        stale_timeout=300,
+        user=env_yml.get("DB_USER"),
+        host=env_yml.get("DB_HOST"),
+        password=str(env_yml.get("DB_PASS")),
+        port=int(env_yml.get("DB_POST"))
+    )
+    return db
+
+
 db = PooledMySQLDatabase(
-    EnvDB.DB_NAME,
+    database=env_yml.get("DB_DATABASE"),
     stale_timeout=300,
-    user=EnvDB.DB_USER,
-    host=EnvDB.DB_HOST,
-    password=EnvDB.DB_PASS,
-    port=int(EnvDB.DB_POST)
+    user=env_yml.get("DB_USER"),
+    host=env_yml.get("DB_HOST"),
+    password=str(env_yml.get("DB_PASS")),
+    port=int(env_yml.get("DB_POST"))
 )
 
+# db = connect_db()
 db._state = PeeweeConnectionState()

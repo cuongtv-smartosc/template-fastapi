@@ -1,8 +1,6 @@
-from typing import Union
-
 from peewee import CharField
 from pydantic import BaseModel
-from src.models.base_model import BaseModelPeewee, paginator
+from app.models.base_model import BaseModelPeewee, paginator
 
 
 class ChargerModel(BaseModelPeewee):
@@ -36,7 +34,7 @@ class ChargerResponse(BaseModel):
 class ChargerIncoming(BaseModel):
     """This is the serializer used for POST/PATCH requests"""
 
-    name: Union[str, None] = None
+    name: str | None = None
     model: str
 
     def __init__(self, *args, **kwargs):

@@ -2,9 +2,7 @@ from peewee import Model, SQL, DateTimeField, CharField, ModelSelect
 import datetime
 import math
 
-from src.db.config_db_peewee import db
-from src.db.config_db_sqlalchemy import DBBaseCustom
-from sqlalchemy import Column, String, DATETIME
+from app.db.config_db_peewee import db
 
 
 class BaseModelPeewee(Model):

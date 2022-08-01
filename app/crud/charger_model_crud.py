@@ -2,7 +2,7 @@ from typing import Tuple, List, Any
 
 from pydantic import parse_obj_as
 
-from src.models.charger_model import ChargerModel, ChargerResponse
+from app.models.charger_model import ChargerModel, ChargerResponse
 
 
 class ChargerModelCrud:

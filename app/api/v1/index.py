@@ -1,6 +1,6 @@
 from fastapi.routing import APIRouter
 
-from src.schemas.response import resp
+from app.schemas.response import resp
 
 router_index = APIRouter()
 
