@@ -1,9 +1,6 @@
-import os
 import argparse
 
 import pymysql
-
-from app.config.settings import EnvDB
 
 
 class ScriptRunner:
@@ -46,11 +43,14 @@ class ScriptRunner:
 
 
 if __name__ == '__main__':
-    connection = pymysql.connect(host=EnvDB.DB_HOST, user="root", password=EnvDB.DB_PASS, autocommit=True)
     parser = argparse.ArgumentParser()
     parser.add_argument("-dir", "--dir_file", help="path file argument.")
+    parser.add_argument("-host", "--host", help="host connect database.")
+    parser.add_argument("-user", "--user", help="user file argument.")
+    parser.add_argument("-pass", "--password", help="pass file argument.")
     args = parser.parse_args()
     if args.dir_file:
+        connection = pymysql.connect(host=args.host, user=args.user, password=args.password, autocommit=True)
         print("process import data...")
         # dir_file = os.path.dirname(os.path.abspath(__file__))
         file = open(args.dir_file)

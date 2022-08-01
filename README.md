@@ -33,10 +33,13 @@ docker-compase up -d
 ## Run file import_data.py
 file import_data.py để create database and import data
 argument -dir: đường dẫn file import
+         -host: host connect database
+         -user: user file argument
+         -pass: pass file argument
 ex: /Users/tranvancuong/Download/all.sql
 ```
 cd template-fastapi/
-python3.10 import_data.py -dir /Users/tranvancuong/Download/all.sql
+python3.10 import_data.py -dir /Users/tranvancuong/Download/all.sql -host localhost -user root -pass 123456
 ```
 ## Run dev server
 ```

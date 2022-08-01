@@ -2,13 +2,12 @@ from peewee import _ConnectionState
 from contextvars import ContextVar
 from playhouse.pool import PooledMySQLDatabase
 
-from app.config.settings import EnvDB, setting
-from app.utils.util import init_config_env_db
+from app.config.settings import ENVIRONMENT, setting
 
 db_state_default = {"closed": None, "conn": None, "ctx": None, "transactions": None}
 db_state = ContextVar("db_state", default=db_state_default.copy())
 
-env_yml = init_config_env_db()
+env_yml = setting.get_config_env()
 
 
 class PeeweeConnectionState(_ConnectionState):

@@ -4,7 +4,7 @@ import os
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-from app.config import settings
+from app.config.settings import setting
 from app.db.config_db_peewee import db
 from app.router.v1_router import api_v1_router
 
@@ -14,13 +14,14 @@ def create_app() -> FastAPI:
     Create object FatAPI
     :return:
     """
+    env_yml = setting.get_config_env()
     app = FastAPI(
-        title=settings.TITLE,
-        description=settings.DESCRIPTION,
-        version=settings.VERSION,
+        title=env_yml.get("TITLE"),
+        description=env_yml.get("DESCRIPTION"),
+        version=env_yml.get("VERSION"),
     )
 
-    register_cors(app)
+    register_cors(app, env_yml)
 
     register_router(app)
 
@@ -47,7 +48,7 @@ def register_router(app: FastAPI) -> None:
     app.include_router(api_v1_router)
 
 
-def register_cors(app: FastAPI) -> None:
+def register_cors(app: FastAPI, env_yml) -> None:
     """
     Register cors
     :param app:
@@ -55,7 +56,7 @@ def register_cors(app: FastAPI) -> None:
     """
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.ORIGINS,
+        allow_origins=env_yml.get("ORIGINS"),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

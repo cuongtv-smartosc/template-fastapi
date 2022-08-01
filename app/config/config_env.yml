@@ -8,8 +8,8 @@ default: &default
   ENVIRONMENT: local
   API_PREFIX: "/api"
   ORIGINS: ["*"]
-  TITLE: "Template FastApi"
-  DESCRIPTION: "Template fast api"
+  TITLE: "Template FastApi Local"
+  DESCRIPTION: "Template fast api local"
   VERSION: "0.1.0"
 
 local:
