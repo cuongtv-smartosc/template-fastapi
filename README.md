@@ -28,7 +28,7 @@ pip install -r requirements.txt
 ```
 ## [Option] Run docker-compose
 ```
-docker-compase up -d
+docker-compose up -d
 ```
 ## Run file import_data.py
 file import_data.py để create database and import data
