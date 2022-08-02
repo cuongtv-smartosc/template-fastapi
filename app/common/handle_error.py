@@ -10,6 +10,7 @@ class ErrorMessages:
     method_not_allow = "Method not allowed"
     bad_request = "Bad request"
 
+
 class APIException(Exception):
     http_status = HTTPStatus.INTERNAL_SERVER_ERROR
     message = ErrorMessages.default
@@ -65,5 +66,6 @@ class MethodNotAllowed(APIException):
         super().__init__(
             http_status=HTTPStatus.METHOD_NOT_ALLOWED, message=message, extra=extra
         )
+
     def __str__(self):
         return "Method not allowed"
