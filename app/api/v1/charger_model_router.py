@@ -47,3 +47,11 @@ async def create_charger_model(charger_model: ChargerModelCreate):
     """
     logger.info("endpoint create charger-model")
     return resp.success(data=charger_model)
+
+
+@charger_model_router.put("/charger/{model_id}")
+async def create_charger(
+    model_id: int, charger: ChargerModelCreate, q: str | None = None
+):
+    result = {"model_id": model_id, **charger.dict()}
+    return result
