@@ -14,17 +14,14 @@ vehicle_model = APIRouter()
 
 
 # api get list
-@vehicle_model.get("/get_all")
+@vehicle_model.get("/")
 async def get_list_models(db: Session = Depends(get_db)):
     results = await vehicle_model_crud.list(db)
-
     return resp.success(data=results)
 
-
-@vehicle_model.get("/get_details/{id}")
+@vehicle_model.get("/{id}")
 async def get_detail_model(id: str, db: Session = Depends(get_db)):
-    models = await vehicle_model_crud.list(db)
-    if any([model.name == id for model in models]):
-        results = await vehicle_model_crud.get(db, id)
-        return resp.success(data=results)
-    raise NotFoundException(message="Model Not Found")
+    results = await vehicle_model_crud.get(db, id)
+    if not results:
+        raise NotFoundException(message="Model Not Found")
+    return resp.success(data=results)
