@@ -95,6 +95,13 @@ def register_exception(app: FastAPI) -> None:
             status_code=418,
             content={"message": f"{exc.message}"},
         )
+    @app.exception_handler(BadRequestException)
+    async def unicorn_exception_handler(request: Request, exc: MethodNotAllowed):
+        return JSONResponse(
+            status_code=418,
+            content={"message": f"{exc.message}"},
+        )
+
 
 
 def register_init(app: FastAPI) -> None:

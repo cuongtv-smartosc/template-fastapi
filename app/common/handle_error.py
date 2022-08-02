@@ -8,7 +8,7 @@ class ErrorMessages:
     wrong = "Something went wrong"
     not_found = "Not found"
     method_not_allow = "Method not allowed"
-
+    bad_request = "Bad request"
 
 class APIException(Exception):
     http_status = HTTPStatus.INTERNAL_SERVER_ERROR
