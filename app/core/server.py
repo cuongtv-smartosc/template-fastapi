@@ -1,6 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
+from app.common.handle_error import (
+    BadRequestException,
+    MethodNotAllowed,
+    NotFoundException,
+)
 from app.config.settings import setting
 from app.db.config_db_sqlalchemy import DBBaseCustom, engine
 from app.router.v1_router import api_v1_router
@@ -68,7 +74,27 @@ def register_exception(app: FastAPI) -> None:
     :param app:
     :return:
     """
-    pass
+
+    @app.exception_handler(NotFoundException)
+    async def unicorn_exception_handler(request: Request, exc: NotFoundException):
+        return JSONResponse(
+            status_code=418,
+            content={"message": f"{exc.message}"},
+        )
+
+    @app.exception_handler(BadRequestException)
+    async def unicorn_exception_handler(request: Request, exc: BadRequestException):
+        return JSONResponse(
+            status_code=418,
+            content={"message": f"{exc.message}"},
+        )
+
+    @app.exception_handler(MethodNotAllowed)
+    async def unicorn_exception_handler(request: Request, exc: MethodNotAllowed):
+        return JSONResponse(
+            status_code=418,
+            content={"message": f"{exc.message}"},
+        )
 
 
 def register_init(app: FastAPI) -> None:

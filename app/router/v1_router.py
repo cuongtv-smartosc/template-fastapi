@@ -16,4 +16,6 @@ api_v1_router.include_router(
 )
 
 # router vehicle model
-api_v1_router.include_router(vehicle_model, prefix=f"{settings.API_PREFIX}")
+api_v1_router.include_router(
+    vehicle_model, prefix=f"{settings.API_PREFIX}/vehicle-model"
+)
