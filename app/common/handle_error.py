@@ -65,6 +65,5 @@ class MethodNotAllowed(APIException):
         super().__init__(
             http_status=HTTPStatus.METHOD_NOT_ALLOWED, message=message, extra=extra
         )
-
     def __str__(self):
         return "Method not allowed"
