@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from app.config.settings import setting
-from app.db.config_db_peewee import db
+from app.db.config_db_sqlalchemy import DBBaseCustom, engine
 from app.router.v1_router import api_v1_router
 
 
@@ -31,9 +31,8 @@ def create_app() -> FastAPI:
     return app
 
 
-# def create_tables():
-#     DBBaseCustom.metadata.create_all(bind=engine)
-#     db.create_tables([ChargerModel])
+def create_tables():
+    DBBaseCustom.metadata.create_all(bind=engine)
 
 
 def register_router(app: FastAPI) -> None:
@@ -78,12 +77,4 @@ def register_init(app: FastAPI) -> None:
     :param app:
     :return:
     """
-
-    # @app.on_event("startup")
-    # async def init_connect():
-    #     db.connect()
-
-    @app.on_event("shutdown")
-    async def shutdown_connect():
-        if not db.is_closed():
-            db.close()
+    pass

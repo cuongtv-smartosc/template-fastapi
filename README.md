@@ -11,7 +11,7 @@ cd template-fastapi
 - [ ] Custom response model using built-in pydantic (tranhnv)
 - [ ] Handle error exception (daocm)
 - [ ] Setup config get from os env (namvh)
-- [ ] Testing and coverage using peewee (cuongtv)
+- [ ] Testing and coverage using sqlalchemy (cuongtv)
 - [ ] Logging request params and db query (namvh)
 - [ ] Custom built-in swagger with more information (dungnv)
 - [ ] CORS setup (daocm)
