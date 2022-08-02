@@ -52,4 +52,3 @@ async def create_charger_model(charger_model: ChargerModelCreate):
     """
     logger.info("endpoint create charger-model")
     return resp.success(data=charger_model)
-
