@@ -12,6 +12,7 @@ from app.common.handle_error import (
     NotFoundException,
 )
 from app.common.database import get_db
+from app.api.auth_v1.auth import get_current_user
 from app.common.logger import logger
 from app.crud.charger_model_crud import charger_model_crud
 from app.schemas.charger_model import ChargerModelCreate, ChargerModelResponse
@@ -47,6 +48,8 @@ async def list_charger_model(db: Session = Depends(get_db)):
     },
     status_code=status.HTTP_201_CREATED,
     name="Name api"
+    name="Name api",
+    dependencies=[Depends(get_current_user)],
 )
 async def create_charger_model(charger_model: ChargerModelCreate, current_user: User = Depends(get_current_user)):
     """

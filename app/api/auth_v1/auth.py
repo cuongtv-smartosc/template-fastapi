@@ -1,6 +1,14 @@
 from datetime import timedelta
 from fastapi import APIRouter, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
+from datetime import datetime, timedelta
+from typing import Union
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from pydantic import BaseModel
 
 from app.models.user_model import users_db
 from app.schemas.response import resp
@@ -8,10 +16,32 @@ from app.schemas.user import UserLogin, Token
 from app.config.settings import setting
 from app.services.auth import authenticate_user, create_access_token
 
+SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 auth_jwt = APIRouter()
 env_yml = setting.get_config_env()
 ACCESS_TOKEN_EXPIRE_MINUTES = env_yml.get("ACCESS_TOKEN_EXPIRES_IN")
+
+users_db = {
+    "linh": {
+        "username": "linh",
+        "full_name": "Linh Vu",
+        "hashed_password": "1",
+    },
+    "mai": {
+        "username": "mai",
+        "full_name": "Huyen Mai",
+        "hashed_password": "2",
+    },
+}
+
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
 
 
 @auth_jwt.post("/login", response_model=Token)
