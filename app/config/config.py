@@ -26,7 +26,7 @@ class YMLConfig:
 
     def get_yml_config(self):
         config_file_path = self.config_file_path
-        if config_file_path is None or not os.path.isfile(config_file_path):
+        if self.config_file_path is None or not os.path.isfile(self.config_file_path):
             return {}
         return ConfigReader.read_yml(self.config_file_path).get(self.env)
 
