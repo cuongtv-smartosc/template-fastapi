@@ -70,12 +70,14 @@ def register_exception(app: FastAPI) -> None:
     :param app:
     :return:
     """
+
     @app.exception_handler(APIException)
     async def unicorn_exception_handler(request: Request, exc: APIException):
         return JSONResponse(
             status_code=exc.http_status,
             content={"message": f"{exc.message}"},
         )
+
 
 def register_init(app: FastAPI) -> None:
     """
