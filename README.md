@@ -15,7 +15,7 @@ cd template-fastapi
 - [ ] Logging request params and db query (namvh)
 - [ ] Custom built-in swagger with more information (dungnv)
 - [ ] CORS setup (daocm)
-- [ ] Install Pre-commit to setup convention (cuongtv)
+- [✔] Install Pre-commit to setup convention (cuongtv)
 - [ ] Upload testcase to jira
 
 # Requirements
@@ -27,6 +27,13 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
+## Install pre-commit
+```
+pre-commit install
+pre-commit installed at .git/hooks/pre-commit
+```
+
 ## [Option] Run docker-compose
 ```
 docker-compose up -d
@@ -52,12 +59,6 @@ online doc address
 http://127.0.0.1:8010/docs
 or
 http://127.0.0.1:8010/redoc
-```
-
-## Run pre-commit
-Trước khi commit phải chạy lệch này để đúng định dạng pep8
-```
-pre-commit run --all-files
 ```
 
 ## Run test
