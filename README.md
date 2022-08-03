@@ -15,7 +15,8 @@ cd template-fastapi
 - [ ] Logging request params and db query (namvh)
 - [ ] Custom built-in swagger with more information (dungnv)
 - [ ] CORS setup (daocm)
-- [✓] Install Pre-commit to setup convention (cuongtv)
+- [ ] Install Pre-commit to setup convention (cuongtv)
+- [ ] Upload testcase to jira
 
 # Requirements
 1. `>= Python 3.10`
