@@ -20,9 +20,11 @@ class Settings:
         self.env = env
 
     def get_config_env(self):
+        base_path = os.getcwd()
+        path = f"{base_path}/app/config/config_env.yml"
         yml = config.YMLConfig(
             env=self.env,
-            config_file_path=f"{BASE_PATH}app/config/config_env.yml",
+            config_file_path=path,
         )
         yml.get_yml_config()
         return yml.yml_config

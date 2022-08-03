@@ -2,9 +2,9 @@ import logging.config
 import os
 import time
 
-from app.config import settings
-
-log_path = os.path.join(settings.BASE_PATH, "app/logs")
+base_path = os.getcwd()
+path = f"{base_path}/app/logs"
+log_path = os.path.join(path)
 if not os.path.exists(log_path):
     os.mkdir(log_path)
 
