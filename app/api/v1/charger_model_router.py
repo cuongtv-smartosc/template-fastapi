@@ -49,9 +49,7 @@ async def create_charger_model(charger_model: ChargerModelCreate):
     return resp.success(data=charger_model)
 
 
-@charger_model_router.put("/charger/{model_id}")
-async def create_charger(
-    model_id: int, charger: ChargerModelCreate, q: str | None = None
-):
-    result = {"model_id": model_id, **charger.dict()}
+@charger_model_router.post("/charger/{name}")
+async def create_charger(name: str, charger: ChargerModelCreate):
+    result = {"model_id": name, **charger.dict()}
     return result
