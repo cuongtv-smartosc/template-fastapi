@@ -34,7 +34,7 @@ class ChargerModelCreate(ChargerModelBase):
         if v in md_name:
             raise ValueError("Model name already exist")
         return v
-
+    #pass
 
 # Properties to return to client
 class ChargerModelResponse(ChargerModelBase):
