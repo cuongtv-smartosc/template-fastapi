@@ -1,10 +1,12 @@
 from typing import List
 
-from fastapi import status
+from fastapi import Depends, status
 from fastapi.routing import APIRouter
+from sqlalchemy.orm import Session
 
 from app.common.logger import logger
-from app.crud.charger_model_crud import ChargerModelCrud
+from app.crud.charger_model_crud import charger_model_crud
+from app.db.config_db_sqlalchemy import get_db
 from app.schemas.charger_model import ChargerModelCreate, ChargerModelResponse
 from app.schemas.response import resp
 
@@ -12,12 +14,12 @@ charger_model_router = APIRouter()
 
 
 @charger_model_router.get("s", response_model=List[ChargerModelResponse])
-async def list_charger_model():
+async def list_charger_model(db: Session = Depends(get_db)):
     """
     This endpoint interacts with the list charger-model
     """
     logger.info("endpoint list charger-model")
-    results = await ChargerModelCrud().get_all_charger_model()
+    results = await charger_model_crud.list(db)
     return resp.success(data=results)
 
 

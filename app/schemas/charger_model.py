@@ -4,7 +4,7 @@ from pydantic import BaseModel
 # Shared properties
 class ChargerModelBase(BaseModel):
     name: str = None
-    description: None | str = None
+    model: None | str = None
 
 
 # Properties to receive on item creation

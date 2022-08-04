@@ -20,6 +20,7 @@ local_test:
   <<: *default
   DB_DATABASE: db_test
   ENVIRONMENT: local_test
+  DB_URL: mysql+pymysql://root:123456@localhost:3306/db_test
   SQLALCHEMY_ECHO: False
 
 local_dev:

@@ -11,7 +11,7 @@ engine = create_engine(env_yml.get("DB_URL"))
 db_session = scoped_session(
     sessionmaker(autocommit=False, autoflush=False, bind=engine)
 )
-Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 DBBaseCustom = declarative_base()
 
@@ -23,7 +23,7 @@ def get_db():
     """
     db = None
     try:
-        db = Session()
+        db = SessionLocal()
         yield db
     finally:
         db.close()

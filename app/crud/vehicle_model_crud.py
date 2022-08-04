@@ -1,5 +1,3 @@
-from typing import List
-
 from sqlalchemy.orm import Session
 
 from app.crud.base_crud import CRUDBase
@@ -18,7 +16,7 @@ class VehicleModelCrud(
         self,
         db: Session,
         owner: str,
-    ) -> List[VehicleModel]:
+    ) -> list[VehicleModel]:
         return db.query(VehicleModel).filter(VehicleModel.owner == owner).all()
 
 
