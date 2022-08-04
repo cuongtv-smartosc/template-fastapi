@@ -10,6 +10,8 @@ from app.schemas.user import User
 from app.models.electric_vehicle_model import VehicleModel
 from app.schemas.electric_vehicle_model import VehicleModelBase, VehicleModelCreate
 from app.schemas.electric_vehicle_model import VehicleModelCreate
+from app.db.config_db_sqlalchemy import get_db
+from app.schemas.user import User
 from app.schemas.response import resp
 from app.services.auth import get_current_user
 
@@ -21,12 +23,18 @@ async def list(db: Session = Depends(get_db), current_user: User = Depends(get_c
 # api get list
 @vehicle_model.get("/")
 async def get_list_models(db: Session = Depends(get_db)):
+@vehicle_model.get("/vehicle-model")
+async def list(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     results = await vehicle_model_crud.list(db)
     # print(results)
     # data = jsonable_encoder(results)
     # print(data)
     return resp.success(data=current_user)
     return resp.success(data=results)
+    # print(results)
+    # data = jsonable_encoder(results)
+    # print(data)
+    return resp.success(data=current_user)
 
 
 @vehicle_model.get("/{id}")

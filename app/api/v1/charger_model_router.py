@@ -13,6 +13,8 @@ from app.common.handle_error import (
 )
 from app.common.database import get_db
 from app.api.auth_v1.auth import get_current_user
+from app.schemas.user import User
+from app.services.auth import get_current_user
 from app.common.logger import logger
 from app.crud.charger_model_crud import charger_model_crud
 from app.schemas.charger_model import ChargerModelCreate, ChargerModelResponse
@@ -50,6 +52,7 @@ async def list_charger_model(db: Session = Depends(get_db)):
     name="Name api"
     name="Name api",
     dependencies=[Depends(get_current_user)],
+    name="Name api"
 )
 async def create_charger_model(charger_model: ChargerModelCreate, current_user: User = Depends(get_current_user)):
     """
