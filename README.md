@@ -5,9 +5,6 @@ git clone git@github.com:cuongtv-smartosc/template-fastapi.git
 cd template-fastapi
 ```
 
-## Overall architecture
-![Overall Architecture](images/ev.png)
-
 ## To do list
 - [ ] Validate request using pydantic(built-in) (phongtt)
 - [ ] Authentication using built-in jwt (linh)
