@@ -1,115 +1,22 @@
-from datetime import datetime, timedelta
-from typing import Union
+from datetime import timedelta
+from fastapi import APIRouter, HTTPException, status, Response
+from fastapi.security import OAuth2PasswordBearer
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt
-from passlib.context import CryptContext
-from pydantic import BaseModel
+from app.models.user_model import users_db
+from app.schemas.response import resp
+from app.schemas.user import UserLogin, Token
+from app.config.settings import setting
+from app.services.auth import authenticate_user, create_access_token
 
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 auth_jwt = APIRouter()
-
-users_db = {
-    "linh": {
-        "username": "linh",
-        "full_name": "Linh Vu",
-        "hashed_password": "1",
-    },
-    "mai": {
-        "username": "mai",
-        "full_name": "Huyen Mai",
-        "hashed_password": "2",
-    },
-}
+env_yml = setting.get_config_env()
+ACCESS_TOKEN_EXPIRE_MINUTES = env_yml.get("ACCESS_TOKEN_EXPIRES_IN")
 
 
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    username: Union[str, None] = None
-
-
-class User(BaseModel):
-    username: str
-    full_name: Union[str, None] = None
-
-
-class UserInDB(User):
-    hashed_password: str
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, get_password_hash(hashed_password))
-
-
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
-
-
-def authenticate_user(auth_db, username: str, password: str):
-    user = get_user(auth_db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
-
-
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
-    print(data)
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-
-async def get_current_user(token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
-    user = get_user(users_db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
-
-
-@auth_jwt.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(users_db, form_data.username, form_data.password)
+@auth_jwt.post("/login", response_model=Token)
+async def login(data: UserLogin, response: Response):
+    user = authenticate_user(users_db, data.username, data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -120,30 +27,9 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
-
-
-# @auth_jwt.post("/token", response_model=Token)
-# async def login_for_access_token(form_data: UserLogin):
-#     user = authenticate_user(users_db, form_data.username, form_data.password)
-#     if not user:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Incorrect username or password",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-#     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-#     access_token = create_access_token(
-#         data={"sub": user.username}, expires_delta=access_token_expires
-#     )
-#     return {"access_token": access_token, "token_type": "bearer"}
-
-
-@auth_jwt.get("/users/me/", response_model=User)
-async def read_users_me(current_user: User = Depends(get_current_user)):
-    return current_user
-
-
-@auth_jwt.get("/users/me/items/")
-async def read_own_items(current_user: User = Depends(get_current_user)):
-    return [{"item_id": "Foo", "owner": current_user.username}]
+    response.set_cookie('access_token', access_token, ACCESS_TOKEN_EXPIRE_MINUTES*60,
+                        ACCESS_TOKEN_EXPIRE_MINUTES*60, '/', None, False, True, 'lax')
+    response.set_cookie('logged_in', 'True', ACCESS_TOKEN_EXPIRE_MINUTES*60,
+                        ACCESS_TOKEN_EXPIRE_MINUTES*60, '/', None, False, False, 'lax')
+    data = {"access_token": access_token, "token_type": "bearer"}
+    return data
