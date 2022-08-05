@@ -4,6 +4,11 @@ from pydantic import BaseModel
 class VehicleModelBase(BaseModel):
     name: str = None
     description: None | str = None
+    creation: str = None
+    modified: str = None
+    modified_by: str = None
+    owner: str = None
+    model: str = None
 
 
 class VehicleModelResponse(VehicleModelBase):

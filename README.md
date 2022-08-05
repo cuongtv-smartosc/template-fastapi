@@ -5,21 +5,23 @@ git clone git@github.com:cuongtv-smartosc/template-fastapi.git
 cd template-fastapi
 ```
 
-## Overall architecture
+## Overall Diagram
 ![Overall Architecture](images/ev.png)
 
 ## To do list
 - [ ] Validate request using pydantic(built-in) (phongtt)
 - [ ] Authentication using built-in jwt (linh)
 - [ ] Custom response model using built-in pydantic (tranhnv)
-- [ ] Handle error exception (daocm)
+- [x] Handle error exception (daocm)
 - [ ] Setup config get from os env (namvh)
-- [✔] Testing and coverage using sqlalchemy (cuongtv)
+- [x] Testing and coverage using sqlalchemy (cuongtv)
 - [ ] Logging request params and db query (namvh)
 - [ ] Custom built-in swagger with more information (dungnv)
-- [ ] CORS setup (daocm)
-- [✔] Install Pre-commit to setup convention (cuongtv)
+- [x] CORS setup (daocm)
+- [x] Install Pre-commit to setup convention (cuongtv)
+- [x] CORS setup (daocm)
 - [ ] Upload testcase to jira
+- [ ] Authorization base on Role
 
 # Requirements
 1. `>= Python 3.10`

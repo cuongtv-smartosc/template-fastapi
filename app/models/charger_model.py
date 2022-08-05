@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String
 
-from app.db.config_db_sqlalchemy import DBBaseCustom
+from app.common.database import DBBaseCustom
 
 
 class ChargerModel(DBBaseCustom):
