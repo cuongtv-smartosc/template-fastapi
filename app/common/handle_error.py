@@ -35,7 +35,6 @@ class NotFoundException(APIException):
 
 
 class BadRequestException(APIException):
-    http_status = status.HTTP_400_BAD_REQUEST
 
     def __init__(self, message=ErrorMessages.bad_request, extra=None):
         super().__init__(
