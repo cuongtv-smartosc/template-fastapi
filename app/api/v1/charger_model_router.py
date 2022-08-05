@@ -4,6 +4,11 @@ from fastapi import Depends, status
 from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 
+from app.common.handle_error import (
+    BadRequestException,
+    MethodNotAllowed,
+    NotFoundException,
+)
 from app.common.logger import logger
 from app.crud.charger_model_crud import charger_model_crud
 from app.db.config_db_sqlalchemy import get_db

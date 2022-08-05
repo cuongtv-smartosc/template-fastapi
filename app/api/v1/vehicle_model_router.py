@@ -1,18 +1,37 @@
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi.routing import APIRouter
+from pydantic.schema import model_schema
 from sqlalchemy.orm import Session
 
+from app.common.handle_error import BadRequestException, NotFoundException
 from app.crud.vehicle_model_crud import vehicle_model_crud
 from app.db.config_db_sqlalchemy import get_db
+from app.models.electric_vehicle_model import VehicleModel
+from app.schemas.electric_vehicle_model import VehicleModelBase, VehicleModelCreate
 from app.schemas.response import resp
 
 vehicle_model = APIRouter()
 
 
-@vehicle_model.get("/vehicle-model")
-async def list(db: Session = Depends(get_db)):
+# api get list
+@vehicle_model.get("/")
+async def get_list_models(db: Session = Depends(get_db)):
     results = await vehicle_model_crud.list(db)
-    # print(results)
-    # data = jsonable_encoder(results)
-    # print(data)
     return resp.success(data=results)
+
+
+@vehicle_model.get("/{id}")
+async def get_detail_model(id: str, db: Session = Depends(get_db)):
+    results = await vehicle_model_crud.get(db, id)
+    if not results:
+        raise NotFoundException(message="Model Not Found")
+    return resp.success(data=results)
+
+
+@vehicle_model.post("/")
+async def create_model(request: VehicleModelCreate, db: Session = Depends(get_db)):
+    model = await vehicle_model_crud.get(db, request.__dict__["name"])
+    if model:
+        raise BadRequestException(message="Name already exists")
+    await vehicle_model_crud.create(db=db, obj_in=request)
+    return "Successful new creation"
