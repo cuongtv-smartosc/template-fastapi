@@ -2,10 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
-from app.api.auth_v1.auth import auth_jwt
 from app.common.database import DBBaseCustom, engine
 from app.common.handle_error import APIException
-from app.api.auth_v1.auth import auth_jwt
 from app.config.settings import setting
 from app.v1_router import api_v1_router
 
@@ -42,7 +40,6 @@ def register_router(app: FastAPI) -> None:
     :return:
     """
     app.include_router(api_v1_router)
-    app.include_router(auth_jwt)
 
 
 def register_cors(app: FastAPI, env_yml) -> None:

@@ -4,21 +4,13 @@ from fastapi import Depends, status
 from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 
-from app.schemas.user import User
-from app.services.auth import get_current_user
-from app.common.handle_error import (
-    BadRequestException,
-    MethodNotAllowed,
-    NotFoundException,
-)
 from app.common.database import get_db
-from app.api.auth_v1.auth import get_current_user
-from app.schemas.user import User
-from app.services.auth import get_current_user
 from app.common.logger import logger
 from app.crud.charger_model_crud import charger_model_crud
 from app.schemas.charger_model import ChargerModelCreate, ChargerModelResponse
 from app.schemas.response import resp
+from app.schemas.user import UserBase
+from app.services.auth import get_current_user
 
 charger_model_router = APIRouter()
 
@@ -49,12 +41,12 @@ async def list_charger_model(db: Session = Depends(get_db)):
         },
     },
     status_code=status.HTTP_201_CREATED,
-    name="Name api"
     name="Name api",
-    dependencies=[Depends(get_current_user)],
-    name="Name api"
 )
-async def create_charger_model(charger_model: ChargerModelCreate, current_user: User = Depends(get_current_user)):
+async def create_charger_model(
+    charger_model: ChargerModelCreate,
+    current_user: UserBase = Depends(get_current_user),
+):
     """
     This endpoint interacts with the creation of charger-model \n
     """

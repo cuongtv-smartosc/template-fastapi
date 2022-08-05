@@ -1,18 +1,4 @@
-from typing import Union, Optional, List
-from pydantic import BaseModel, Field, validator
-
-users_db = {
-    "linh": {
-        "username": "linh",
-        "full_name": "Linh Vu",
-        "hashed_password": "1",
-    },
-    "mai": {
-        "username": "mai",
-        "full_name": "Huyen Mai",
-        "hashed_password": "2",
-    },
-}
+from pydantic import BaseModel
 
 
 class UserLogin(BaseModel):
@@ -25,14 +11,16 @@ class Token(BaseModel):
     token_type: str
 
 
-class TokenData(BaseModel):
-    username: Union[str, None] = None
+class UserBase(BaseModel):
+    username: str = None
+    hash_password: str = None
 
 
-class User(BaseModel):
-    username: str
-    full_name: Union[str, None] = None
+class UserCreate(UserBase):
+    pass
 
 
-class UserInDB(User):
-    hash_password: str
+class UserResponse(UserBase):
+    """This the serializer exposed on the API"""
+
+    pass

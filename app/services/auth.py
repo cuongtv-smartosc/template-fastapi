@@ -1,30 +1,26 @@
 from datetime import datetime, timedelta
 from typing import Union
+
 from fastapi import Depends, HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from app.config.settings import setting
-from app.models.user_model import users_db
-from app.schemas.user import TokenData, UserInDB
-from app.utils.util import verify_password
 
+from app.common.database import SessionLocal
+from app.config.settings import setting
+from app.models.user_model import UserModel
+from app.utils.util import verify_password
 
 env_yml = setting.get_config_env()
 SECRET_KEY = env_yml.get("JWT_PRIVATE_KEY")
 ALGORITHM = env_yml.get("JWT_ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = env_yml.get("ACCESS_TOKEN_EXPIRES_IN")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
-
-
-def authenticate_user(auth_db, username: str, password: str):
-    user = get_user(auth_db, username)
+def authenticate_user(data, password: str):
+    user = data
     if not user:
         return False
     if not verify_password(password, user.hash_password):
@@ -32,7 +28,10 @@ def authenticate_user(auth_db, username: str, password: str):
     return user
 
 
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
+def create_access_token(
+    data: dict,
+    expires_delta: Union[timedelta, None] = None,
+):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -54,10 +53,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(users_db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
+    db = SessionLocal()
+    res = db.query(UserModel).all()
+    users = jsonable_encoder(res)
+    db.close()
+    for user in users:
+        if user["username"] == username:
+            return user
