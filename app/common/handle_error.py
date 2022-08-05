@@ -14,17 +14,13 @@ class ErrorMessages:
 class APIException(Exception):
     def __init__(
         self,
-        success=False,
-        data=None,
         http_status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         message=ErrorMessages.default,
-        extra=None,
     ):
-        self.success = success
-        self.data = data
+
         self.http_status = http_status
         self.message = message
-        self.extra = extra
+
         super().__init__()
 
 
