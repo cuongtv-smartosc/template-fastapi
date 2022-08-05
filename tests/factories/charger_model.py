@@ -1,20 +1,14 @@
-from datetime import datetime
-
 import factory.fuzzy
 
-# from src.db.config_db_sqlalchemy import ActiveSession
+from app.common.database import SessionLocal
 from app.models.charger_model import ChargerModel
 
 
 class ChargerModelFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = ChargerModel
-        # sqlalchemy_session = ActiveSession
-        sqlalchemy_session_persistence = "flush"
+        sqlalchemy_session = SessionLocal()
+        sqlalchemy_session_persistence = "commit"
 
     name = "charger model test"
     model = "charger model test"
-    creation = datetime.utcnow()
-    owner = "SYSTEM"
-    modified = datetime.utcnow()
-    modified_by = "SYSTEM"
