@@ -1,7 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.auth_v1.auth import auth_jwt
+from app.common.handle_error import APIException
 from app.config.settings import setting
 from app.db.config_db_sqlalchemy import DBBaseCustom, engine
 from app.router.v1_router import api_v1_router
@@ -70,7 +72,13 @@ def register_exception(app: FastAPI) -> None:
     :param app:
     :return:
     """
-    pass
+
+    @app.exception_handler(APIException)
+    async def unicorn_exception_handler(request: Request, exc: APIException):
+        return JSONResponse(
+            status_code=exc.http_status,
+            content={"message": f"{exc.message}"},
+        )
 
 
 def register_init(app: FastAPI) -> None:
