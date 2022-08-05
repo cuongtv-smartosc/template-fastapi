@@ -1,14 +1,15 @@
-from fastapi import Depends, Request
+from fastapi import Depends
 from fastapi.routing import APIRouter
-from pydantic.schema import model_schema
 from sqlalchemy.orm import Session
 
+from app.common.database import get_db
 from app.common.handle_error import BadRequestException, NotFoundException
 from app.crud.vehicle_model_crud import vehicle_model_crud
 from app.db.config_db_sqlalchemy import get_db
 from app.schemas.user import User
 from app.models.electric_vehicle_model import VehicleModel
 from app.schemas.electric_vehicle_model import VehicleModelBase, VehicleModelCreate
+from app.schemas.electric_vehicle_model import VehicleModelCreate
 from app.schemas.response import resp
 from app.services.auth import get_current_user
 
@@ -37,7 +38,9 @@ async def get_detail_model(id: str, db: Session = Depends(get_db)):
 
 
 @vehicle_model.post("/")
-async def create_model(request: VehicleModelCreate, db: Session = Depends(get_db)):
+async def create_model(
+    request: VehicleModelCreate, db: Session = Depends(get_db)
+) -> str:
     model = await vehicle_model_crud.get(db, request.__dict__["name"])
     if model:
         raise BadRequestException(message="Name already exists")

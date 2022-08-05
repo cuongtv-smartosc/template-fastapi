@@ -11,9 +11,9 @@ from app.common.handle_error import (
     MethodNotAllowed,
     NotFoundException,
 )
+from app.common.database import get_db
 from app.common.logger import logger
 from app.crud.charger_model_crud import charger_model_crud
-from app.db.config_db_sqlalchemy import get_db
 from app.schemas.charger_model import ChargerModelCreate, ChargerModelResponse
 from app.schemas.response import resp
 

@@ -3,10 +3,10 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.auth_v1.auth import auth_jwt
+from app.common.database import DBBaseCustom, engine
 from app.common.handle_error import APIException
 from app.config.settings import setting
-from app.db.config_db_sqlalchemy import DBBaseCustom, engine
-from app.router.v1_router import api_v1_router
+from app.v1_router import api_v1_router
 
 
 def create_app() -> FastAPI:
@@ -22,12 +22,8 @@ def create_app() -> FastAPI:
     )
 
     register_cors(app, env_yml)
-
     register_router(app)
-
     register_exception(app)
-
-    register_init(app)
 
     # create_tables()
 
@@ -79,12 +75,3 @@ def register_exception(app: FastAPI) -> None:
             status_code=exc.http_status,
             content={"message": f"{exc.message}"},
         )
-
-
-def register_init(app: FastAPI) -> None:
-    """
-    initialize connection
-    :param app:
-    :return:
-    """
-    pass
