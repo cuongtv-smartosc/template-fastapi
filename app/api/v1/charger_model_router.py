@@ -7,9 +7,9 @@ from sqlalchemy.orm import Session
 from app.common.database import get_db
 from app.common.logger import logger
 from app.crud.charger_model_crud import charger_model_crud
+from app.models.user_model import UserModel
 from app.schemas.charger_model import ChargerModelCreate, ChargerModelResponse
 from app.schemas.response import resp
-from app.schemas.user import UserBase
 from app.services.auth import get_current_user
 
 charger_model_router = APIRouter()
@@ -45,7 +45,7 @@ async def list_charger_model(db: Session = Depends(get_db)):
 )
 async def create_charger_model(
     charger_model: ChargerModelCreate,
-    current_user: UserBase = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
 ):
     """
     This endpoint interacts with the creation of charger-model \n

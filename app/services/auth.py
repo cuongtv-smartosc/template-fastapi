@@ -1,26 +1,21 @@
 from datetime import datetime, timedelta
 from typing import Union
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
 from app.common.database import SessionLocal
-from app.config.settings import setting
+from app.common.handle_error import UnAuthorizedException
+from app.config.settings import ALGORITHM, SECRET_KEY
 from app.models.user_model import UserModel
 from app.utils.util import verify_password
-
-env_yml = setting.get_config_env()
-SECRET_KEY = env_yml.get("JWT_PRIVATE_KEY")
-ALGORITHM = env_yml.get("JWT_ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = env_yml.get("ACCESS_TOKEN_EXPIRES_IN")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def authenticate_user(data, password: str):
-    user = data
+def authenticate_user(user, password: str):
     if not user:
         return False
     if not verify_password(password, user.hash_password):
@@ -43,11 +38,7 @@ def create_access_token(
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+    credentials_exception = UnAuthorizedException(message="Not Authentication")
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")

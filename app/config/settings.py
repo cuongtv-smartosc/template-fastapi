@@ -14,6 +14,13 @@ API_PREFIX = "/api"
 
 BASE_PATH = os.getenv("BASE_PATH")
 
+SECRET_KEY = os.getenv(
+    "JWT_PRIVATE_KEY",
+    "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS",
+)
+ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRES_IN", "60")
+
 
 class Settings:
     def __init__(self, env):
