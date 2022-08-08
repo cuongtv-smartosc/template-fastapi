@@ -3,7 +3,6 @@ from typing import List
 from fastapi import Depends
 from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
-
 from app.common.database import get_db
 from app.common.logger import logger
 from app.crud.charger_model_crud import charger_model_crud
