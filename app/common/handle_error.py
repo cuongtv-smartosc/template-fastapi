@@ -12,9 +12,9 @@ class ErrorMessages:
 
 class APIException(Exception):
     def __init__(
-            self,
-            http_status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            message=ErrorMessages.default,
+        self,
+        http_status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        message=ErrorMessages.default,
     ):
         self.http_status = http_status
         self.message = message
@@ -25,7 +25,8 @@ class APIException(Exception):
 class NotFoundException(APIException):
     def __init__(self, message=ErrorMessages.not_found):
         super().__init__(
-            http_status=status.HTTP_404_NOT_FOUND, message=message
+            http_status=status.HTTP_404_NOT_FOUND,
+            message=message,
         )
 
     def __str__(self):
@@ -33,10 +34,10 @@ class NotFoundException(APIException):
 
 
 class BadRequestException(APIException):
-
     def __init__(self, message=ErrorMessages.bad_request):
         super().__init__(
-            http_status=status.HTTP_400_BAD_REQUEST, message=message
+            http_status=status.HTTP_400_BAD_REQUEST,
+            message=message,
         )
 
     def __str__(self):

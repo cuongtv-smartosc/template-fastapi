@@ -1,10 +1,12 @@
 from fastapi.testclient import TestClient
 
+from app.common.database import get_db
 from app.config import settings
 from main import app
-from tests.base_test import BaseTestCase
+from tests.base_test import BaseTestCase, _get_test_db
 from tests.factories.charger_model import ChargerModelFactory
 
+app.dependency_overrides[get_db] = _get_test_db
 client = TestClient(app)
 
 
