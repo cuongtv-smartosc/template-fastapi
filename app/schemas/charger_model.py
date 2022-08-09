@@ -1,12 +1,14 @@
-from pydantic import BaseModel, constr, validator
-
+from pydantic import BaseModel, constr, validator, Field
 from app.common.database import SessionLocal
 from app.models.charger_model import ChargerModel
 
-
+# Shared properties
 class ChargerModelBase(BaseModel):
     name: constr(min_length=3, max_length=20, strip_whitespace=True)
     owner: constr(min_length=1, max_length=20)
+    name: str = Field(description="The ID that  charger")
+    model: str = Field(description="Charger model")
+
 
 
 # Properties to receive on item creation
