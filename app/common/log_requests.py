@@ -21,5 +21,5 @@ class LogRequest:
             f"body={self.req_body} "
             f"ip={self.req_ip} "
             f"status={self.res_status} "
-            f"duration={self.duration}ms"
+            f"duration={self.duration}s"
         )
