@@ -1,10 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 # Shared properties
 class ChargerModelBase(BaseModel):
-    name: str = Field(description="The ID that  charger")
-    model: str = Field(description="Charger model")
+    name: str = None
+    model: None | str = None
 
 
 # Properties to receive on item creation

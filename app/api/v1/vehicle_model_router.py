@@ -1,8 +1,9 @@
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 
 from app.common.database import get_db
+from app.common.logger import logger
 from app.common.handle_error import BadRequestException, NotFoundException
 from app.crud.vehicle_model_crud import vehicle_model_crud
 from app.schemas.electric_vehicle_model import VehicleModelCreate
@@ -13,8 +14,9 @@ vehicle_model = APIRouter()
 
 # api get list
 @vehicle_model.get("/")
-async def get_list_models(db: Session = Depends(get_db)):
+async def get_list_models(request: Request, db: Session = Depends(get_db)):
     results = await vehicle_model_crud.list(db)
+    # logger.log_request(request)
     return resp.success(data=results)
 
 

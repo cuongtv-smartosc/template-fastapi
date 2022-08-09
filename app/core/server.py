@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
@@ -19,6 +19,7 @@ def create_app() -> FastAPI:
         description=env_yml.get("DESCRIPTION"),
         version=env_yml.get("VERSION"),
         docs_url=None,
+        dependencies=[Depends(get_request_body)]
     )
 
     register_cors(app, env_yml)
@@ -74,3 +75,9 @@ def register_exception(app: FastAPI) -> None:
             status_code=exc.http_status,
             content={"message": f"{exc.message}"},
         )
+
+
+async def get_request_body(request: Request):
+    if await request.body():
+        req_body = await request.json()
+        request.state.req_body = req_body

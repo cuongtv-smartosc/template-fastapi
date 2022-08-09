@@ -3,6 +3,8 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from app.common.database import engine
+from app.common.logger import logger
 
 ModelType = TypeVar("ModelType", bound=BaseModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -21,7 +23,17 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
 
     async def list(self, db: Session) -> List[ModelType]:
-        return db.query(self.model).all()
+
+        data = []
+        logger.log_query()
+        with engine.connect() as con:
+            results = con.execute(
+                "SELECT * FROM EV.`tabElectric Vehicle Model`")
+            for rs in results.fetchall():
+                data.append(dict(zip(results.keys(), rs)))
+
+        return data
+        # return db.query(self.model).all()
 
     async def get(self, db: Session, id: Any) -> Optional[ModelType]:
         return db.query(self.model).filter(self.model.name == id).first()
