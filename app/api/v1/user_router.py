@@ -10,7 +10,6 @@ from app.services.auth import get_current_user, get_password_hash
 user_router = APIRouter()
 
 
-
 @user_router.get("/")
 async def get_users(current_user: UserModel = Depends(get_current_user),
                     db: Session = Depends(get_db), ):
