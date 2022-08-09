@@ -15,9 +15,6 @@ vehicle_model = APIRouter()
 @vehicle_model.get("/")
 async def get_list_models(db: Session = Depends(get_db)):
     results = await vehicle_model_crud.list(db)
-    # print(results)
-    # data = jsonable_encoder(results)
-    # print(data)
     return resp.success(data=results)
 
 
