@@ -18,6 +18,7 @@ def create_app() -> FastAPI:
         title=env_yml.get("TITLE"),
         description=env_yml.get("DESCRIPTION"),
         version=env_yml.get("VERSION"),
+        docs_url=None,
         dependencies=[Depends(get_request_body)]
     )
 
