@@ -13,11 +13,12 @@ class Token(BaseModel):
 
 class UserBase(BaseModel):
     username: str = None
-    hash_password: str = None
     name: str = None
+    hash_password: str = None
 
 
 class UserCreate(UserBase):
+
     pass
 
 
