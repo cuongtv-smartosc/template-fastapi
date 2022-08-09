@@ -17,7 +17,7 @@ async def login(data: UserLogin, db: Session = Depends(get_db)):
     user_data = await user_crud.get(db, data.username)
     user = authenticate_user(user_data, data.password)
     if not user:
-        raise UnAuthorizedException(message="Not Authentication")
+        raise UnAuthorizedException(message="Incorrect username or password")
     access_token_expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
