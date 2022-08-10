@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import Depends, status
+from fastapi import Depends
 from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 
@@ -23,27 +23,10 @@ async def list_charger_model(db: Session = Depends(get_db)):
     return resp.success(data=results)
 
 
-@charger_model_router.post(
-    "/create",
-    response_model=List[ChargerModelResponse],
-    responses={
-        status.HTTP_422_UNPROCESSABLE_ENTITY: {
-            "description": "docs response api HTTP_422_UNPROCESSABLE_ENTITY"
-        },
-        status.HTTP_201_CREATED: {
-            "content": {
-                "application/json": {
-                    # "example": {"id": "bar", "value": "The bar tenders"}
-                }
-            },
-        },
-    },
-    status_code=status.HTTP_201_CREATED,
-    name="Name api",
-)
-async def create_charger_model(charger_model: ChargerModelCreate):
-    """
-    This endpoint interacts with the create charger-model \n
-    """
-    logger.info("endpoint create charger-model")
-    return resp.success(data=charger_model)
+@charger_model_router.post("/create")
+async def create_charger(
+    charger: ChargerModelCreate, db: Session = Depends(get_db)
+) -> str:
+    payload = {**charger.dict()}
+    await charger_model_crud.create(db=db, obj_in=payload)
+    return payload

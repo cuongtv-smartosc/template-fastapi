@@ -1,17 +1,26 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, constr, validator
+
+from app.common.util import validate_unique
+from app.models.charger_model import ChargerModel
 
 
 # Shared properties
 class ChargerModelBase(BaseModel):
-    name: str = Field(description="The ID that  charger")
+    name: constr(min_length=3, max_length=20, strip_whitespace=True) = Field(
+        description="The ID that  charger"
+    )
     model: str = Field(description="Charger model")
 
 
 # Properties to receive on item creation
 class ChargerModelCreate(ChargerModelBase):
-    """This is the serializer used for POST/PATCH requests"""
+    @validator("name")
+    def unique_check_name(cls, v):
+        return validate_unique(ChargerModel, "name", name=v)
 
-    pass
+    @validator("model")
+    def unique_check_model(cls, v):
+        return validate_unique(ChargerModel, "model", model=v)
 
 
 # Properties to return to client

@@ -9,7 +9,7 @@ cd template-fastapi
 ![Overall Architecture](images/ev.png)
 
 ## To do list
-- [ ] Validate request using pydantic(built-in) (phongtt)
+- [x] Validate request using pydantic(built-in) (phongtt)
 - [ ] Authentication using built-in jwt (linh)
 - [ ] Custom response model using built-in pydantic (tranhnv)
 - [x] Handle error exception (daocm)
