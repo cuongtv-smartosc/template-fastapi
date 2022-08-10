@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, constr, validator
 
-from app.common.database import SessionLocal
+from app.common.util import validate_unique
 from app.models.charger_model import ChargerModel
 
 
@@ -15,22 +15,12 @@ class ChargerModelBase(BaseModel):
 # Properties to receive on item creation
 class ChargerModelCreate(ChargerModelBase):
     @validator("name")
-    def unique_check_name(self, v):
-        session = SessionLocal()
-        q = session.query(ChargerModel.name).filter_by(name=v).scalar()
-        session.close()
-        if q:
-            raise ValueError("Model name already exist")
-        return v
+    def unique_check_name(cls, v):
+        return validate_unique(ChargerModel, "name", name=v)
 
     @validator("model")
-    def unique_check_model(self, v):
-        session = SessionLocal()
-        q = session.query(ChargerModel.model).filter_by(model=v).scalar()
-        session.close()
-        if q:
-            raise ValueError("Model already exist")
-        return v
+    def unique_check_model(cls, v):
+        return validate_unique(ChargerModel, "model", model=v)
 
 
 # Properties to return to client

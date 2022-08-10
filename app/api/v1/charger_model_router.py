@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from fastapi import Depends
@@ -29,6 +28,5 @@ async def create_charger(
     charger: ChargerModelCreate, db: Session = Depends(get_db)
 ) -> str:
     payload = {**charger.dict()}
-    payload.update({"creation": datetime.now(), "modified": datetime.now()})
     await charger_model_crud.create(db=db, obj_in=payload)
     return payload
