@@ -1,11 +1,6 @@
-from fastapi.testclient import TestClient
-
 from app.config import settings
-from main import app
 from tests.base_test import BaseTestCase
 from tests.factories.charger_model import ChargerModelFactory
-
-client = TestClient(app)
 
 
 class TestChargerModel(BaseTestCase):
@@ -14,7 +9,7 @@ class TestChargerModel(BaseTestCase):
         ChargerModelFactory.create()
 
     def test_list(self):
-        response = client.get(f"{settings.API_PREFIX}/charger-models")
+        response = self.client.get(f"{settings.API_PREFIX}/charger-models")
         res = response.json()
         assert response.status_code == 200
         assert len(res["data"]) == 1
