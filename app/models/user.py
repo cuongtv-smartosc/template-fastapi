@@ -15,3 +15,4 @@ class UserModel(DBBaseCustom):
     creation = Column(DATETIME)
     modified = Column(DATETIME)
     owner = Column(String(255))
+    role_name = Column(String(100))
