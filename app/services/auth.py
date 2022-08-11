@@ -1,16 +1,17 @@
 from datetime import datetime, timedelta
 from typing import Union
 from fastapi import Depends
-from fastapi.encoders import jsonable_encoder
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from app.common.database import SessionLocal
-from app.common.handle_error import UnAuthorizedException
+from sqlalchemy.orm import Session
+from app.common.database import get_db
+from app.common.handle_error import UnAuthorizedException, NotFoundException
+from app.config import settings
 from app.config.settings import ALGORITHM, SECRET_KEY
-from app.models.user import UserModel
+from app.crud.user_crud import user_crud
 from passlib.context import CryptContext
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_PREFIX}/authentication/login")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -56,7 +57,8 @@ def create_access_token(
     return encoded_jwt
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme),
+                           db: Session = Depends(get_db),):
     """
         This function is used for getting authenticated user.
     """
@@ -67,10 +69,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             raise UnAuthorizedException()
     except JWTError:
         raise UnAuthorizedException()
-    db = SessionLocal()
-    res = db.query(UserModel).all()
-    users = jsonable_encoder(res)
-    db.close()
-    for user in users:
-        if user["username"] == username:
-            return user
+    user = await user_crud.get(db, username)
+    if not user:
+        raise NotFoundException()
+    return user

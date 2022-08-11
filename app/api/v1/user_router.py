@@ -22,13 +22,13 @@ async def get_users(current_user: UserModel = Depends(get_current_user),
 
 @user_router.post("/create")
 async def create_user(
-        User: UserCreate,
+        user: UserCreate,
         current_user: UserModel = Depends(get_current_user),
         db: Session = Depends(get_db),
 ):
     """
         This endpoint interacts with the creation of user
     """
-    User.__dict__['hash_password'] = get_password_hash(User.__dict__['hash_password'])
-    await user_crud.create(db=db, obj_in=User)
-    return resp.success(data=User)
+    user.hash_password = get_password_hash(user.hash_password)
+    await user_crud.create(db=db, obj_in=user)
+    return resp.success(data=user)
