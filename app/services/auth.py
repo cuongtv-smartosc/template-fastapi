@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 from typing import Union
-from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, Security
+from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from app.common.database import get_db
-from app.common.handle_error import UnAuthorizedException, NotFoundException
+from app.common.handle_error import UnAuthorizedException
 from app.config import settings
 from app.config.settings import ALGORITHM, SECRET_KEY
 from app.crud.user_crud import user_crud
@@ -41,8 +41,8 @@ def authenticate_user(user, password: str):
 
 
 def create_access_token(
-    data: dict,
-    expires_delta: Union[timedelta, None] = None,
+        data: dict,
+        expires_delta: Union[timedelta, None] = None,
 ):
     """
         this function is used for creating access token as jwt token
@@ -57,8 +57,9 @@ def create_access_token(
     return encoded_jwt
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme),
-                           db: Session = Depends(get_db),):
+async def get_current_user(security_scopes: SecurityScopes,
+                           token: str = Depends(oauth2_scheme),
+                           db: Session = Depends(get_db), ):
     """
         This function is used for getting authenticated user.
     """
@@ -71,5 +72,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
         raise UnAuthorizedException()
     user = await user_crud.get(db, username)
     if not user:
-        raise NotFoundException()
+        raise UnAuthorizedException()
+    if security_scopes.scopes and not user.role_name:
+        raise UnAuthorizedException(message="Not enough permissions")
+    if (
+            security_scopes.scopes
+            and user.role_name not in security_scopes.scopes
+    ):
+        raise UnAuthorizedException(message="Not enough permissions")
     return user

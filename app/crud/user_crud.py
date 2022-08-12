@@ -1,11 +1,10 @@
-from sqlalchemy.orm import Session
 from app.crud.base_crud import CRUDBase
-from app.models.user import UserModel
-from app.schemas.user import UserBase, UserCreate
+from app.models.user import User
+from app.schemas.user import UserCreate
 
 
-class UserCrud(CRUDBase[UserBase, UserCreate, UserCreate]):
+class UserCrud(CRUDBase[User, UserCreate, UserCreate]):
     pass
 
 
-user_crud = UserCrud(UserModel)
+user_crud = UserCrud(User)

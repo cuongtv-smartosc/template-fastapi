@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Security
 from sqlalchemy.orm import Session
 from app.common.database import get_db
 from app.crud.user_crud import user_crud
-from app.models.user import UserModel
+from app.models.user import User
 from app.schemas.response import resp
 from app.schemas.user import UserCreate
 from app.services.auth import get_current_user, get_password_hash
@@ -11,7 +11,9 @@ user_router = APIRouter()
 
 
 @user_router.get("/")
-async def get_users(current_user: UserModel = Depends(get_current_user),
+async def get_users(current_user: User = Security(
+                    get_current_user,
+                    scopes=['admin', 'manager'],),
                     db: Session = Depends(get_db), ):
     """
         This endpoint get users
@@ -23,7 +25,7 @@ async def get_users(current_user: UserModel = Depends(get_current_user),
 @user_router.post("/create")
 async def create_user(
         user: UserCreate,
-        current_user: UserModel = Depends(get_current_user),
+        current_user: User = Depends(get_current_user),
         db: Session = Depends(get_db),
 ):
     """

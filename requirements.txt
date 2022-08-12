@@ -30,3 +30,13 @@ typer==0.6.1
 typing_extensions==4.3.0
 urllib3==1.26.10
 uvicorn==0.18.2
+python-jose==3.3.0
+passlib==1.7.4
+rsa==4.9
+pyasn1==0.4.8
+ecdsa==0.18.0
+cffi==1.15.1
+six==1.16.0
+pycparser==2.21
+cryptography==37.0.4
+bcrypt==3.2.2
