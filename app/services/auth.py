@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 from typing import Union
-from fastapi import Depends, Security
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from app.common.database import get_db
-from app.common.handle_error import UnAuthorizedException
+from app.common.handle_error import UnAuthorizedException, UnAuthenticatedException
 from app.config import settings
 from app.config.settings import ALGORITHM, SECRET_KEY
 from app.crud.user_crud import user_crud
@@ -69,10 +69,10 @@ async def get_current_user(security_scopes: SecurityScopes,
         if username is None:
             raise UnAuthorizedException()
     except JWTError:
-        raise UnAuthorizedException()
+        raise UnAuthenticatedException
     user = await user_crud.get(db, username)
     if not user:
-        raise UnAuthorizedException()
+        raise UnAuthenticatedException()
     if security_scopes.scopes and not user.role_name:
         raise UnAuthorizedException(message="Not enough permissions")
     if (
