@@ -16,7 +16,7 @@ cd template-fastapi
 - [ ] Setup config get from os env (namvh)
 - [x] Testing and coverage using sqlalchemy (cuongtv)
 - [ ] Logging request params and db query (namvh)
-- [ ] Custom built-in swagger with more information (dungnv)
+- [x] Custom built-in swagger with more information (dungnv)
 - [x] CORS setup (daocm)
 - [x] Install Pre-commit to setup convention (cuongtv)
 - [x] CORS setup (daocm)
