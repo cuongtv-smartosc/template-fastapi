@@ -3,7 +3,7 @@ from datetime import datetime
 from app.common.database import DBBaseCustom
 
 
-class VehicleModel(DBBaseCustom):
+class VehicleDivision(DBBaseCustom):
     __tablename__ = "tabElectric Vehicle Division"
     name = Column(String(255), unique=True, index=True, primary_key=True)
     creation = Column(DateTime,

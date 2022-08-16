@@ -20,3 +20,4 @@ class WorkShiftCreate(WorkShiftBase):
     """This is the serializer used for POST/PATCH requests"""
 
     pass
+
