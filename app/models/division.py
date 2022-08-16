@@ -6,9 +6,8 @@ from app.common.database import DBBaseCustom
 
 
 class ChargerModel(DBBaseCustom):
-    __tablename__ = "tabCharger Model"
+    __tablename__ = "tabDivision"
     name = Column(String(255), unique=True, index=True, primary_key=True)
-    model = Column(String(255))
     creation = Column(DateTime, nullable=False, default=datetime.utcnow())
     modified = Column(
         DateTime,
@@ -18,3 +17,5 @@ class ChargerModel(DBBaseCustom):
     )
     modified_by = Column(String(255))
     owner = Column(String(255))
+    id = Column(String(255))
+    division_name = Column(String(255))

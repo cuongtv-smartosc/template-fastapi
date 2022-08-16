@@ -55,10 +55,10 @@ class MethodNotAllowed(APIException):
 
 
 class UnAuthorizedException(APIException):
-
     def __init__(self, message=ErrorMessages.un_authorized):
         super().__init__(
-            http_status=status.HTTP_401_UNAUTHORIZED, message=message
+            http_status=status.HTTP_401_UNAUTHORIZED,
+            message=message,
         )
 
     def __str__(self):
