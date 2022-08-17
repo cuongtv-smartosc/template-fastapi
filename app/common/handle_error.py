@@ -8,13 +8,14 @@ class ErrorMessages:
     wrong = "Something went wrong"
     not_found = "Not found"
     method_not_allow = "Method not allowed"
+    un_authenticated = "Unauthenticated"
 
 
 class APIException(Exception):
     def __init__(
-        self,
-        http_status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        message=ErrorMessages.default,
+            self,
+            http_status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            message=ErrorMessages.default,
     ):
         self.http_status = http_status
         self.message = message
@@ -54,7 +55,7 @@ class MethodNotAllowed(APIException):
         return "Method not allowed"
 
 
-class UnAuthorizedException(APIException):
+class UnAuthenticatedException(APIException):
 
     def __init__(self, message=ErrorMessages.un_authorized):
         super().__init__(
@@ -62,4 +63,15 @@ class UnAuthorizedException(APIException):
         )
 
     def __str__(self):
-        return "Not Authentication"
+        return "Unauthenticated"
+
+
+class UnAuthorizedException(APIException):
+
+    def __init__(self, message=ErrorMessages.un_authorized):
+        super().__init__(
+            http_status=status.HTTP_403_FORBIDDEN, message=message
+        )
+
+    def __str__(self):
+        return "Unauthorized"

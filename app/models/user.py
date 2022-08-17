@@ -3,7 +3,7 @@ from sqlalchemy import DATETIME, Column, String
 from app.common.database import DBBaseCustom
 
 
-class UserModel(DBBaseCustom):
+class User(DBBaseCustom):
     """This is an example model for your application.
     Replace with the *things* you do in your application.
     """
