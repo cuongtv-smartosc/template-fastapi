@@ -5,7 +5,6 @@ class CusTomerBase(BaseModelSchemas):
     id: str = None
 
 
-
 class CusTomerResponse(CusTomerBase):
     """This the serializer exposed on the API"""
 

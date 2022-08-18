@@ -1,4 +1,5 @@
-from pydantic import  Field, constr, validator
+from pydantic import Field, constr, validator
+
 from app.common.util import validate_unique
 from app.models.charger_model import ChargerModel
 from app.schemas.base import BaseModelSchemas
@@ -13,7 +14,6 @@ class ChargerModelBase(BaseModelSchemas):
 
 # Properties to receive on item creation
 class ChargerModelCreate(ChargerModelBase):
-
     @validator("name")
     def unique_check_model(cls, v):
         return validate_unique(ChargerModel, "name", name=v)

@@ -1,9 +1,9 @@
-from sqlalchemy import Column, String, DateTime, Date, Float, ForeignKey
 from datetime import datetime
+
+from sqlalchemy import Column, Date, DateTime, Float, ForeignKey, String
+
 from app.common.database import DBBaseCustom
 from app.models.charger import Charger
-
-
 from app.models.electric_vehicle_model import VehicleModel
 from app.models.sale_information import SaleInformation
 
@@ -11,13 +11,17 @@ from app.models.sale_information import SaleInformation
 class Vehicle(DBBaseCustom):
     __tablename__ = "electric_vehicle"
     id = Column(String(255), unique=True, index=True, primary_key=True)
-    creation = Column(DateTime,
-                      nullable=False,
-                      default=datetime.utcnow(), )
-    modified = Column(DateTime,
-                      nullable=False,
-                      default=datetime.utcnow(),
-                      onupdate=datetime.utcnow(), )
+    creation = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow(),
+    )
+    modified = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow(),
+        onupdate=datetime.utcnow(),
+    )
     modified_by = Column(String(255))
     owner = Column(String(255))
     vehicle_number = Column(String(255))

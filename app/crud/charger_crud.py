@@ -3,7 +3,7 @@ from app.models.charger import Charger
 from app.schemas.charger import ChargerCreate
 
 
-class ChargerCrud(CRUDBase[Charger, ChargerCreate , ChargerCreate]):
+class ChargerCrud(CRUDBase[Charger, ChargerCreate, ChargerCreate]):
     pass
 
 
