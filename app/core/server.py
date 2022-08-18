@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     register_router(app)
     register_exception(app)
 
-    # create_tables()
+    create_tables()
 
     return app
 
