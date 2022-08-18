@@ -8,7 +8,7 @@ class UserModel(DBBaseCustom):
     Replace with the *things* you do in your application.
     """
 
-    __tablename__ = "User"
+    __tablename__ = "user"
     name = Column(String(255), unique=True, index=True, primary_key=True)
     username = Column(String(255), unique=True, index=True)
     hash_password = Column(String(255))

@@ -1,26 +1,22 @@
-from pydantic import BaseModel, Field, constr, validator
-
+from pydantic import  Field, constr, validator
 from app.common.util import validate_unique
 from app.models.charger_model import ChargerModel
+from app.schemas.base import BaseModelSchemas
 
 
-# Shared properties
-class ChargerModelBase(BaseModel):
-    name: constr(min_length=3, max_length=20, strip_whitespace=True) = Field(
+class ChargerModelBase(BaseModelSchemas):
+    id: constr(min_length=3, max_length=20, strip_whitespace=True) = Field(
         description="The ID that  charger"
     )
-    model: str = Field(description="Charger model")
+    name: str = Field(description="Charger model")
 
 
 # Properties to receive on item creation
 class ChargerModelCreate(ChargerModelBase):
-    @validator("name")
-    def unique_check_name(cls, v):
-        return validate_unique(ChargerModel, "name", name=v)
 
-    @validator("model")
+    @validator("name")
     def unique_check_model(cls, v):
-        return validate_unique(ChargerModel, "model", model=v)
+        return validate_unique(ChargerModel, "name", name=v)
 
 
 # Properties to return to client

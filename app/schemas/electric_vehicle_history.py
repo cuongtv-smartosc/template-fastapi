@@ -1,18 +1,17 @@
 from app.schemas.base import BaseModelSchemas
 
 
-class VehicleModelBase(BaseModelSchemas):
+class VehicleHistoryBase(BaseModelSchemas):
     id: str = None
-    name: str = None
 
 
-class VehicleModelResponse(VehicleModelBase):
+class VehicleHistoryResponse(VehicleHistoryBase):
     """This the serializer exposed on the API"""
 
     pass
 
 
-class VehicleModelCreate(VehicleModelBase):
+class VehicleHistoryCreate(VehicleHistoryBase):
     """This is the serializer used for POST/PATCH requests"""
 
     pass
