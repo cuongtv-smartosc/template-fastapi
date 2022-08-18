@@ -1,13 +1,13 @@
 from app.crud.base_crud import CRUDBase
 from app.models.electric_vehicle import Vehicle
-from app.schemas.electric_vehicle import VehicleCreate
+from app.schemas.electric_vehicle import VehicleCreate, VehicleResponse
 
 
 class VehicleCrud(
     CRUDBase[
         Vehicle,
         VehicleCreate,
-        VehicleCreate,
+        VehicleResponse,
     ]
 ):
     pass

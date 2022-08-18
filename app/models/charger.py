@@ -1,13 +1,14 @@
 from datetime import datetime
 
 from sqlalchemy import Column, DateTime, String
+from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 
 
 class Charger(DBBaseCustom):
     __tablename__ = "tabCharger"
-    name = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(String(255), unique=True, index=True, primary_key=True)
     creation = Column(DateTime, nullable=False, default=datetime.utcnow())
     modified = Column(
         DateTime,
@@ -20,4 +21,5 @@ class Charger(DBBaseCustom):
     serial_number = Column(String(255))
     model = Column(String(255))
     import_date = Column(DateTime)
-    charger_pdi_status = Column(DateTime)
+    charger_pdi_status = Column(String(255))
+    electric_vehicle = relationship('Vehicle', backref='tabCharger')

@@ -5,11 +5,10 @@ from app.common.database import DBBaseCustom
 
 class VehicleInspection(DBBaseCustom):
     __tablename__ = "tabElectric Vehicle Inspection"
-    name = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(String(255), unique=True, index=True, primary_key=True)
     creation = Column(DateTime,
                       nullable=False,
                       default=datetime.utcnow(), )
-    description = Column(String(255))
     modified = Column(DateTime,
                       nullable=False,
                       default=datetime.utcnow(),

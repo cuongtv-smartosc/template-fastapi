@@ -6,7 +6,7 @@ from app.models.charger_model import ChargerModel
 
 # Shared properties
 class ChargerModelBase(BaseModel):
-    name: constr(min_length=3, max_length=20, strip_whitespace=True) = Field(
+    id: constr(min_length=3, max_length=20, strip_whitespace=True) = Field(
         description="The ID that  charger"
     )
     model: str = Field(description="Charger model")
@@ -14,9 +14,9 @@ class ChargerModelBase(BaseModel):
 
 # Properties to receive on item creation
 class ChargerModelCreate(ChargerModelBase):
-    @validator("name")
+    @validator("id")
     def unique_check_name(cls, v):
-        return validate_unique(ChargerModel, "name", name=v)
+        return validate_unique(ChargerModel, "id", name=v)
 
     @validator("model")
     def unique_check_model(cls, v):

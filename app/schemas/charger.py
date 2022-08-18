@@ -1,15 +1,12 @@
-from pydantic import BaseModel, Field, constr, validator
-
+from pydantic import BaseModel
 from app.common.util import validate_unique
 from app.models.charger_model import ChargerModel
 
 
 # Shared properties
 class ChargerBase(BaseModel):
-    name: str = None
+    id: str = None
     description: None | str = None
-    creation: str = None
-    modified: str = None
     modified_by: str = None
     owner: str = None
 

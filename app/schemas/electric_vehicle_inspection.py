@@ -2,8 +2,7 @@ from pydantic import BaseModel
 
 
 class VehicleInspectionBase(BaseModel):
-    name: str = None
-    description: None | str = None
+    id: str = None
     creation: str = None
     modified: str = None
     modified_by: str = None
