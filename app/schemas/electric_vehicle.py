@@ -7,6 +7,7 @@ class VehicleBase(BaseModelSchemas):
 
 class VehicleResponse(VehicleBase):
     """This the serializer exposed on the API"""
+
     vehicle_number: str = None
     model_id: str = None
     edge_id: str = None
@@ -16,4 +17,5 @@ class VehicleResponse(VehicleBase):
 
 class VehicleCreate(VehicleBase):
     """This is the serializer used for POST/PATCH requests"""
+
     pass

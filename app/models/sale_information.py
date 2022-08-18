@@ -1,5 +1,7 @@
-from sqlalchemy import Column, String, DateTime, Date, Integer, ForeignKey
 from datetime import datetime
+
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String
+
 from app.common.database import DBBaseCustom
 from app.models.customer import Customer
 
@@ -7,13 +9,17 @@ from app.models.customer import Customer
 class SaleInformation(DBBaseCustom):
     __tablename__ = "sale_information"
     id = Column(String(255), unique=True, index=True, primary_key=True)
-    creation = Column(DateTime,
-                      nullable=False,
-                      default=datetime.utcnow(), )
-    modified = Column(DateTime,
-                      nullable=False,
-                      default=datetime.utcnow(),
-                      onupdate=datetime.utcnow(), )
+    creation = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow(),
+    )
+    modified = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow(),
+        onupdate=datetime.utcnow(),
+    )
     modified_by = Column(String(255))
     owner = Column(String(255))
     sale_order_number = Column(String(255))

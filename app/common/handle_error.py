@@ -13,9 +13,9 @@ class ErrorMessages:
 
 class APIException(Exception):
     def __init__(
-            self,
-            http_status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            message=ErrorMessages.default,
+        self,
+        http_status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        message=ErrorMessages.default,
     ):
         self.http_status = http_status
         self.message = message
@@ -56,10 +56,10 @@ class MethodNotAllowed(APIException):
 
 
 class UnAuthenticatedException(APIException):
-
     def __init__(self, message=ErrorMessages.un_authorized):
         super().__init__(
-            http_status=status.HTTP_401_UNAUTHORIZED, message=message
+            http_status=status.HTTP_401_UNAUTHORIZED,
+            message=message,
         )
 
     def __str__(self):
@@ -67,10 +67,10 @@ class UnAuthenticatedException(APIException):
 
 
 class UnAuthorizedException(APIException):
-
     def __init__(self, message=ErrorMessages.un_authorized):
         super().__init__(
-            http_status=status.HTTP_403_FORBIDDEN, message=message
+            http_status=status.HTTP_403_FORBIDDEN,
+            message=message,
         )
 
     def __str__(self):

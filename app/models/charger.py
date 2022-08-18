@@ -1,6 +1,7 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, String, ForeignKey
-from sqlalchemy.orm import relationship
+
+from sqlalchemy import Column, DateTime, ForeignKey, String
+
 from app.common.database import DBBaseCustom
 from app.models.charger_model import ChargerModel
 
