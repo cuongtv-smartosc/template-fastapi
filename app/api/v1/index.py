@@ -4,7 +4,6 @@ from fastapi.routing import APIRouter
 from sqlalchemy.orm import Session
 
 from app.common.database import get_db
-from app.common.util import analytic_base_query
 from app.schemas.response import resp
 
 router_index = APIRouter()
