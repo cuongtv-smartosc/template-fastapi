@@ -9,7 +9,7 @@ class UserModel(DBBaseCustom):
     """
 
     __tablename__ = "user"
-    name = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(String(255), unique=True, index=True, primary_key=True)
     username = Column(String(255), unique=True, index=True)
     hash_password = Column(String(255))
     creation = Column(DATETIME)
