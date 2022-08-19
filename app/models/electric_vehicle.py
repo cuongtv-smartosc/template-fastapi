@@ -1,7 +1,6 @@
 from datetime import datetime
-
 from sqlalchemy import Column, Date, DateTime, Float, ForeignKey, String
-
+from sqlalchemy.orm import relationship
 from app.common.database import DBBaseCustom
 from app.models.charger import Charger
 from app.models.electric_vehicle_model import VehicleModel
@@ -43,3 +42,6 @@ class Vehicle(DBBaseCustom):
     hr = Column(String(255))
     sale_id = Column(String(255), ForeignKey(SaleInformation.id))
     charger_id = Column(String(255), ForeignKey(Charger.id))
+    vehicle_division = relationship('VehicleDivision', backref='electric_vehicle', lazy=False)
+    work_shift = relationship('WorkShift', backref='electric_vehicle', lazy=False)
+    vehicle_history = relationship('VehicleHistory', backref='electric_vehicle', lazy=False)

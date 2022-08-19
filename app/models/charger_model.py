@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Column, DateTime, String
+from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 
@@ -16,3 +17,4 @@ class ChargerModel(DBBaseCustom):
         default=datetime.utcnow(),
         onupdate=datetime.utcnow(),
     )
+    charger = relationship('Charger', backref='charger_model', lazy=False)

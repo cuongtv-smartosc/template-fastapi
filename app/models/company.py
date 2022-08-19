@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Column, DateTime, String
+from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 
@@ -22,3 +23,4 @@ class Company(DBBaseCustom):
     modified_by = Column(String(255))
     owner = Column(String(255))
     name = Column(String(255))
+    customer = relationship('Customer', backref='company', lazy=False)

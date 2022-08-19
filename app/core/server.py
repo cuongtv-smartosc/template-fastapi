@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 from app.common.database import DBBaseCustom, engine
 from app.common.handle_error import APIException
 from app.config.settings import setting
+from app.models.electric_vehicle_history import VehicleHistory
 from app.v1_router import api_v1_router
 
 

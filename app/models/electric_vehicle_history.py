@@ -1,8 +1,7 @@
 from datetime import datetime
-
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-
+from sqlalchemy import Column, DateTime, ForeignKey, String, Integer
 from app.common.database import DBBaseCustom
+from app.models.division import Division
 from app.models.electric_vehicle import Vehicle
 
 
