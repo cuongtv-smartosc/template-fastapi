@@ -1,0 +1,18 @@
+  EV-Forklift[m
+  Validate[m
+  authentication[m
+* [32mmain[m
+  [31mremotes/origin/EV-Forklift[m
+  [31mremotes/origin/HEAD[m -> origin/main
+  [31mremotes/origin/Validate[m
+  [31mremotes/origin/authenication[m
+  [31mremotes/origin/authentication[m
+  [31mremotes/origin/authentication_fastapi[m
+  [31mremotes/origin/authorization[m
+  [31mremotes/origin/built-in-swagger[m
+  [31mremotes/origin/fix_set_env_pytest[m
+  [31mremotes/origin/log_request[m
+  [31mremotes/origin/main[m
+  [31mremotes/origin/query_test[m
+  [31mremotes/origin/response_model[m
+  [31mremotes/origin/rewrite_model[m
