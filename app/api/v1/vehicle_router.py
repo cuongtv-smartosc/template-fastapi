@@ -15,11 +15,10 @@ vehicle_router = APIRouter()
 
 
 @vehicle_router.get("/")
-async def get_vehicles(data, db: Session = Depends(get_db)):
-    params = json.loads(data)
-    filters = params.get('filter')
-    page_size = params.get('pageSize')
-    current_page = params.get('currentPage')
+async def get_vehicles(filter=None, pageSize=None, currentPage=None, order_by=None, db: Session = Depends(get_db)):
+    filters = filter
+    page_size = int(pageSize)
+    current_page = currentPage
     query = db.query(Vehicle.vehicle_number, Vehicle.id,
                      Vehicle.model_id,
                      Vehicle.edge_id,
@@ -29,13 +28,13 @@ async def get_vehicles(data, db: Session = Depends(get_db)):
     query = vehicles_list_base_filter(filters, Vehicle.vehicle_number, query)
     total = query.count()
     edges = [i.edge_id for i in query.all()]
-    order_by = query.order_by(Vehicle.vehicle_number.desc())
-    if params.get("order_by") == "asc":
-        order_by = query.order_by(Vehicle.vehicle_number.asc())
-    elif params.get("order_by") == "customer_name":
-        order_by = query.orderby(Vehicle.customer_name.asc())
+    query = query.order_by(Vehicle.vehicle_number.desc())
+    if order_by == "asc":
+        query = query.order_by(Vehicle.vehicle_number.asc())
+    elif order_by == "customer_name":
+        query = query.orderby(Vehicle.customer_name.asc())
 
-    query = order_by.limit(page_size) \
+    query = query.limit(page_size) \
         .offset((int(current_page) - 1) * int(page_size)) \
         .all()
     results = {

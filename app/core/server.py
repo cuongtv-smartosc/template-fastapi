@@ -26,9 +26,9 @@ def create_app() -> FastAPI:
     register_router(app)
     register_exception(app)
 
-    @app.on_event("startup")
-    async def startup_event():
-        DBBaseCustom.metadata.create_all(bind=engine)
+    # @app.on_event("startup")
+    # async def startup_event():
+    #     DBBaseCustom.metadata.create_all(bind=engine)
 
     return app
 
