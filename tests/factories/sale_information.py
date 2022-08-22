@@ -10,5 +10,5 @@ class SaleInformationFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session_persistence = "commit"
 
     id = "S1"
-    sale_type = factory.fuzzy.FuzzyText("sale_type")
+    sale_type = "1"
     customer_id = "C1"

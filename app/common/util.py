@@ -71,3 +71,25 @@ def vehicles_list_base_filter(params, group_by, query):
         query = query.group_by(group_by)
 
     return query
+
+
+def get_list_coordinate_from_geolocation_type(coordinates=None):
+    if not coordinates:
+        return []
+
+    try:
+        coordinates = json.loads(coordinates)
+        if not isinstance(coordinates, dict):
+            return []
+        features = coordinates.get("features", [])
+        if not features:
+            return []
+
+        feature = features[0]
+        result = feature.get("geometry", {}).get("coordinates", [])
+        if not result:
+            return []
+        return result[0]
+
+    except:
+        return []

@@ -1,6 +1,7 @@
 from app.config import settings
 from tests.base_test import BaseTestCase
 from tests.factories.charger import ChargerFactory
+from tests.factories.charger_model import ChargerModelFactory
 from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.sale_information import SaleInformationFactory
@@ -10,6 +11,7 @@ from tests.factories.vehicle_model import VehicleModelFactory
 class TestVehicle(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
+        ChargerModelFactory.create()
         CustomerFactory.create()
         SaleInformationFactory.create()
         VehicleModelFactory.create()
@@ -38,3 +40,25 @@ class TestVehicle(BaseTestCase):
         assert response.status_code == 200
         assert res["msg"] == "success"
         assert data["Charger"]["id"] == "1"
+
+    def test_detail_sale_information(self):
+        id = "1"
+        response = self.client.get(f"{settings.API_PREFIX}/electric_vehicle/{id}/sale_information")
+        res = response.json()
+        data = res["data"]
+        assert len(data) == 14
+        assert response.status_code == 200
+        assert res["msg"] == "success"
+        assert data["sale_type"] == "1"
+
+    def test_detail_charger(self):
+        id = "1"
+        response = self.client.get(f"{settings.API_PREFIX}/electric_vehicle/{id}/charger")
+        res = response.json()
+        data = res["data"]
+        assert len(data) == 3
+        assert response.status_code == 200
+        assert res["msg"] == "success"
+        assert data["model"] == "1"
+
+

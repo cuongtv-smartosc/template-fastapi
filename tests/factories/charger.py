@@ -12,3 +12,4 @@ class ChargerFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session_persistence = "commit"
 
     id = "1"
+    model = "1"
