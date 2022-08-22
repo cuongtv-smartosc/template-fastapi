@@ -54,6 +54,17 @@ ex: /Users/tranvancuong/Download/all.sql
 cd template-fastapi/
 python3.10 import_data.py -dir /Users/tranvancuong/Download/all.sql -host localhost -user root -pass 123456
 ```
+
+#### Create Migration
+```
+alembic revision --autogenerate -m "sample revision message"
+```
+
+#### Apply Migration
+```
+alembic upgrade head
+```
+
 ## Run dev server
 ```
 uvicorn main:app --reload
