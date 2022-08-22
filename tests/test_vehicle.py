@@ -23,8 +23,16 @@ class TestVehicle(BaseTestCase):
         response = self.client.get(f"{settings.API_PREFIX}/electric_vehicle", params=params)
 
         res = response.json()
-        print(response)
+        data = res["data"]
         assert response.status_code == 200
-        assert len(res["data"]) == 5
+        assert len(data) == 5
         assert res["msg"] == "success"
+        assert len(data['list_edge']) == 1
 
+    def test_detail(self):
+        id = "1"
+        response = self.client.get(f"{settings.API_PREFIX}/electric_vehicle/{id}")
+        res = response.json()
+        data = res["data"]
+        assert response.status_code == 200
+        assert res["msg"] == "success"

@@ -19,6 +19,7 @@ class VehicleModel(DBBaseCustom):
         onupdate=datetime.utcnow(),
     )
     modified_by = Column(String(255))
+    description = Column(String(255))
     owner = Column(String(255))
     name = Column(String(255))
-    vehicle = relationship('Vehicle', backref='vehicle_model', lazy=True)
+    # vehicle = relationship('Vehicle', backref='vehicle_model', lazy=False)

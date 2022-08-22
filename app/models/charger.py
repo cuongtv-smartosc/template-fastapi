@@ -24,4 +24,4 @@ class Charger(DBBaseCustom):
     import_date = Column(DateTime)
     charger_pdi_status = Column(String(255))
     manufactoring_date = Column(String(255))
-    vehicle = relationship('Vehicle', backref='charger', lazy=True)
+    # vehicle = relationship('Vehicle', backref='charger', lazy=False)

@@ -1,13 +1,17 @@
 import json
 import math
 from fastapi import Depends
+from fastapi.encoders import jsonable_encoder
 from fastapi.routing import APIRouter
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.common.database import get_db
 from app.common.util import vehicles_list_base_filter
+from app.crud.vehicle_crud import vehicle_crud
+from app.models.charger import Charger
 
 from app.models.electric_vehicle import Vehicle
 from app.models.customer import Customer
+from app.models.electric_vehicle_model import VehicleModel
 from app.models.sale_information import SaleInformation
 from app.schemas.response import resp
 
@@ -49,7 +53,8 @@ async def get_vehicles(filter=None, pageSize=None, currentPage=None, order_by=No
 
 @vehicle_router.get("/{id}")
 async def get_vehicle_detail(id, db: Session = Depends(get_db)):
-    detail = db.query(Vehicle).filter(Vehicle.id == id).first()
-    charger = detail.charger.id
-    model = detail.vehicle_model.id
-    return {"detail": detail}
+    detail = db.query(Vehicle, Charger, VehicleModel).filter(Vehicle.id == Charger.id,
+                                                             Vehicle.id == VehicleModel.id,
+                                                             Vehicle.id == id).first()
+    data = jsonable_encoder(detail)
+    return resp.success(data=data)

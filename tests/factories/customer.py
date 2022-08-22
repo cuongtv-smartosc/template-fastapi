@@ -10,5 +10,5 @@ class CustomerFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
 
-    id = factory.fuzzy.FuzzyText("id")
+    id = "C1"
     customer_name = factory.fuzzy.FuzzyText("customer_name")
