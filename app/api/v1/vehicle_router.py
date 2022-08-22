@@ -53,8 +53,8 @@ async def get_vehicles(filter=None, pageSize=None, currentPage=None, order_by=No
 
 @vehicle_router.get("/{id}")
 async def get_vehicle_detail(id, db: Session = Depends(get_db)):
-    detail = db.query(Vehicle, Charger, VehicleModel).filter(Vehicle.id == Charger.id,
-                                                             Vehicle.id == VehicleModel.id,
+    detail = db.query(Vehicle, Charger, VehicleModel).filter(Vehicle.charger_id == Charger.id,
+                                                             Vehicle.model_id == VehicleModel.id,
                                                              Vehicle.id == id).first()
     data = jsonable_encoder(detail)
     return resp.success(data=data)

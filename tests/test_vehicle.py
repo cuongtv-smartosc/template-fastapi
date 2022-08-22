@@ -34,5 +34,7 @@ class TestVehicle(BaseTestCase):
         response = self.client.get(f"{settings.API_PREFIX}/electric_vehicle/{id}")
         res = response.json()
         data = res["data"]
+        assert len(data) == 3
         assert response.status_code == 200
         assert res["msg"] == "success"
+        assert data["Charger"]["id"] == "1"

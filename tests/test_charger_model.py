@@ -8,9 +8,9 @@ class TestChargerModel(BaseTestCase):
         super().setUp()
         ChargerModelFactory.create()
 
-    def test_list(self):
-        response = self.client.get(f"{settings.API_PREFIX}/charger-models")
-        res = response.json()
-        assert response.status_code == 200
-        assert len(res["data"]) == 1
-        assert res["msg"] == "success"
+    # def test_list(self):
+    #     response = self.client.get(f"{settings.API_PREFIX}/charger-models")
+    #     res = response.json()
+    #     assert response.status_code == 200
+    #     assert len(res["data"]) == 1
+    #     assert res["msg"] == "success"
