@@ -1,4 +1,3 @@
-import json
 import math
 from datetime import datetime
 
@@ -18,22 +17,23 @@ contract_expire_router = APIRouter()
 
 
 @contract_expire_router.get("/")
-def contract_expire_report(filters=None, db: Session = Depends(get_db)):
-    if not isinstance(filters, dict):
-        filters = json.loads(filters)
-    order_by = (
-        f'{filters.get("sort_by", "remaining_days")} '
-        f'{filters.get("sort_order", "asc")}'
-    )
-    if filters.get("sort_by") == "contract_number":
-        order_by = f'(0+contract_number) {filters.get("sort_order", "asc")}'
-    number_of_records = filters.get("number_of_record", "5")
-    print(number_of_records)
-    page = filters.get("page", "0")
-    expire_period = filters.get("expire_period", "0-3 months")
+def contract_expire_report(
+    page=0,
+    number_of_record=5,
+    expire_period="0-3 months",
+    sort_by="remaining_days",
+    sort_order="asc",
+    db: Session = Depends(get_db),
+):
+    order_by = f"{sort_by} " f"{sort_order}"
+    if sort_by == "contract_number":
+        order_by = f"contract_number {sort_order}"
+    number_of_records = number_of_record
+    page = page
+    expire_period = expire_period
     periods = ["0-3 months", "3-6 months", "6-12 months", "over 12 months"]
     valid_fields = [
-        "(0+contract_number)",
+        "contract_number",
         "customer_name",
         "expire_date",
         "number_of_vehicles",
@@ -52,10 +52,10 @@ def contract_expire_report(filters=None, db: Session = Depends(get_db)):
     next_twelve_months = datetime.today() + relativedelta(months=12)
     data = (
         db.query(
-            SaleInformation.sale_order_number,
-            Customer.customer_name,
-            func.count(Vehicle.id),
-            SaleInformation.end_date,
+            SaleInformation.sale_order_number.label("contract_number"),
+            Customer.customer_name.label("customer_name"),
+            func.count(Vehicle.id).label("number_of_vehicles"),
+            SaleInformation.end_date.label("expire_date"),
             func.datediff(SaleInformation.end_date, func.current_date()).label(
                 "remaining_days"
             ),
@@ -104,7 +104,7 @@ def contract_expire_report(filters=None, db: Session = Depends(get_db)):
         data.group_by(SaleInformation.sale_order_number)
         .order_by(text(order_by))
         .limit(number_of_records)
-        .offset(number_of_records * int(page))
+        .offset(int(number_of_records) * int(page))
         .all()
     )
     total = total.distinct(SaleInformation.sale_order_number).count()

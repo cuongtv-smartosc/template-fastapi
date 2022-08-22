@@ -5,6 +5,7 @@ from app.api.v1.charger_model_router import charger_model_router
 from app.api.v1.contract_expire_report_router import contract_expire_router
 from app.api.v1.current_user_router import current_user_router
 from app.api.v1.index import router_index
+from app.api.v1.pdi_status_chart_router import pdi_status_chart_router
 from app.api.v1.sale_type_stats import sale_type_stats_router
 from app.api.v1.user_router import user_router
 from app.api.v1.vehicle_model_router import vehicle_model
@@ -46,4 +47,9 @@ api_v1_router.include_router(
 api_v1_router.include_router(
     sale_type_stats_router,
     prefix=f"{settings.API_PREFIX}/sale_type_stats",
+)
+
+api_v1_router.include_router(
+    pdi_status_chart_router,
+    prefix=f"{settings.API_PREFIX}/pdi_status_chart",
 )

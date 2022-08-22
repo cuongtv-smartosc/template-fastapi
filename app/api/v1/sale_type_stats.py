@@ -62,7 +62,7 @@ def get_chart(data):
 
 
 @sale_type_stats_router.get("/")
-def sale_type_stats(filters=None, db: Session = Depends(get_db)):
+def sale_type_stats(db: Session = Depends(get_db)):
     data = (
         db.query(
             SaleInformation.sale_type,
@@ -72,15 +72,6 @@ def sale_type_stats(filters=None, db: Session = Depends(get_db)):
         .order_by(text("count desc"))
         .all()
     )
-    results = []
-    sale_type_list = list(SALE_TYPE_LABEL.keys())
-    sale_type_now = [item[0] for item in data]
-    print(sale_type_now)
-    for i in sale_type_list:
-        count = 0
-        if i in sale_type_now:
-            index_data = sale_type_now.index(i)
-            count = data[index_data][1]
-        results.append({"sale_type": i, "count": count})
+
     chart = get_chart(data)
     return resp.success(data=chart)
