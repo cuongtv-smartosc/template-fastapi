@@ -34,4 +34,5 @@ class SaleInformation(DBBaseCustom):
     product_number = Column(String(255))
     coordinates = Column(String(255))
     working_days = Column(String(255))
+    contract_no = Column(String(255))
     customer_id = Column(String(255), ForeignKey(Customer.id))
