@@ -23,3 +23,11 @@ class TestVehicle(BaseTestCase):
         assert response.status_code == 200
         assert len(res["data"]) == 4
         assert res["msg"] == "success"
+
+    def test_sale_type_stats(self):
+        response = self.client.get(f"{settings.API_PREFIX}/sale_type_stats")
+
+        res = response.json()
+        assert response.status_code == 200
+        assert len(res["data"]) == 4
+        assert res["msg"] == "success"
