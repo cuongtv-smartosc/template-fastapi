@@ -1,7 +1,5 @@
 from datetime import datetime
-
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String
-
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
 from app.common.database import DBBaseCustom
 from app.models.customer import Customer
 
@@ -32,6 +30,7 @@ class SaleInformation(DBBaseCustom):
     location = Column(String(255))
     service = Column(String(255))
     product_number = Column(String(255))
-    coordinates = Column(String(255))
+    coordinates = Column(Text)
     working_days = Column(String(255))
     customer_id = Column(String(255), ForeignKey(Customer.id))
+    contract_no = Column(String(255))
