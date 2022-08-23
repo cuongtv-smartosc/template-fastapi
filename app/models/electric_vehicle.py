@@ -30,7 +30,6 @@ class Vehicle(DBBaseCustom):
     car_condition = Column(String(255))
     forklift_pdi_status = Column(String(255))
     import_date = Column(Date)
-    manufactoring_date = Column(Date)
     asset_register_date = Column(Date)
     delivering_date = Column(Date)
     edge_id = Column(String(255))
