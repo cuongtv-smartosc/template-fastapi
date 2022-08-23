@@ -48,12 +48,9 @@ async def get_vehicles(
     elif order_by == "customer_name":
         query = query.orderby(Vehicle.customer_name.asc())
 
-    query = (
-        query.limit(page_size
-                    ).offset((int(current_page) - 1
-                              ) * int(page_size)).all(),
-    )
-
+    query = query.limit(page_size) \
+        .offset((int(current_page) - 1) * int(page_size)) \
+        .all()
     results = {
         "total": total,
         "currentPage": current_page,
