@@ -7,8 +7,10 @@ from sqlalchemy.orm import Session
 
 from app.common.database import get_db
 from app.common.util import vehicles_list_base_filter
+from app.models.charger import Charger
 from app.models.customer import Customer
 from app.models.electric_vehicle import Vehicle
+from app.models.electric_vehicle_model import VehicleModel
 from app.models.sale_information import SaleInformation
 from app.schemas.response import resp
 
@@ -55,3 +57,18 @@ async def get_vehicles(
         "list_edge": edges,
     }
     return resp.success(data=results)
+
+
+@vehicle_router.get("/{id}")
+async def get_vehicle_detail(id, db: Session = Depends(get_db)):
+    detail = (
+        db.query(Vehicle, Charger, VehicleModel)
+        .filter(
+            Vehicle.charger_id == Charger.id,
+            Vehicle.model_id == VehicleModel.id,
+            Vehicle.id == id,
+        )
+        .first()
+    )
+    data = jsonable_encoder(detail)
+    return resp.success(data=data)

@@ -39,3 +39,17 @@ class TestVehicle(BaseTestCase):
         assert data["totalPage"] == 1
         assert len(data["list_edge"]) == 1
         assert data["vehicles"][0]["id"] == "1"
+
+    def test_detail(self):
+        id = "1"
+        response = self.client.get(
+            f"{settings.API_PREFIX}/electric_vehicle/{id}",
+        )
+        res = response.json()
+        data = res["data"]
+        assert len(data) == 3
+        assert response.status_code == 200
+        assert res["msg"] == "success"
+        assert data["Charger"]["id"] == "1"
+        assert data["Vehicle"]["id"] == "1"
+        assert data["VehicleModel"]["id"] == "M1"
