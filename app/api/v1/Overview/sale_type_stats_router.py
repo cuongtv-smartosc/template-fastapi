@@ -72,6 +72,5 @@ def sale_type_stats(db: Session = Depends(get_db)):
         .order_by(text("count desc"))
         .all()
     )
-
     chart = get_chart(data)
     return resp.success(data=chart)

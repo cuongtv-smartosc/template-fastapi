@@ -10,5 +10,8 @@ class SaleInformationFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
 
-    id = factory.fuzzy.FuzzyText("id")
+    id = "00009"
     sale_type = "inventory_new"
+    sale_order_number = "00009"
+    end_date = "2022-11-01"
+    customer_id = "222"
