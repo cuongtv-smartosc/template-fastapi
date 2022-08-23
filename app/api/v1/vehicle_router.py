@@ -13,6 +13,7 @@ from app.models.electric_vehicle import Vehicle
 from app.models.electric_vehicle_model import VehicleModel
 from app.models.sale_information import SaleInformation
 from app.schemas.response import resp
+from app.services.sale_information import get_sale_information
 
 vehicle_router = APIRouter()
 
@@ -72,3 +73,8 @@ async def get_vehicle_detail(id, db: Session = Depends(get_db)):
     )
     data = jsonable_encoder(detail)
     return resp.success(data=data)
+
+
+@vehicle_router.get("/{id}/sale_information")
+async def get_sale_information_vehicle(id, db: Session = Depends(get_db)):
+    return get_sale_information(id, db)

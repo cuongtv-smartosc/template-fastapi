@@ -13,3 +13,5 @@ class SaleInformationFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = "S1"
     sale_type = "1"
     customer_id = "C1"
+    start_date = "2021-12-14"
+    end_date = "2021-12-30"
