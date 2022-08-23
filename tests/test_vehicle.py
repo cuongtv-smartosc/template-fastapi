@@ -21,8 +21,8 @@ class TestVehicle(BaseTestCase):
         VehicleModelFactory.create()
         ChargerFactory.create()
         VehicleFactory.create()
-        VehicleDivisionFactory.create()
         WorkShiftFactory.create()
+        VehicleDivisionFactory.create()
 
     def test_list(self):
         params = {
@@ -84,3 +84,16 @@ class TestVehicle(BaseTestCase):
         assert response.status_code == 200
         assert res["msg"] == "success"
         assert data["model"] == "1"
+
+    def test_detail_responsibility(self):
+        id = "1"
+        response = self.client.get(
+            f"{settings.API_PREFIX}/electric_vehicle/{id}/responsibility"
+        )
+        res = response.json()
+        data = res["data"]
+        assert response.status_code == 200
+        assert res["msg"] == "success"
+        assert len(data) == 2
+        assert data["zone"][0]["name"] == "zone A"
+        assert data["workShift"][0]["id"] == "Ws1"

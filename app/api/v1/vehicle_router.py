@@ -14,6 +14,7 @@ from app.models.electric_vehicle_model import VehicleModel
 from app.models.sale_information import SaleInformation
 from app.schemas.response import resp
 from app.services.charger import get_charger
+from app.services.responsibility import get_responsibility
 from app.services.sale_information import get_sale_information
 
 vehicle_router = APIRouter()
@@ -84,3 +85,8 @@ async def get_sale_information_vehicle(id, db: Session = Depends(get_db)):
 @vehicle_router.get("/{id}/charger")
 async def get_charger_detail(id, db: Session = Depends(get_db)):
     return get_charger(id, db)
+
+
+@vehicle_router.get("/{id}/responsibility")
+async def get_responsibility_vehicle(id, db: Session = Depends(get_db)):
+    return get_responsibility(id, db)
