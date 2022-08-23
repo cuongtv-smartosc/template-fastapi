@@ -3,20 +3,26 @@ from tests.base_test import BaseTestCase
 from tests.factories.charger import ChargerFactory
 from tests.factories.charger_model import ChargerModelFactory
 from tests.factories.customer import CustomerFactory
+from tests.factories.division import DivisionFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.sale_information import SaleInformationFactory
+from tests.factories.vehicle_division import VehicleDivisionFactory
 from tests.factories.vehicle_model import VehicleModelFactory
+from tests.factories.work_shift import WorkShiftFactory
 
 
 class TestVehicle(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
+        DivisionFactory.create()
         ChargerModelFactory.create()
         CustomerFactory.create()
         SaleInformationFactory.create()
         VehicleModelFactory.create()
         ChargerFactory.create()
         VehicleFactory.create()
+        VehicleDivisionFactory.create()
+        WorkShiftFactory.create()
 
     def test_list(self):
         params = {
@@ -66,3 +72,15 @@ class TestVehicle(BaseTestCase):
         assert res["msg"] == "success"
         assert data["sale_type"] == "1"
         assert data["remaining_day"] == -236
+
+    def test_detail_charger(self):
+        id = "1"
+        response = self.client.get(
+            f"{settings.API_PREFIX}/electric_vehicle/{id}/charger"
+        )
+        res = response.json()
+        data = res["data"]
+        assert len(data) == 3
+        assert response.status_code == 200
+        assert res["msg"] == "success"
+        assert data["model"] == "1"
