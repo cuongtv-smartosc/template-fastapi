@@ -1,4 +1,5 @@
 import factory.fuzzy
+
 from app.models.sale_information import SaleInformation
 from tests.base_test import SessionTest
 

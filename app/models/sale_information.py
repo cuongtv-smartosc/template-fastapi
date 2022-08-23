@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
+
 from app.common.database import DBBaseCustom
 from app.models.customer import Customer
 

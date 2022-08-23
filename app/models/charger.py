@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, String
+from sqlalchemy import Column, Date, DateTime, ForeignKey, String
 
 from app.common.database import DBBaseCustom
 from app.models.charger_model import ChargerModel
@@ -22,3 +22,4 @@ class Charger(DBBaseCustom):
     model = Column(String(255), ForeignKey(ChargerModel.id))
     import_date = Column(DateTime)
     charger_pdi_status = Column(String(255))
+    manufactoring_date = Column(Date)

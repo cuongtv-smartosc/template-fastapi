@@ -11,4 +11,4 @@ class VehicleModelFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session_persistence = "commit"
 
     id = "M1"
-    name = factory.Faker('name')
+    name = factory.Faker("name")
