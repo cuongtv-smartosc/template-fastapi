@@ -19,6 +19,8 @@ API_PREFIX = "/api"
 
 BASE_PATH = os.getenv("BASE_PATH")
 
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+
 
 class Settings:
     def __init__(self, env):

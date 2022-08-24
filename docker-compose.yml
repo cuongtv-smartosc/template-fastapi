@@ -28,16 +28,20 @@ services:
     ports:
       - "5432:5432"
     restart: on-failure
+
   redis:
-    container_name: redis
+    container_name: redis_container
     hostname: redis
     image: redis:latest
     command: --port 6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     ports:
       - "6379:6379"
-    expose:
-      - "6379"
     restart: on-failure
+    volumes:
+      - /path/to/redis:/bitnami/redis/data
 volumes:
   mysql_db:
   postgres_db:
