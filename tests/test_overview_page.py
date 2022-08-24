@@ -9,10 +9,34 @@ from tests.factories.sale_information import SaleInformationFactory
 class TestVehicle(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        CompanyFactory.create()
-        CustomerFactory.create()
-        SaleInformationFactory.create()
-        VehicleFactory.create()
+        company = CompanyFactory
+        customer = CustomerFactory
+        sale_infor = SaleInformationFactory
+        vehicle = VehicleFactory
+        company.create_batch(33, id=company.id)
+
+        customer.create_batch(
+            33,
+            id=customer.id,
+            customer_name=customer.customer_name,
+            company_id=company.id,
+        )
+        sale_infor.create_batch(
+            33,
+            id=sale_infor.id,
+            sale_type=sale_infor.sale_type,
+            sale_order_number=sale_infor.sale_order_number,
+            end_date=sale_infor.end_date,
+            customer_id=customer.id,
+        )
+        vehicle.create_batch(
+            33,
+            id=vehicle.id,
+            edge_id=vehicle.edge_id,
+            vehicle_number=vehicle.vehicle_number,
+            sale_id=sale_infor.id,
+            forklift_pdi_status=vehicle.forklift_pdi_status,
+        )
 
     def test_pdi_status_chart(self):
         response = self.client.get(f"{settings.API_PREFIX}/pdi_status_chart")
@@ -21,7 +45,7 @@ class TestVehicle(BaseTestCase):
         res = res["data"]
         data = res["data"]
         assert response.status_code == 200
-        assert len(res) == 4
+        assert res["type"] == "pie"
         assert data["labels"] == [
             "Shipping",
             "In Warehouse",
@@ -30,33 +54,19 @@ class TestVehicle(BaseTestCase):
             "Asset in inventory",
             "Delivered",
         ]
-        assert res["type"] == "pie"
+        assert data["datasets"]["values"] == [6, 6, 6, 5, 5, 5]
         assert res["colors"] == [
+            "#0072DB",
             "#469BFF",
-            "rgba(70, 155, 255, 0.7)",
             "#AAAFC7",
-            "#FFC459",
-            "#FC6563",
-            "rgba(80, 204, 101, 0.7)",
+            "#50CC65",
         ]
-        assert data["datasets"][0]["values"] == [0, 0, 0, 1, 0, 0]
-        assert res["percent"] == [0.0, 0.0, 0.0, 100.0, 0.0, 0.0]
-
-    def test_sale_type_stats(self):
-        response = self.client.get(f"{settings.API_PREFIX}/sale_type_stats")
-
-        res = response.json()
-        res = res["data"]
-        data = res["data"]
-        assert res["type"] == "pie"
-        assert data["labels"] == [
-            "Rent",
-            "Sold",
-            "Inventory (Used)",
-            "Inventory (New)",
+        assert res["percent"] == [
+            18.181818181818183,
+            18.181818181818183,
+            18.181818181818183,
+            15.151515151515152,
+            15.151515151515152,
+            15.151515151515152,
         ]
-        assert res["colors"] == ["#0072DB", "#469BFF", "#AAAFC7", "#50CC65"]
-        assert data["datasets"][0]["values"] == [0, 0, 0, 1]
-        assert res["percent"] == [0.0, 0.0, 0.0, 100.0]
-        assert response.status_code == 200
         assert len(res) == 4

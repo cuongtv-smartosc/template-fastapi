@@ -10,6 +10,6 @@ class CustomerFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
 
-    id = "222"
+    id = factory.Sequence(lambda n: "112-%04d" % n)
     customer_name = factory.fuzzy.FuzzyText("customer_name")
-    company_id = "1512"
+    company_id = factory.Sequence(lambda n: "111-%04d" % n)

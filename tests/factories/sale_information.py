@@ -1,3 +1,6 @@
+import datetime
+import random
+
 import factory.fuzzy
 
 from app.models.sale_information import SaleInformation
@@ -10,8 +13,12 @@ class SaleInformationFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
 
-    id = "00009"
-    sale_type = "inventory_new"
-    sale_order_number = "00009"
-    end_date = "2022-11-01"
-    customer_id = "222"
+    id = factory.Sequence(lambda n: "113-%04d" % n)
+    sale_type = factory.Iterator(
+        ["rent", "sold", "inventory_used", "inventory_new"],
+    )
+    sale_order_number = factory.fuzzy.FuzzyText("sale_order_number")
+    end_date = factory.fuzzy.FuzzyDate(
+        datetime.date(random.randint(2021, 2022), random.randint(1, 7), 1),
+    )
+    customer_id = factory.Sequence(lambda n: "112-%04d" % n)
