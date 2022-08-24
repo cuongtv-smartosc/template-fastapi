@@ -82,6 +82,10 @@ def create_app() -> FastAPI:
         )
         await app.configure(redis=r, app=app)
 
+    @app.on_event("shutdown")
+    async def shutdown_event():
+        await app.redis.close()
+
     return app
 
 
