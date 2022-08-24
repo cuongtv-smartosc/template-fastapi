@@ -3,6 +3,7 @@ default: &default
   DB_HOST: localhost
   DB_POST: 3306
   DB_URL: mysql+pymysql://root:123456@localhost:3306/EV
+  DB_URL_Alembic: mysql+asyncmy://root:123456@localhost:3306/EV
   DB_USER: root
   DB_PASS: 123456
   ENVIRONMENT: local
