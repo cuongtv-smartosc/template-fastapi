@@ -1,11 +1,17 @@
-from sqlalchemy import Column, String
+from sqlalchemy import Column, Integer, String
 
 from app.common.database import DBBaseCustom
 
 
 class VehicleModel(DBBaseCustom):
     __tablename__ = "vehicle_model"
-    id = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(
+        Integer,
+        unique=True,
+        index=True,
+        primary_key=True,
+        autoincrement=True,
+    )
     creation = Column(String(255))
     description = Column(String(255))
     modified = Column(String(255))

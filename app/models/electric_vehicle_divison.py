@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
 from app.common.database import DBBaseCustom
 from app.models.division import Division
@@ -9,7 +9,13 @@ from app.models.electric_vehicle import Vehicle
 
 class VehicleDivision(DBBaseCustom):
     __tablename__ = "vehicle_division"
-    id = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(
+        Integer,
+        unique=True,
+        index=True,
+        primary_key=True,
+        autoincrement=True,
+    )
     creation = Column(
         DateTime,
         nullable=False,
@@ -23,5 +29,5 @@ class VehicleDivision(DBBaseCustom):
     )
     modified_by = Column(String(255))
     owner = Column(String(255))
-    vehicle_id = Column(String(255), ForeignKey(Vehicle.id))
-    division_id = Column(String(255), ForeignKey(Division.id))
+    vehicle_id = Column(Integer, ForeignKey(Vehicle.id))
+    division_id = Column(Integer, ForeignKey(Division.id))

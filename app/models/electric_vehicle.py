@@ -1,6 +1,9 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Date, DateTime, Float, ForeignKey, String
+from sqlalchemy import Column, Date, DateTime, Float
+from sqlalchemy import ForeignKey as FK
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 from app.models.charger import Charger
@@ -10,7 +13,13 @@ from app.models.sale_information import SaleInformation
 
 class Vehicle(DBBaseCustom):
     __tablename__ = "electric_vehicle"
-    id = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(
+        Integer,
+        unique=True,
+        index=True,
+        primary_key=True,
+        autoincrement=True,
+    )
     creation = Column(
         DateTime,
         nullable=False,
@@ -26,7 +35,7 @@ class Vehicle(DBBaseCustom):
     owner = Column(String(255))
     vehicle_number = Column(String(255))
     serial_number = Column(String(255))
-    model_id = Column(String(255), ForeignKey(VehicleModel.id))
+    model_id = Column(Integer, FK(VehicleModel.id))
     car_condition = Column(String(255))
     forklift_pdi_status = Column(String(255))
     import_date = Column(Date)
@@ -40,5 +49,8 @@ class Vehicle(DBBaseCustom):
     operation_status = Column(String(255))
     mileage_value = Column(String(255))
     hr = Column(String(255))
-    sale_id = Column(String(255), ForeignKey(SaleInformation.id))
-    charger_id = Column(String(255), ForeignKey(Charger.id))
+    sale_id = Column(Integer, FK(SaleInformation.id))
+    charger_id = Column(Integer, FK(Charger.id))
+    sale_information = relationship(
+        "SaleInformation", back_populates="electric_vehicle"
+    )

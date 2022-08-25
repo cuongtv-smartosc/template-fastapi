@@ -13,12 +13,11 @@ class SaleInformationFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
 
-    id = factory.Sequence(lambda n: "113-%04d" % n)
-    sale_type = factory.Iterator(
+    sale_type = factory.fuzzy.FuzzyChoice(
         ["rent", "sold", "inventory_used", "inventory_new"],
     )
     sale_order_number = factory.fuzzy.FuzzyText("sale_order_number")
     end_date = factory.fuzzy.FuzzyDate(
         datetime.date(random.randint(2021, 2022), random.randint(1, 7), 1),
     )
-    customer_id = factory.Sequence(lambda n: "112-%04d" % n)
+    customer_id = "1"

@@ -1,13 +1,19 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, String
+from sqlalchemy import Column, DateTime, Integer, String
 
 from app.common.database import DBBaseCustom
 
 
 class Division(DBBaseCustom):
     __tablename__ = "division"
-    id = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(
+        Integer,
+        unique=True,
+        index=True,
+        primary_key=True,
+        autoincrement=True,
+    )
     creation = Column(
         DateTime,
         nullable=False,

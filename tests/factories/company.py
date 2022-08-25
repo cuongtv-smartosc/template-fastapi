@@ -10,4 +10,4 @@ class CompanyFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
 
-    id = factory.Sequence(lambda n: "111-%04d" % n)
+    name = factory.fuzzy.FuzzyText("name")

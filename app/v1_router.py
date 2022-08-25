@@ -40,7 +40,7 @@ api_v1_router.include_router(
 
 api_v1_router.include_router(
     pdi_status_chart_router,
-    prefix=f"{settings.API_PREFIX}/pdi_status_chart",
+    prefix=f"{settings.API_PREFIX}/pdi_status_charts",
 )
 
 api_v1_router.include_router(
