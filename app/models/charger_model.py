@@ -23,6 +23,4 @@ class ChargerModel(DBBaseCustom):
         default=datetime.utcnow(),
         onupdate=datetime.utcnow(),
     )
-    modified_by = Column(String(255))
-    owner = Column(String(255))
     charger = relationship("Charger", backref="charger_model")
