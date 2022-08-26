@@ -13,7 +13,6 @@ class Token(BaseModel):
 
 class UserBase(BaseModel):
     username: str = None
-    id: str = None
     hash_password: str = None
 
 
