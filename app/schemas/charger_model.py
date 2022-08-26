@@ -14,9 +14,9 @@ class ChargerModelBase(BaseModelSchemas):
 
 # Properties to receive on item creation
 class ChargerModelCreate(ChargerModelBase):
-    @validator("name")
+    @validator("id")
     def unique_check_model(cls, v):
-        return validate_unique(ChargerModel, "name", name=v)
+        return validate_unique(ChargerModel, "id", name=v)
 
 
 # Properties to return to client

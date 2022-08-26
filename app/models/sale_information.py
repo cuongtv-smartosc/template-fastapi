@@ -1,14 +1,22 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, DateTime
+from sqlalchemy import ForeignKey as FK
+from sqlalchemy import Integer, String, Text
+from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
-from app.models.customer import Customer
 
 
 class SaleInformation(DBBaseCustom):
     __tablename__ = "sale_information"
-    id = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(
+        Integer,
+        unique=True,
+        index=True,
+        primary_key=True,
+        autoincrement=True,
+    )
     creation = Column(
         DateTime,
         nullable=False,
@@ -32,6 +40,8 @@ class SaleInformation(DBBaseCustom):
     location = Column(String(255))
     service = Column(String(255))
     product_number = Column(String(255))
-    coordinates = Column(String(255))
+    coordinates = Column(Text)
     working_days = Column(String(255))
-    customer_id = Column(String(255), ForeignKey(Customer.id))
+    customer_id = Column(Integer, FK("customer.id"))
+    contract_no = Column(String(255))
+    vehicle = relationship("Vehicle", backref="sale_information")

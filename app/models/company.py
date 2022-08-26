@@ -1,13 +1,20 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, String
+from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 
 
 class Company(DBBaseCustom):
     __tablename__ = "company"
-    id = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(
+        Integer,
+        unique=True,
+        index=True,
+        primary_key=True,
+        autoincrement=True,
+    )
     creation = Column(
         DateTime,
         nullable=False,
@@ -22,3 +29,4 @@ class Company(DBBaseCustom):
     modified_by = Column(String(255))
     owner = Column(String(255))
     name = Column(String(255))
+    customer = relationship("Customer", backref="company")
