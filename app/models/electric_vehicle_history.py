@@ -3,12 +3,17 @@ from datetime import datetime
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
 from app.common.database import DBBaseCustom
-from app.models.electric_vehicle import Vehicle
 
 
 class VehicleHistory(DBBaseCustom):
     __tablename__ = "vehicle_history"
-    id = Column(String(255), unique=True, index=True, primary_key=True)
+    id = Column(
+        Integer,
+        unique=True,
+        index=True,
+        primary_key=True,
+        autoincrement=True,
+    )
     creation = Column(
         DateTime,
         nullable=False,
@@ -26,7 +31,10 @@ class VehicleHistory(DBBaseCustom):
     detail = Column(String(255))
     update_by = Column(String(255))
     update_time = Column(DateTime)
-    vehicle_id = Column(String(255), ForeignKey(Vehicle.id))
+    vehicle_id = Column(
+        Integer,
+        ForeignKey("electric_vehicle.id"),
+    )
     create_time = Column(DateTime)
     amended_from = Column(String(255))
     islatest = Column(Integer)

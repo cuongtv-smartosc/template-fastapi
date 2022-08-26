@@ -7,9 +7,9 @@ from app.schemas.user import UserCreate
 
 class UserCrud(CRUDBase[User, UserCreate, UserCreate]):
     async def get_by_username(
-            self,
-            db: Session,
-            username: str,
+        self,
+        db: Session,
+        username: str,
     ):
         return db.query(User).filter(User.username == username).first()
 
