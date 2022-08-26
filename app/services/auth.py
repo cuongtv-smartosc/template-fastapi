@@ -12,7 +12,6 @@ from app.common.database import get_db
 from app.config import settings
 from app.config.settings import ALGORITHM, SECRET_KEY
 from app.crud.user_crud import user_crud
-from app.models.user import User
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_PREFIX}/authentication/login"
@@ -37,7 +36,7 @@ def verify_password(plain_password, hashed_password):
     )
 
 
-def authenticate_user(user: User, password: str):
+def authenticate_user(user, password: str):
     if not user:
         return False
     if not verify_password(password, user.hash_password):
@@ -77,7 +76,7 @@ async def get_current_user(
             raise handle_error.UnAuthorizedException()
     except JWTError:
         raise handle_error.UnAuthenticatedException
-    user = await user_crud.get_by_username(db, username)
+    user = await user_crud.get(db, username)
     if not user:
         raise handle_error.UnAuthenticatedException()
     if security_scopes.scopes and not user.role_name:

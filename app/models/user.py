@@ -1,4 +1,4 @@
-from sqlalchemy import DATETIME, Column, String, Integer
+from sqlalchemy import DATETIME, Column, String
 
 from app.common.database import DBBaseCustom
 
@@ -9,7 +9,7 @@ class User(DBBaseCustom):
     """
 
     __tablename__ = "user"
-    id = Column(Integer, unique=True, index=True, primary_key=True, autoincrement=True,)
+    id = Column(String(255), unique=True, index=True, primary_key=True)
     username = Column(String(255), unique=True, index=True)
     hash_password = Column(String(255))
     creation = Column(DATETIME)
