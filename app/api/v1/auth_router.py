@@ -16,7 +16,7 @@ auth_router = APIRouter()
 
 @auth_router.post("/login", response_model=Token)
 async def login(data: UserLogin, db: Session = Depends(get_db)):
-    user_data = await user_crud.get(db, data.username)
+    user_data = await user_crud.get_by_username(db, data.username)
     user = authenticate_user(user_data, data.password)
     if not user:
         raise UnAuthorizedException(message="Incorrect username or password")
