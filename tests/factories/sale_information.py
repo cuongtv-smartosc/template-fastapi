@@ -1,10 +1,11 @@
-import datetime
 import random
 
 import factory.fuzzy
+from factory import LazyAttribute
 
 from app.models.sale_information import SaleInformation
 from tests.base_test import SessionTest
+from tests.factories.customer import CustomerFactory
 
 
 class SaleInformationFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -17,7 +18,5 @@ class SaleInformationFactory(factory.alchemy.SQLAlchemyModelFactory):
         ["rent", "sold", "inventory_used", "inventory_new"],
     )
     sale_order_number = factory.fuzzy.FuzzyText("sale_order_number")
-    end_date = factory.fuzzy.FuzzyDate(
-        datetime.date(random.randint(2021, 2022), random.randint(1, 7), 1),
-    )
-    customer_id = "1"
+    end_date = f"2022-{random.randint(1, 2)}-1"
+    customer_id = LazyAttribute(lambda a: CustomerFactory().id)
