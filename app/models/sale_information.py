@@ -3,7 +3,6 @@ from datetime import datetime
 from sqlalchemy import Column, Date, DateTime
 from sqlalchemy import ForeignKey as FK
 from sqlalchemy import Integer, String, Text
-from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 
@@ -44,4 +43,3 @@ class SaleInformation(DBBaseCustom):
     working_days = Column(String(255))
     customer_id = Column(Integer, FK("customer.id"))
     contract_no = Column(String(255))
-    vehicle = relationship("Vehicle", backref="sale_information")
