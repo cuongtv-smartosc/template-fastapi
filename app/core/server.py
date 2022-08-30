@@ -36,7 +36,7 @@ def create_app() -> FastAPI:
     register_cors(app, env_yml)
     register_router(app)
     register_exception(app)
-
+    create_table()
     return app
 
 
