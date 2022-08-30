@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 
@@ -32,4 +31,3 @@ class Customer(DBBaseCustom):
     address = Column(String(255))
     company_id = Column(Integer, ForeignKey("company.id"))
     system_user = Column(String(255))
-    sale_information = relationship("SaleInformation", backref="customer")

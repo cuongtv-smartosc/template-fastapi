@@ -3,7 +3,6 @@ from datetime import datetime
 from sqlalchemy import Column, Date, DateTime, Float
 from sqlalchemy import ForeignKey as FK
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 
@@ -48,8 +47,3 @@ class Vehicle(DBBaseCustom):
     hr = Column(String(255))
     sale_id = Column(Integer, FK("sale_information.id"))
     charger_id = Column(Integer, FK("charger.id"))
-    electric_division = relationship(
-        "VehicleDivision",
-        backref="electric_vehicle",
-    )
-    work_shift = relationship("WorkShift", backref="electric_vehicle")

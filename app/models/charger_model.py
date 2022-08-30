@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from sqlalchemy import Column, DateTime, Integer, String
-from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 
@@ -25,4 +24,3 @@ class ChargerModel(DBBaseCustom):
     )
     modified_by = Column(String(255))
     owner = Column(String(255))
-    charger = relationship("Charger", backref="charger_model")
