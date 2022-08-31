@@ -4,7 +4,7 @@ from app.models.user import User
 from tests.base_test import SessionTest
 
 
-class DivisionFactory(factory.alchemy.SQLAlchemyModelFactory):
+class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = User
         sqlalchemy_session = SessionTest()
