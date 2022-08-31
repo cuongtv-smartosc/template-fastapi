@@ -28,4 +28,3 @@ class VehicleFactory(factory.alchemy.SQLAlchemyModelFactory):
         ]
     )
     charger_id = LazyAttribute(lambda a: ChargerFactory().id)
-    

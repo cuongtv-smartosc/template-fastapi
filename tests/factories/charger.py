@@ -9,4 +9,3 @@ class ChargerFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = Charger
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
-
