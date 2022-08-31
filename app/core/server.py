@@ -2,8 +2,21 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
+from app.common.database import engine
 from app.common.handle_error import APIException
 from app.config.settings import setting
+from app.models.charger import Charger
+from app.models.charger_model import ChargerModel
+from app.models.company import Company
+from app.models.customer import Customer
+from app.models.division import Division
+from app.models.electric_vehicle import Vehicle
+from app.models.electric_vehicle_divison import VehicleDivision
+from app.models.electric_vehicle_history import VehicleHistory
+from app.models.electric_vehicle_model import VehicleModel
+from app.models.sale_information import SaleInformation
+from app.models.user import User
+from app.models.work_shift import WorkShift
 from app.v1_router import api_v1_router
 
 
@@ -23,8 +36,23 @@ def create_app() -> FastAPI:
     register_cors(app, env_yml)
     register_router(app)
     register_exception(app)
-
+    create_table()
     return app
+
+
+def create_table():
+    User.__table__.create(engine, checkfirst=True)
+    ChargerModel.__table__.create(engine, checkfirst=True)
+    Charger.__table__.create(engine, checkfirst=True)
+    Company.__table__.create(engine, checkfirst=True)
+    Customer.__table__.create(engine, checkfirst=True)
+    Division.__table__.create(engine, checkfirst=True)
+    VehicleModel.__table__.create(engine, checkfirst=True)
+    SaleInformation.__table__.create(engine, checkfirst=True)
+    Vehicle.__table__.create(engine, checkfirst=True)
+    VehicleHistory.__table__.create(engine, checkfirst=True)
+    VehicleDivision.__table__.create(engine, checkfirst=True)
+    WorkShift.__table__.create(engine, checkfirst=True)
 
 
 def register_router(app: FastAPI) -> None:
