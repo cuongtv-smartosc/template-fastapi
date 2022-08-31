@@ -11,4 +11,3 @@ class ChargerModelFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session_persistence = "commit"
 
     name = factory.fuzzy.FuzzyText("name")
-
