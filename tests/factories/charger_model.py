@@ -10,5 +10,5 @@ class ChargerModelFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
 
-    name = factory.Faker("name")
-    model = "model"
+    name = factory.fuzzy.FuzzyText("name")
+
