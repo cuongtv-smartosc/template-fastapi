@@ -4,7 +4,7 @@ from app.models.work_shift import WorkShift
 from tests.base_test import SessionTest
 
 
-class DivisionFactory(factory.alchemy.SQLAlchemyModelFactory):
+class WorkShiftFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = WorkShift
         sqlalchemy_session = SessionTest()
