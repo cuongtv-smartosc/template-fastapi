@@ -10,4 +10,3 @@ class ChargerFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
 
-    id = factory.fuzzy.FuzzyText("id")
