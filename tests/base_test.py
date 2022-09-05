@@ -1,3 +1,4 @@
+from datetime import timedelta
 from unittest import TestCase
 
 from fastapi.testclient import TestClient
@@ -6,7 +7,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import close_all_sessions
 
 from app.common.database import DBBaseCustom, get_db
-from app.config.settings import setting
+from app.config.settings import ACCESS_TOKEN_EXPIRE_MINUTES, setting
+from app.services.auth import create_access_token
 from main import app
 
 setting.env = "local_test"
@@ -20,6 +22,14 @@ def _get_test_db():
         yield SessionTest()
     finally:
         pass
+
+
+def get_token_for_test():
+    token = create_access_token(
+        data={"sub": "admin"},
+        expires_delta=timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES)),
+    )
+    return token
 
 
 class BaseTestCase(TestCase):

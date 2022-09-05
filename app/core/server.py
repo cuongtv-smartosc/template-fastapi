@@ -93,5 +93,5 @@ def register_exception(app: FastAPI) -> None:
     async def unicorn_exception_handler(request: Request, exc: APIException):
         return JSONResponse(
             status_code=exc.http_status,
-            content={"message": f"{exc.message}"},
+            content={exc.key_return: exc.message},
         )

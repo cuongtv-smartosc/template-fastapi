@@ -1,4 +1,5 @@
 from fastapi import status
+from pydantic import ValidationError
 
 
 class ErrorMessages:
@@ -16,10 +17,11 @@ class APIException(Exception):
         self,
         http_status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         message=ErrorMessages.default,
+        key_return="message",
     ):
         self.http_status = http_status
         self.message = message
-
+        self.key_return = key_return
         super().__init__()
 
 
@@ -67,7 +69,7 @@ class UnAuthenticatedException(APIException):
 
 
 class UnAuthorizedException(APIException):
-    def __init__(self, message=ErrorMessages.un_authorized):
+    def __init__(self, message=ValidationError.errors):
         super().__init__(
             http_status=status.HTTP_403_FORBIDDEN,
             message=message,
@@ -75,3 +77,13 @@ class UnAuthorizedException(APIException):
 
     def __str__(self):
         return "Unauthorized"
+
+
+class ValidateException(APIException):
+    def __init__(self, message, key_return):
+
+        super().__init__(
+            http_status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            message=message,
+            key_return=key_return,
+        )
