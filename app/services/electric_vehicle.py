@@ -11,7 +11,10 @@ from app.models.electric_vehicle import Vehicle
 from app.models.electric_vehicle_divison import VehicleDivision
 from app.models.sale_information import SaleInformation
 from app.models.work_shift import WorkShift
-from app.schemas.electric_vehicle import VehicleFilter, VehicleFilterList
+from app.schemas.electric_vehicle import (
+    VehicleGetListFilterList,
+    VehicleGetListFilterString,
+)
 
 
 def vehicles_list_base_filter(group_by, query, db, current_user, params):
@@ -105,11 +108,11 @@ def get_vehicle_list(
     db,
     current_user,
 ):
-    param = VehicleFilterList(**filter).dict()
+    param = VehicleGetListFilterList(**filter).dict()
     for key in param:
         if param[key] is not None:
             param[key] = json.loads(param[key])
-    param.update(VehicleFilter(**filter).dict())
+    param.update(VehicleGetListFilterString(**filter).dict())
     query = db.query(
         Vehicle.vehicle_number,
         Vehicle.id,

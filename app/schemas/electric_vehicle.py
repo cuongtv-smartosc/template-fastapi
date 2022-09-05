@@ -25,7 +25,7 @@ class VehicleCreate(VehicleBase):
     pass
 
 
-class VehicleGet(BaseModel):
+class VehicleGetListParams(BaseModel):
     page_size: conint(ge=1)
     current_page: conint(ge=1)
     order_by: constr(min_length=1, max_length=255) | None = None
@@ -45,7 +45,7 @@ class VehicleGet(BaseModel):
     offset: constr(min_length=1) | None = None
 
 
-class VehicleFilterList(BaseModel):
+class VehicleGetListFilterList(BaseModel):
     company_name: str = None
     customer_name: str = None
     division_name: str = None
@@ -74,7 +74,7 @@ class VehicleFilterList(BaseModel):
         return v
 
 
-class VehicleFilter(BaseModel):
+class VehicleGetListFilterString(BaseModel):
     sale_id: str = None
     sale_type: str = None
     location: str = None
