@@ -1,4 +1,3 @@
-import json
 import math
 
 from fastapi.encoders import jsonable_encoder
@@ -11,10 +10,6 @@ from app.models.electric_vehicle import Vehicle
 from app.models.electric_vehicle_divison import VehicleDivision
 from app.models.sale_information import SaleInformation
 from app.models.work_shift import WorkShift
-from app.schemas.electric_vehicle import (
-    VehicleGetListFilterList,
-    VehicleGetListFilterString,
-)
 
 
 def vehicles_list_base_filter(group_by, query, db, current_user, params):
@@ -101,18 +96,13 @@ def vehicles_list_base_filter(group_by, query, db, current_user, params):
 
 
 def get_vehicle_list(
-    filter,
+    filters,
     current_page,
     page_size,
     order_by,
     db,
     current_user,
 ):
-    param = VehicleGetListFilterList(**filter).dict()
-    for key in param:
-        if param[key] is not None:
-            param[key] = json.loads(param[key])
-    param.update(VehicleGetListFilterString(**filter).dict())
     query = db.query(
         Vehicle.vehicle_number,
         Vehicle.id,
@@ -125,7 +115,7 @@ def get_vehicle_list(
         SaleInformation.customer_id == Customer.id,
     )
     query = vehicles_list_base_filter(
-        Vehicle.vehicle_number, query, db, current_user, param
+        Vehicle.vehicle_number, query, db, current_user, filters
     )
     total = query.count()
     edges = [i.edge_id for i in query.all()]

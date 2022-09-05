@@ -1,3 +1,5 @@
+import json
+
 from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.routing import APIRouter
@@ -7,7 +9,11 @@ from sqlalchemy.orm import Session
 from app.common.database import get_db
 from app.common.handle_error import ValidateException
 from app.models.user import User
-from app.schemas.electric_vehicle import VehicleGetListParams
+from app.schemas.electric_vehicle import (
+    VehicleGetListFilterList,
+    VehicleGetListFilterString,
+    VehicleGetListParams,
+)
 from app.schemas.response import resp
 from app.services.auth import get_current_user
 from app.services.electric_vehicle import get_vehicle_list
@@ -24,9 +30,14 @@ async def get_vehicles(
     db: Session = Depends(get_db),
 ):
     try:
-        param_dict = jsonable_encoder(params)
+        filters = jsonable_encoder(params)
+        filters = VehicleGetListFilterList(**filters).dict()
+        for key in filters:
+            if filters[key] is not None:
+                filters[key] = json.loads(filters[key])
+        filters.update(VehicleGetListFilterString(**filters).dict())
         results = get_vehicle_list(
-            filter=param_dict,
+            filters=filters,
             current_page=params.current_page,
             page_size=params.page_size,
             order_by=params.order_by,
