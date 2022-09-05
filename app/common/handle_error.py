@@ -56,7 +56,7 @@ class MethodNotAllowed(APIException):
 
 
 class UnAuthenticatedException(APIException):
-    def __init__(self, message=ErrorMessages.un_authorized):
+    def __init__(self, message=ErrorMessages.un_authenticated):
         super().__init__(
             http_status=status.HTTP_401_UNAUTHORIZED,
             message=message,
@@ -75,3 +75,12 @@ class UnAuthorizedException(APIException):
 
     def __str__(self):
         return "Unauthorized"
+
+
+class ValidateException(APIException):
+    def __init__(self, message):
+
+        super().__init__(
+            http_status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            message=message,
+        )

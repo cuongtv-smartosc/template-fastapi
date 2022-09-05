@@ -8,6 +8,7 @@ from app.api.v1.Overview.pdi_status_chart_router import pdi_status_chart_router
 from app.api.v1.Overview.sale_type_stats_router import sale_type_stats_router
 from app.api.v1.user_router import user_router
 from app.api.v1.vehicle_model_router import vehicle_model
+from app.api.v1.vehicle_router import vehicle_router
 from app.config import settings
 
 api_v1_router = APIRouter()
@@ -36,6 +37,14 @@ api_v1_router.include_router(
 api_v1_router.include_router(
     user_router,
     prefix=f"{settings.API_PREFIX}/user",
+)
+api_v1_router.include_router(
+    vehicle_router,
+    prefix=f"{settings.API_PREFIX}/electric_vehicle",
+)
+api_v1_router.include_router(
+    vehicle_router,
+    prefix=f"{settings.API_PREFIX}/electric_vehicle",
 )
 
 api_v1_router.include_router(
