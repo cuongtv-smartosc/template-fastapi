@@ -42,6 +42,10 @@ api_v1_router.include_router(
     vehicle_router,
     prefix=f"{settings.API_PREFIX}/electric_vehicle",
 )
+api_v1_router.include_router(
+    vehicle_router,
+    prefix=f"{settings.API_PREFIX}/electric_vehicle",
+)
 
 api_v1_router.include_router(
     sale_type_stats_router,
