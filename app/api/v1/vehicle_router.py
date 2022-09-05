@@ -35,4 +35,4 @@ async def get_vehicles(
         )
         return resp.success(data=results)
     except ValidationError as e:
-        raise ValidateException(e.errors(), key_return="detail")
+        raise ValidateException(e.errors())

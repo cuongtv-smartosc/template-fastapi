@@ -1,5 +1,8 @@
 from fastapi import FastAPI, Request
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse
+from starlette import status
 from starlette.middleware.cors import CORSMiddleware
 
 from app.common.database import engine
@@ -93,5 +96,21 @@ def register_exception(app: FastAPI) -> None:
     async def unicorn_exception_handler(request: Request, exc: APIException):
         return JSONResponse(
             status_code=exc.http_status,
-            content={exc.key_return: exc.message},
+            content={"message": exc.message},
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(
+        request: Request, exc: RequestValidationError
+    ):
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content=jsonable_encoder({"message": exc.errors()}),
+        )
+
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(request: Request, exc: HTTPException):
+        return JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content=jsonable_encoder({"message": exc.detail}),
         )

@@ -13,6 +13,17 @@ def validate_unique(table, field, **kwargs):
     return kwargs[field]
 
 
+def check_role_supervisor(current_user):
+    roles = current_user.role_name
+    if not roles:
+        roles = []
+    return (
+        "SCG-Inter Administrator" in roles
+        or "SCG-Inter Fleet Manager" in roles
+        or "System Manager" in roles
+    )
+
+
 def get_company_name_from_user(current_user: User, db):
     company_name_list = (
         db.query(Company.name)

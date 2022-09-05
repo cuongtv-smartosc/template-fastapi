@@ -3,7 +3,7 @@ import math
 
 from fastapi.encoders import jsonable_encoder
 
-from app.common.util import get_company_name_from_user
+from app.common.util import check_role_supervisor, get_company_name_from_user
 from app.models.company import Company
 from app.models.customer import Customer
 from app.models.division import Division
@@ -12,17 +12,6 @@ from app.models.electric_vehicle_divison import VehicleDivision
 from app.models.sale_information import SaleInformation
 from app.models.work_shift import WorkShift
 from app.schemas.electric_vehicle import VehicleFilter, VehicleFilterList
-
-
-def check_role_supervisor(current_user):
-    roles = current_user.role_name
-    if not roles:
-        roles = []
-    return (
-        "SCG-Inter Administrator" in roles
-        or "SCG-Inter Fleet Manager" in roles
-        or "System Manager" in roles
-    )
 
 
 def vehicles_list_base_filter(group_by, query, db, current_user, params):
