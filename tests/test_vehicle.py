@@ -99,7 +99,7 @@ class GetVehiclesTestCase(BaseTestCase):
             f"{settings.API_PREFIX}/electric_vehicle", params=params
         )
         res = response.json()
-        data = res.get("detail")
+        data = res.get("message")
         assert response.status_code != 200
         assert response.status_code == 422
         assert data[0].get("msg") == "value is not a valid integer"
@@ -114,7 +114,7 @@ class GetVehiclesTestCase(BaseTestCase):
             f"{settings.API_PREFIX}/electric_vehicle", params=params
         )
         res = response.json()
-        data = res.get("detail")
+        data = res.get("message")
         assert response.status_code == 422
         assert data[0].get("msg") == "value is not a valid list"
         assert data[0].get("type") == "value_error"
@@ -128,7 +128,7 @@ class GetVehiclesTestCase(BaseTestCase):
             f"{settings.API_PREFIX}/electric_vehicle", params=params
         )
         res = response.json()
-        data = res.get("detail")
+        data = res.get("message")
         assert response.status_code != 200
         assert response.status_code == 422
         assert data[0].get("msg") == "value is not a valid integer"
