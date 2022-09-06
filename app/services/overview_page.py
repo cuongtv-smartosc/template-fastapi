@@ -116,13 +116,9 @@ def contract_expire_report(
         )
 
     from_date, to_date = get_date_from_period(expire_period)
-    if to_date is None:
-        query = query.filter(SaleInformation.end_date >= from_date)
-    else:
-        query = query.filter(
-            SaleInformation.end_date >= from_date,
-            SaleInformation.end_date <= to_date,
-        )
+    query = query.filter(SaleInformation.end_date >= from_date)
+    if to_date is not None:
+        query = query.filter(SaleInformation.end_date <= to_date)
 
     total = query.group_by(SaleInformation.sale_order_number).count()
     query = (
