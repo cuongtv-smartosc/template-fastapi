@@ -31,13 +31,13 @@ async def get_vehicles(
 ):
     try:
         filters = jsonable_encoder(params)
-        filters = VehicleGetListFilterList(**filters).dict()
-        for key in filters:
-            if filters[key] is not None:
-                filters[key] = json.loads(filters[key])
-        filters.update(VehicleGetListFilterString(**filters).dict())
+        filter = VehicleGetListFilterList(**filters).dict()
+        for key in filter:
+            if filter[key] is not None:
+                filter[key] = json.loads(filter[key])
+        filter.update(VehicleGetListFilterString(**filters).dict())
         results = get_vehicle_list(
-            filters=filters,
+            filters=filter,
             current_page=params.current_page,
             page_size=params.page_size,
             order_by=params.order_by,
