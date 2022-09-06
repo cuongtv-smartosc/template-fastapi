@@ -62,6 +62,8 @@ def get_date_from_period(expire_period):
         return next_three_months, next_six_months
     if expire_period == "6-12 months":
         return next_six_months, next_twelve_months
+    if expire_period == "over 12 months":
+        return next_twelve_months, None
 
 
 def get_company_name_from_user(current_user: User, db):

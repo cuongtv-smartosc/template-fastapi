@@ -1,7 +1,5 @@
 import math
-from datetime import datetime
 
-from dateutil.relativedelta import relativedelta
 from sqlalchemy import func, text
 
 from app.common.chart import get_pie_chart
@@ -117,14 +115,13 @@ def contract_expire_report(
             Customer.system_user == current_user.username,
         )
 
-    if expire_period == "over 12 months":
-        next_twelve_months = datetime.today() + relativedelta(months=12)
-        query = query.filter(SaleInformation.end_date >= next_twelve_months)
+    from_date, to_date = get_date_from_period(expire_period)
+    if to_date is None:
+        query = query.filter(SaleInformation.end_date >= from_date)
     else:
-        from_date, end_date = get_date_from_period(expire_period)
         query = query.filter(
             SaleInformation.end_date >= from_date,
-            SaleInformation.end_date <= end_date,
+            SaleInformation.end_date <= to_date,
         )
 
     total = query.group_by(SaleInformation.sale_order_number).count()
