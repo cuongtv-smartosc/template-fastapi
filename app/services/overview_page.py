@@ -136,7 +136,7 @@ def contract_expire_report(
         .all()
     )
     summary = {
-        "value": math.ceil(total / int(number_of_record))
+        "total page": math.ceil(total / int(number_of_record))
         if number_of_record != 0
         else 0,
         "label": "Page count",
