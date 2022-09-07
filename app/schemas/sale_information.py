@@ -1,6 +1,5 @@
 from pydantic import BaseModel, conint, constr, validator
 
-from app.common.util import validate_array_data
 from app.schemas.base import BaseModelSchemas
 
 
@@ -34,13 +33,30 @@ class SaleInformationFilter(BaseModel):
     sort_order: str
 
     @validator("expire_period")
-    def unique_check_expire_period(cls, v):
-        return validate_array_data(v)
+    def unique_check_expire_period(cls, expire_period):
+        if expire_period not in [
+            "0-3 months",
+            "3-6 months",
+            "6-12 months",
+            "over 12 months",
+        ]:
+            raise ValueError(f"Invalid value: {expire_period}")
+        return expire_period
 
     @validator("sort_by")
-    def unique_check_sort_by(cls, v):
-        return validate_array_data(v)
+    def unique_check_sort_by(cls, sort_by):
+        if sort_by not in [
+            "contract_number",
+            "customer_name",
+            "expire_date",
+            "number_of_vehicles",
+            "remaining_days",
+        ]:
+            raise ValueError(f"Invalid value: {sort_by}")
+        return sort_by
 
     @validator("sort_order")
-    def unique_check_sort_order(cls, v):
-        return validate_array_data(v)
+    def unique_check_sort_order(cls, sort_order):
+        if sort_order not in ["desc", "asc"]:
+            raise ValueError(f"Invalid value: {sort_order}")
+        return sort_order

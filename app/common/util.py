@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
 
@@ -8,6 +8,10 @@ from app.models.customer import Customer
 from app.models.user import User
 
 
+def range_time_test_api(day):
+    return (datetime.now() + timedelta(day)).strftime("%Y-%m-%d")
+
+
 def validate_unique(table, field, **kwargs):
     session = SessionLocal()
     q = session.query(getattr(table, field)).filter_by(**kwargs).scalar()
@@ -15,27 +19,6 @@ def validate_unique(table, field, **kwargs):
     if q:
         raise ValueError(f"""Table {table.__name__} {field} already exist""")
     return kwargs[field]
-
-
-array_data = [
-    "0-3 months",
-    "3-6 months",
-    "6-12 months",
-    "over 12 months",
-    "contract_number",
-    "customer_name",
-    "expire_date",
-    "number_of_vehicles",
-    "remaining_days",
-    "desc",
-    "asc",
-]
-
-
-def validate_array_data(data):
-    if data not in array_data:
-        raise ValueError(f"Invalid value: {data}")
-    return data
 
 
 def check_role_supervisor(current_user):
