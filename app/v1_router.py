@@ -62,6 +62,11 @@ api_v1_router.include_router(
 )
 
 api_v1_router.include_router(
+    vehicle_by_location_router.vehicle_by_location_router,
+    prefix=f"{settings.API_PREFIX}/vehicle_by_locations",
+)
+
+api_v1_router.include_router(
     contract_expire_router,
     prefix=f"{settings.API_PREFIX}/contract_expire_reports",
 )
