@@ -2,7 +2,6 @@ import json
 
 from pydantic import BaseModel, conint, constr, validator
 
-from app.common.util import validate_order_by
 from app.schemas.base import BaseModelSchemas
 
 
@@ -46,7 +45,7 @@ class VehicleGetListParams(BaseModel):
     offset: constr(min_length=1) | None = None
     page: conint(ge=0) | None = 0
     number_of_record: conint(ge=1) | None = 5
-    sort_by: constr(min_length=11, max_length=18) | None = "number_of_vehicles"
+    sort_by: constr(min_length=8, max_length=18) | None = "number_of_vehicles"
     sort_order: constr(min_length=3, max_length=4) | None = "desc"
 
 
@@ -91,9 +90,13 @@ class VehicleGetListFilterString(BaseModel):
     sort_order: str = None
 
     @validator("sort_by")
-    def unique_check_sort_by(cls, v):
-        return validate_order_by(v)
+    def unique_check_sort_by(cls, sort_by):
+        if sort_by not in ["number_of_vehicles", "location"]:
+            raise ValueError(f"Invalid value: {sort_by}")
+        return sort_by
 
     @validator("sort_order")
-    def unique_check_sort_order(cls, v):
-        return validate_order_by(v)
+    def unique_check_sort_order(cls, sort_order):
+        if sort_order not in ["asc", "desc"]:
+            raise ValueError(f"Invalid value: {sort_order}")
+        return sort_order

@@ -63,9 +63,3 @@ def get_company_name_from_user(current_user: User, db):
         return []
     else:
         return company_name_list
-
-
-def validate_order_by(order_by):
-    if order_by not in ["number_of_vehicles", "location", "asc", "desc"]:
-        raise ValueError(f"Invalid value: {order_by}")
-    return order_by

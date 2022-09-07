@@ -221,7 +221,7 @@ class TestContractExpireReports(BaseTestCase):
         assert result[1]["remaining_days"] == 44
         assert result[0]["expire_date"] == range_time_test_api(45)
         assert result[1]["expire_date"] == range_time_test_api(44)
-        assert data["summary"]["total page"] == 1
+        assert data["summary"]["total_page"] == 1
 
     def test_contract_expire_report_asc(self):
         params = {
@@ -240,7 +240,7 @@ class TestContractExpireReports(BaseTestCase):
         assert result[0]["number_of_vehicles"] == 5
         assert result[0]["remaining_days"] == 45
         assert result[0]["expire_date"] == range_time_test_api(45)
-        assert data["summary"]["total page"] == 2
+        assert data["summary"]["total_page"] == 2
 
     def test_contract_expire_report_no_filter(self):
         params = {}
@@ -253,7 +253,8 @@ class TestContractExpireReports(BaseTestCase):
         assert result[0]["number_of_vehicles"] == 3
         assert result[0]["remaining_days"] == 44
         assert result[0]["expire_date"] == range_time_test_api(44)
-        assert data["summary"]["total page"] == 1
+        assert data["summary"]["total_page"] == 1
+
 
 class TestVehicleByLocations(BaseTestCase):
     def setUp(self) -> None:
@@ -302,14 +303,14 @@ class TestVehicleByLocations(BaseTestCase):
         assert results[1]["location"] == "Hai Phong"
         assert results[0]["number_of_vehicles"] == 7
         assert results[1]["number_of_vehicles"] == 6
-        assert summary[0]["current_page"] == 1
-        assert summary[0]["total_page"] == 3
+        assert summary["current_page"] == 1
+        assert summary["total_page"] == 3
 
     def test_vehicle_by_location_asc(self):
         params = {
             "page": 0,
             "number_of_record": 2,
-            "sort_by": "number_of_vehicles",
+            "sort_by": "location",
             "sort_order": "asc",
         }
         response = self.client.get(
@@ -318,12 +319,13 @@ class TestVehicleByLocations(BaseTestCase):
         results = response.json().get("results")
         summary = response.json().get("summary")
 
-        assert results[0]["location"] == "Ha Noi"
-        assert results[1]["location"] == "Ha Nam"
-        assert results[0]["number_of_vehicles"] == 3
-        assert results[1]["number_of_vehicles"] == 4
-        assert summary[0]["current_page"] == 1
-        assert summary[0]["total_page"] == 3
+        assert results[0]["location"] == "Ha Nam"
+        assert results[1]["location"] == "Ha Noi"
+        assert results[0]["number_of_vehicles"] == 4
+        assert results[1]["number_of_vehicles"] == 3
+        assert summary["current_page"] == 1
+        assert summary["total_page"] == 3
+        assert 1 == 1
 
     def test_vehicle_by_location_no_filter(self):
         params = {}
@@ -344,5 +346,5 @@ class TestVehicleByLocations(BaseTestCase):
         assert results[2]["number_of_vehicles"] == 5
         assert results[3]["number_of_vehicles"] == 4
         assert results[4]["number_of_vehicles"] == 3
-        assert summary[0]["current_page"] == 1
-        assert summary[0]["total_page"] == 1
+        assert summary["current_page"] == 1
+        assert summary["total_page"] == 1

@@ -118,12 +118,10 @@ def vehicle_by_location(
     data = query.offset(offset).limit(int(number_of_record) + offset).all()
     total_page = math.ceil(len(query.all()) / int(number_of_record))
 
-    summary = [
-        {
-            "current_page": page + 1 if total_page != 0 else 0,
-            "total_page": total_page,
-        }
-    ]
+    summary = {
+        "current_page": page + 1 if total_page != 0 else 0,
+        "total_page": total_page,
+    }
     data = {"results": data, "summary": summary}
     return data
 
