@@ -128,12 +128,11 @@ def contract_expire_report(
         .offset(int(number_of_record) * int(page))
         .all()
     )
+    total_page = math.ceil(total / int(number_of_record))
+
     summary = {
-        "total page": math.ceil(total / int(number_of_record))
-        if number_of_record != 0
-        else 0,
-        "label": "Page count",
-        "datatype": "Int",
+        "current_page": page + 1 if number_of_record != 0 else 0,
+        "total page": total_page,
     }
     data = {"results": query, "summary": summary}
     return data
