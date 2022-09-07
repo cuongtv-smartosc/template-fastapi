@@ -133,3 +133,53 @@ class GetVehiclesTestCase(BaseTestCase):
         assert response.status_code == 422
         assert data[0].get("msg") == "value is not a valid integer"
         assert data[0].get("loc")[1] == "current_page"
+
+
+class GetVehicleDetailTestCase(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        UserFactory.create()
+        token = get_token_for_test()
+        self.client.headers = {"Authorization": f"Bearer {token}"}
+        VehicleFactory.create_batch(25)
+
+    def test_get_detail_success(self):
+        id = 1
+        response = self.client.get(
+            f"{settings.API_PREFIX}/electric_vehicle/{id}",
+        )
+        res = response.json()
+        data = res.get("data")
+        detail = data.get("detail")
+        charger = data.get("detail")
+        model = data.get("model")
+        assert response.status_code == 200
+        assert res["msg"] == "success"
+        assert detail.get("id") == 1
+        assert detail.get("charger_id") == charger.get("id")
+        assert detail.get("model_id") == model.get("id")
+
+    def test_get_detail_by_error_id(self):
+        id = "abc"
+        response = self.client.get(
+            f"{settings.API_PREFIX}/electric_vehicle/{id}",
+        )
+        res = response.json()
+        data = res.get("message")
+        assert response.status_code != 200
+        assert response.status_code == 422
+        assert data[0].get("msg") == "value is not a valid integer"
+        assert data[0].get("loc")[0] == "path"
+        assert data[0].get("loc")[1] == "id"
+        assert data[0].get("type") == "type_error.integer"
+
+    def test_get_detail_by_not_exist_id(self):
+        id = 26
+        response = self.client.get(
+            f"{settings.API_PREFIX}/electric_vehicle/{id}",
+        )
+        res = response.json()
+        data = res.get("message")
+        assert response.status_code != 200
+        assert response.status_code == 404
+        assert data == f"{id} is not existed"

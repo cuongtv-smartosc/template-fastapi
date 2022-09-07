@@ -4,6 +4,7 @@ from factory import LazyAttribute
 from app.models.electric_vehicle import Vehicle
 from tests.base_test import SessionTest
 from tests.factories.charger import ChargerFactory
+from tests.factories.electric_vehicle_model import VehicleModelFactory
 from tests.factories.sale_information import SaleInformationFactory
 
 
@@ -28,3 +29,4 @@ class VehicleFactory(factory.alchemy.SQLAlchemyModelFactory):
         ]
     )
     charger_id = LazyAttribute(lambda a: ChargerFactory().id)
+    model_id = LazyAttribute(lambda a: VehicleModelFactory().id)

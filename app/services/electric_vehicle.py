@@ -2,6 +2,7 @@ import math
 
 from fastapi.encoders import jsonable_encoder
 
+from app.common.handle_error import NotFoundException
 from app.common.util import check_role_supervisor, get_company_name_from_user
 from app.models.company import Company
 from app.models.customer import Customer
@@ -135,3 +136,51 @@ def get_vehicle_list(
         "list_edge": edges,
     }
     return results
+
+
+def check_exist_id(id, db, current_user):
+    query = db.query(Vehicle)
+    if not check_role_supervisor(current_user):
+        company_names = get_company_name_from_user(current_user, db)
+        query = (
+            query.join(SaleInformation, Customer, Company)
+            .filter(
+                Vehicle.sale_id == SaleInformation.id,
+                SaleInformation.customer_id == Customer.id,
+                Customer.company_id == Company.id,
+                Company.name.in_(company_names),
+                Vehicle.id == id,
+            )
+            .first()
+        )
+        if query:
+            return True
+        else:
+            return False
+    else:
+        query = query.filter(
+            Vehicle.id == id,
+        ).first()
+        if query:
+            return True
+        else:
+            return False
+
+
+def get_detail(id, db, current_user):
+    if check_exist_id(id, db, current_user):
+        detail = (
+            db.query(Vehicle)
+            .filter(
+                Vehicle.id == id,
+            )
+            .first()
+        )
+        data = {
+            "detail": jsonable_encoder(detail),
+            "charger": detail.charger,
+            "model": detail.vehicle_model,
+        }
+        return data
+    else:
+        raise NotFoundException(f"{id} is not existed")

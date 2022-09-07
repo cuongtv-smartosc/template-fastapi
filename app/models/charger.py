@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 from app.common.database import DBBaseCustom
 
@@ -28,3 +29,4 @@ class Charger(DBBaseCustom):
     import_date = Column(DateTime)
     charger_pdi_status = Column(String(255))
     manufactoring_date = Column(Date)
+    charger = relationship("Vehicle", backref="charger")

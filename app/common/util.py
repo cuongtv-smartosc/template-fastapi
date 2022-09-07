@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
+from fastapi.encoders import jsonable_encoder
 
 from app.common.database import SessionLocal
 from app.models.company import Company
@@ -59,7 +60,8 @@ def get_company_name_from_user(current_user: User, db):
         )
         .all()
     )
-    if company_name_list is None:
+    company_name_list = jsonable_encoder(company_name_list)
+    if company_name_list == []:
         return []
-    else:
-        return company_name_list
+    company_name = company_name_list[0].get("name")
+    return [company_name]

@@ -10,4 +10,4 @@ class VehicleModelFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = SessionTest()
         sqlalchemy_session_persistence = "commit"
 
-    id = factory.fuzzy.FuzzyText("id")
+    name = factory.fuzzy.FuzzyText("id")
