@@ -1,6 +1,11 @@
+import math
+
 from sqlalchemy import func, text
 
 from app.common.chart import get_pie_chart
+from app.common.util import check_role_supervisor, get_date_from_period
+from app.models.company import Company
+from app.models.customer import Customer
 from app.models.electric_vehicle import Vehicle
 from app.models.sale_information import SaleInformation
 
@@ -75,3 +80,59 @@ def pdi_status_chart(db):
         labels_pdi_status,
     )
     return chart
+
+
+def contract_expire_report(
+    page,
+    number_of_record,
+    expire_period,
+    sort_by,
+    sort_order,
+    db,
+    current_user,
+):
+    order_by = f"{sort_by} " f"{sort_order}"
+    if sort_by == "contract_number":
+        order_by = f"(0+contract_number) {sort_order}"
+
+    query = (
+        db.query(
+            SaleInformation.sale_order_number.label("contract_number"),
+            Customer.customer_name.label("customer_name"),
+            func.count(Vehicle.id).label("number_of_vehicles"),
+            SaleInformation.end_date.label("expire_date"),
+            func.datediff(SaleInformation.end_date, func.current_date()).label(
+                "remaining_days"
+            ),
+        )
+        .join(Customer, SaleInformation.customer_id == Customer.id)
+        .join(Vehicle, SaleInformation.id == Vehicle.sale_id)
+    )
+
+    if not check_role_supervisor(current_user):
+        query = query.filter(
+            Customer.company_id == Company.id,
+            Customer.system_user == current_user.username,
+        )
+
+    from_date, to_date = get_date_from_period(expire_period)
+    query = query.filter(SaleInformation.end_date >= from_date)
+    if to_date is not None:
+        query = query.filter(SaleInformation.end_date <= to_date)
+
+    total = query.group_by(SaleInformation.sale_order_number).count()
+    query = (
+        query.group_by(SaleInformation.sale_order_number)
+        .order_by(text(order_by))
+        .limit(number_of_record)
+        .offset(int(number_of_record) * int(page))
+        .all()
+    )
+    total_page = math.ceil(total / int(number_of_record))
+
+    summary = {
+        "current_page": page + 1 if number_of_record != 0 else 0,
+        "total page": total_page,
+    }
+    data = {"results": query, "summary": summary}
+    return data
