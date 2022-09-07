@@ -1,3 +1,4 @@
+from app.common.util import range_time_test_api
 from app.config import settings
 from tests.base_test import BaseTestCase, get_token_for_test
 from tests.factories.electric_vehicle import VehicleFactory
@@ -180,21 +181,21 @@ class TestContractExpireReports(BaseTestCase):
             3,
             sale_id=sale_infor(
                 sale_order_number="00009",
-                end_date="2022-10-20",
+                end_date=range_time_test_api(44),
             ).id,
         )
         vehicle.create_batch(
             5,
             sale_id=sale_infor(
                 sale_order_number="00008",
-                end_date="2022-10-21",
+                end_date=range_time_test_api(45),
             ).id,
         )
         vehicle.create_batch(
             4,
             sale_id=sale_infor(
                 sale_order_number="00010",
-                end_date="2023-10-20",
+                end_date=range_time_test_api(395),
             ).id,
         )
 
@@ -218,8 +219,8 @@ class TestContractExpireReports(BaseTestCase):
         assert result[1]["number_of_vehicles"] == 3
         assert result[0]["remaining_days"] == 45
         assert result[1]["remaining_days"] == 44
-        assert result[0]["expire_date"] == "2022-10-21"
-        assert result[1]["expire_date"] == "2022-10-20"
+        assert result[0]["expire_date"] == range_time_test_api(45)
+        assert result[1]["expire_date"] == range_time_test_api(44)
         assert data["summary"]["total page"] == 1
 
     def test_contract_expire_report_asc(self):
@@ -238,7 +239,7 @@ class TestContractExpireReports(BaseTestCase):
         assert result[0]["contract_number"] == "00008"
         assert result[0]["number_of_vehicles"] == 5
         assert result[0]["remaining_days"] == 45
-        assert result[0]["expire_date"] == "2022-10-21"
+        assert result[0]["expire_date"] == range_time_test_api(45)
         assert data["summary"]["total page"] == 2
 
     def test_contract_expire_report_no_filter(self):
@@ -251,5 +252,5 @@ class TestContractExpireReports(BaseTestCase):
         assert result[0]["contract_number"] == "00009"
         assert result[0]["number_of_vehicles"] == 3
         assert result[0]["remaining_days"] == 44
-        assert result[0]["expire_date"] == "2022-10-20"
+        assert result[0]["expire_date"] == range_time_test_api(44)
         assert data["summary"]["total page"] == 1
