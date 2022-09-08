@@ -285,6 +285,10 @@ class TestVehicleByLocations(BaseTestCase):
             7,
             sale_id=sale_infor(location="Ho Chi Minh").id,
         )
+        vehicle.create_batch(
+            3,
+            sale_id=sale_infor(location="Ha Tay").id,
+        )
 
     def test_vehicle_by_location_desc(self):
         params = {
@@ -303,6 +307,26 @@ class TestVehicleByLocations(BaseTestCase):
         assert results[1]["location"] == "Hai Phong"
         assert results[0]["number_of_vehicles"] == 7
         assert results[1]["number_of_vehicles"] == 6
+        assert summary["current_page"] == 1
+        assert summary["total_page"] == 3
+
+    def test_vehicle_by_location_sort_order_more(self):
+        params = {
+            "page": 0,
+            "number_of_record": 2,
+            "sort_by": "number_of_vehicles",
+            "sort_order": "asc",
+        }
+        response = self.client.get(
+            f"{settings.API_PREFIX}/vehicle_by_locations", params=params
+        )
+        results = response.json().get("results")
+        summary = response.json().get("summary")
+
+        assert results[0]["location"] == "Ha Noi"
+        assert results[1]["location"] == "Ha Tay"
+        assert results[0]["number_of_vehicles"] == 3
+        assert results[1]["number_of_vehicles"] == 3
         assert summary["current_page"] == 1
         assert summary["total_page"] == 3
 
@@ -335,7 +359,6 @@ class TestVehicleByLocations(BaseTestCase):
 
         results = response.json().get("results")
         summary = response.json().get("summary")
-
         assert results[0]["location"] == "Ho Chi Minh"
         assert results[1]["location"] == "Hai Phong"
         assert results[2]["location"] == "Hai Duong"
@@ -347,4 +370,4 @@ class TestVehicleByLocations(BaseTestCase):
         assert results[3]["number_of_vehicles"] == 4
         assert results[4]["number_of_vehicles"] == 3
         assert summary["current_page"] == 1
-        assert summary["total_page"] == 1
+        assert summary["total_page"] == 2

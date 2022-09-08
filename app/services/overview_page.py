@@ -120,8 +120,7 @@ def vehicle_by_location(
         "current_page": page + 1 if total_page != 0 else 0,
         "total_page": total_page,
     }
-    data = {"results": data, "summary": summary}
-    return data
+    return {"results": data, "summary": summary}
 
 
 def contract_expire_report(
@@ -176,5 +175,4 @@ def contract_expire_report(
         "current_page": page + 1 if number_of_record != 0 else 0,
         "total_page": total_page,
     }
-    data = {"results": query, "summary": summary}
-    return data
+    return {"results": query, "summary": summary}
