@@ -91,9 +91,7 @@ def vehicle_by_location(
     current_user,
 ):
     order_by = f"{sort_by} {sort_order}"
-    order_by_more = "number_of_vehicles asc"
-    if sort_by == "number_of_vehicles":
-        order_by_more = "location asc"
+    order_by_more = "location asc"
 
     query = db.query(
         SaleInformation.location.label("location"),
