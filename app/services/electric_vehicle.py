@@ -139,7 +139,9 @@ def get_vehicle_list(
 
 
 def get_by_id(id, db, current_user):
-    query = db.query(Vehicle)
+    query = db.query(Vehicle).filter(
+        Vehicle.id == id,
+    )
     if not check_role_supervisor(current_user):
         company_names = get_company_name_from_user(current_user, db)
         query = query.join(SaleInformation, Customer, Company).filter(
@@ -149,21 +151,15 @@ def get_by_id(id, db, current_user):
             Company.name.in_(company_names),
             Vehicle.id == id,
         )
-    else:
-        query = query.filter(
-            Vehicle.id == id,
-        )
-    return query
+    return query.first()
 
 
 def get_detail(id, db, current_user):
-    vehicle = get_by_id(id, db, current_user).first()
-    if vehicle:
-        data = {
-            "detail": jsonable_encoder(vehicle),
-            "charger": vehicle.charger,
-            "model": vehicle.vehicle_model,
-        }
-        return data
-    else:
+    vehicle = get_by_id(id, db, current_user)
+    if not vehicle:
         raise NotFoundException(f"{id} is not existed")
+    return {
+        "detail": jsonable_encoder(vehicle),
+        "charger": vehicle.charger,
+        "model": vehicle.vehicle_model,
+    }
