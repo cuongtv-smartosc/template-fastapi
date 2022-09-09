@@ -141,7 +141,7 @@ class GetVehicleDetailTestCase(BaseTestCase):
         user = UserFactory.create()
         token = get_token_for_test(username=user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
-        customer = CustomerFactory.create(system_user="guest")
+        customer = CustomerFactory.create(system_user="2")
         sale_if = SaleInformationFactory.create(customer_id=customer.id)
         VehicleFactory.create_batch(3, sale_id=sale_if.id)
         VehicleFactory.create_batch(25)
