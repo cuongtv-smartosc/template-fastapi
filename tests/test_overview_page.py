@@ -221,7 +221,7 @@ class TestContractExpireReports(BaseTestCase):
         assert result[1]["remaining_days"] == 44
         assert result[0]["expire_date"] == range_time_test_api(45)
         assert result[1]["expire_date"] == range_time_test_api(44)
-        assert data["summary"]["total page"] == 1
+        assert data["summary"]["total_page"] == 1
 
     def test_contract_expire_report_asc(self):
         params = {
@@ -240,7 +240,7 @@ class TestContractExpireReports(BaseTestCase):
         assert result[0]["number_of_vehicles"] == 5
         assert result[0]["remaining_days"] == 45
         assert result[0]["expire_date"] == range_time_test_api(45)
-        assert data["summary"]["total page"] == 2
+        assert data["summary"]["total_page"] == 2
 
     def test_contract_expire_report_no_filter(self):
         params = {}
@@ -253,4 +253,126 @@ class TestContractExpireReports(BaseTestCase):
         assert result[0]["number_of_vehicles"] == 3
         assert result[0]["remaining_days"] == 44
         assert result[0]["expire_date"] == range_time_test_api(44)
-        assert data["summary"]["total page"] == 1
+        assert data["summary"]["total_page"] == 1
+
+
+class TestVehicleByLocations(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        UserFactory.create()
+        token = get_token_for_test()
+        self.client.headers = {"Authorization": f"Bearer {token}"}
+        sale_infor = SaleInformationFactory
+        vehicle = VehicleFactory
+
+        vehicle.create_batch(
+            3,
+            sale_id=sale_infor(location="Ha Noi").id,
+        )
+        vehicle.create_batch(
+            4,
+            sale_id=sale_infor(location="Ha Nam").id,
+        )
+        vehicle.create_batch(
+            5,
+            sale_id=sale_infor(location="Hai Duong").id,
+        )
+        vehicle.create_batch(
+            6,
+            sale_id=sale_infor(location="Hai Phong").id,
+        )
+        vehicle.create_batch(
+            7,
+            sale_id=sale_infor(location="Ho Chi Minh").id,
+        )
+        vehicle.create_batch(
+            3,
+            sale_id=sale_infor(location="Ha Tay").id,
+        )
+
+    def test_vehicle_by_location_desc(self):
+        params = {
+            "page": 0,
+            "number_of_record": 2,
+            "sort_by": "number_of_vehicles",
+            "sort_order": "desc",
+        }
+        response = self.client.get(
+            f"{settings.API_PREFIX}/vehicle_by_locations", params=params
+        )
+
+        data = response.json().get("data")
+        results = data.get("results")
+        summary = data.get("summary")
+
+        assert results[0]["location"] == "Ho Chi Minh"
+        assert results[1]["location"] == "Hai Phong"
+        assert results[0]["number_of_vehicles"] == 7
+        assert results[1]["number_of_vehicles"] == 6
+        assert summary["current_page"] == 1
+        assert summary["total_page"] == 3
+
+    def test_vehicle_by_location_sort_order_more(self):
+        params = {
+            "page": 0,
+            "number_of_record": 2,
+            "sort_by": "number_of_vehicles",
+            "sort_order": "asc",
+        }
+        response = self.client.get(
+            f"{settings.API_PREFIX}/vehicle_by_locations", params=params
+        )
+        data = response.json().get("data")
+        results = data.get("results")
+        summary = data.get("summary")
+
+        assert results[0]["location"] == "Ha Noi"
+        assert results[1]["location"] == "Ha Tay"
+        assert results[0]["number_of_vehicles"] == 3
+        assert results[1]["number_of_vehicles"] == 3
+        assert summary["current_page"] == 1
+        assert summary["total_page"] == 3
+
+    def test_vehicle_by_location_asc(self):
+        params = {
+            "page": 0,
+            "number_of_record": 2,
+            "sort_by": "location",
+            "sort_order": "asc",
+        }
+        response = self.client.get(
+            f"{settings.API_PREFIX}/vehicle_by_locations", params=params
+        )
+        data = response.json().get("data")
+        results = data.get("results")
+        summary = data.get("summary")
+
+        assert results[0]["location"] == "Ha Nam"
+        assert results[1]["location"] == "Ha Noi"
+        assert results[0]["number_of_vehicles"] == 4
+        assert results[1]["number_of_vehicles"] == 3
+        assert summary["current_page"] == 1
+        assert summary["total_page"] == 3
+        assert 1 == 1
+
+    def test_vehicle_by_location_no_filter(self):
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/vehicle_by_locations", params=params
+        )
+
+        data = response.json().get("data")
+        results = data.get("results")
+        summary = data.get("summary")
+        assert results[0]["location"] == "Ho Chi Minh"
+        assert results[1]["location"] == "Hai Phong"
+        assert results[2]["location"] == "Hai Duong"
+        assert results[3]["location"] == "Ha Nam"
+        assert results[4]["location"] == "Ha Noi"
+        assert results[0]["number_of_vehicles"] == 7
+        assert results[1]["number_of_vehicles"] == 6
+        assert results[2]["number_of_vehicles"] == 5
+        assert results[3]["number_of_vehicles"] == 4
+        assert results[4]["number_of_vehicles"] == 3
+        assert summary["current_page"] == 1
+        assert summary["total_page"] == 2

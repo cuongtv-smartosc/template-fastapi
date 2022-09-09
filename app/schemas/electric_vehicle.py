@@ -26,8 +26,8 @@ class VehicleCreate(VehicleBase):
 
 
 class VehicleGetListParams(BaseModel):
-    page_size: conint(ge=1)
-    current_page: conint(ge=1)
+    page_size: conint(ge=1) | None = None
+    current_page: conint(ge=1) | None = None
     order_by: constr(min_length=1, max_length=255) | None = None
     company_name: constr(min_length=1) | None = None
     customer_name: constr(min_length=1) | None = None
@@ -43,6 +43,10 @@ class VehicleGetListParams(BaseModel):
     sale_order_number: constr(min_length=1) | None = None
     period: constr(min_length=1) | None = None
     offset: constr(min_length=1) | None = None
+    page: conint(ge=0) | None = 0
+    number_of_record: conint(ge=1) | None = 5
+    sort_by: constr(min_length=8, max_length=18) | None = "number_of_vehicles"
+    sort_order: constr(min_length=3, max_length=4) | None = "desc"
 
 
 class VehicleGetListFilterList(BaseModel):
@@ -82,3 +86,17 @@ class VehicleGetListFilterString(BaseModel):
     sale_order_number: str = None
     period: str = None
     offset: str = None
+    sort_by: str = None
+    sort_order: str = None
+
+    @validator("sort_by")
+    def unique_check_sort_by(cls, sort_by):
+        if sort_by not in ["number_of_vehicles", "location"]:
+            raise ValueError(f"Invalid value: {sort_by}")
+        return sort_by
+
+    @validator("sort_order")
+    def unique_check_sort_order(cls, sort_order):
+        if sort_order not in ["asc", "desc"]:
+            raise ValueError(f"Invalid value: {sort_order}")
+        return sort_order

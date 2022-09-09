@@ -8,6 +8,7 @@ from app.api.v1.overview import (
     contract_expire_router,
     pdi_status_chart_router,
     sale_type_stats_router,
+    vehicle_by_location_router,
 )
 from app.api.v1.user_router import user_router
 from app.api.v1.vehicle_model_router import vehicle_model
@@ -59,6 +60,11 @@ api_v1_router.include_router(
 api_v1_router.include_router(
     pdi_status_chart_router,
     prefix=f"{settings.API_PREFIX}/pdi_status_charts",
+)
+
+api_v1_router.include_router(
+    vehicle_by_location_router,
+    prefix=f"{settings.API_PREFIX}/vehicle_by_locations",
 )
 
 api_v1_router.include_router(

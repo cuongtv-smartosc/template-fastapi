@@ -82,6 +82,47 @@ def pdi_status_chart(db):
     return chart
 
 
+def vehicle_by_location(
+    page,
+    number_of_record,
+    sort_by,
+    sort_order,
+    db,
+    current_user,
+):
+    order_by = f"{sort_by} {sort_order}"
+    order_by_more = "location asc"
+
+    query = db.query(
+        SaleInformation.location.label("location"),
+        func.count(Vehicle.id).label("number_of_vehicles"),
+    ).join(SaleInformation, Vehicle.sale_id == SaleInformation.id)
+
+    if not check_role_supervisor(current_user):
+        query = query.join(
+            Customer,
+            SaleInformation.customer_id == Customer.id,
+        ).filter(
+            Customer.system_user == current_user.username,
+        )
+    offset = int(number_of_record) * int(page)
+
+    query = (
+        query.filter(SaleInformation.location != "")
+        .group_by(SaleInformation.location)
+        .order_by(text(order_by), text(order_by_more))
+    )
+
+    data = query.offset(offset).limit(int(number_of_record) + offset).all()
+    total_page = math.ceil(len(query.all()) / int(number_of_record))
+
+    summary = {
+        "current_page": page + 1 if total_page != 0 else 0,
+        "total_page": total_page,
+    }
+    return {"results": data, "summary": summary}
+
+
 def contract_expire_report(
     page,
     number_of_record,
@@ -132,7 +173,6 @@ def contract_expire_report(
 
     summary = {
         "current_page": page + 1 if number_of_record != 0 else 0,
-        "total page": total_page,
+        "total_page": total_page,
     }
-    data = {"results": query, "summary": summary}
-    return data
+    return {"results": query, "summary": summary}
