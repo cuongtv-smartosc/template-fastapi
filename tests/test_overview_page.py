@@ -300,8 +300,10 @@ class TestVehicleByLocations(BaseTestCase):
         response = self.client.get(
             f"{settings.API_PREFIX}/vehicle_by_locations", params=params
         )
-        results = response.json().get("results")
-        summary = response.json().get("summary")
+
+        data = response.json().get("data")
+        results = data.get("results")
+        summary = data.get("summary")
 
         assert results[0]["location"] == "Ho Chi Minh"
         assert results[1]["location"] == "Hai Phong"
@@ -320,8 +322,9 @@ class TestVehicleByLocations(BaseTestCase):
         response = self.client.get(
             f"{settings.API_PREFIX}/vehicle_by_locations", params=params
         )
-        results = response.json().get("results")
-        summary = response.json().get("summary")
+        data = response.json().get("data")
+        results = data.get("results")
+        summary = data.get("summary")
 
         assert results[0]["location"] == "Ha Noi"
         assert results[1]["location"] == "Ha Tay"
@@ -340,8 +343,9 @@ class TestVehicleByLocations(BaseTestCase):
         response = self.client.get(
             f"{settings.API_PREFIX}/vehicle_by_locations", params=params
         )
-        results = response.json().get("results")
-        summary = response.json().get("summary")
+        data = response.json().get("data")
+        results = data.get("results")
+        summary = data.get("summary")
 
         assert results[0]["location"] == "Ha Nam"
         assert results[1]["location"] == "Ha Noi"
@@ -357,8 +361,9 @@ class TestVehicleByLocations(BaseTestCase):
             f"{settings.API_PREFIX}/vehicle_by_locations", params=params
         )
 
-        results = response.json().get("results")
-        summary = response.json().get("summary")
+        data = response.json().get("data")
+        results = data.get("results")
+        summary = data.get("summary")
         assert results[0]["location"] == "Ho Chi Minh"
         assert results[1]["location"] == "Hai Phong"
         assert results[2]["location"] == "Hai Duong"

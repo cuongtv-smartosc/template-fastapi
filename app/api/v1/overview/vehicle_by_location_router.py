@@ -9,6 +9,7 @@ from app.schemas.electric_vehicle import (
     VehicleGetListFilterString,
     VehicleGetListParams,
 )
+from app.schemas.response import resp
 from app.services.auth import get_current_user
 from app.services.overview_page import vehicle_by_location
 
@@ -34,6 +35,6 @@ def vehicle_by_locations(
         data = vehicle_by_location(
             page, number_of_record, sort_by, sort_order, db, current_user
         )
-        return data
+        return resp.success(data=data)
     except ValidationError as e:
         raise ValidateException(e.errors())
