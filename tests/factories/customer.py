@@ -14,3 +14,4 @@ class CustomerFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     customer_name = factory.fuzzy.FuzzyText("customer_name")
     company_id = LazyAttribute(lambda a: CompanyFactory().id)
+    system_user = factory.fuzzy.FuzzyText("name")

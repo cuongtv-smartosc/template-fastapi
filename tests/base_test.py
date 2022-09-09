@@ -24,9 +24,9 @@ def _get_test_db():
         pass
 
 
-def get_token_for_test():
+def get_token_for_test(username):
     token = create_access_token(
-        data={"sub": "admin"},
+        data={"sub": username},
         expires_delta=timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES)),
     )
     return token

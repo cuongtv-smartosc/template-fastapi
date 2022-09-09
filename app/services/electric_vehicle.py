@@ -138,48 +138,31 @@ def get_vehicle_list(
     return results
 
 
-def check_exist_id(id, db, current_user):
+def get_by_id(id, db, current_user):
     query = db.query(Vehicle)
     if not check_role_supervisor(current_user):
         company_names = get_company_name_from_user(current_user, db)
-        query = (
-            query.join(SaleInformation, Customer, Company)
-            .filter(
-                Vehicle.sale_id == SaleInformation.id,
-                SaleInformation.customer_id == Customer.id,
-                Customer.company_id == Company.id,
-                Company.name.in_(company_names),
-                Vehicle.id == id,
-            )
-            .first()
+        query = query.join(SaleInformation, Customer, Company).filter(
+            Vehicle.sale_id == SaleInformation.id,
+            SaleInformation.customer_id == Customer.id,
+            Customer.company_id == Company.id,
+            Company.name.in_(company_names),
+            Vehicle.id == id,
         )
-        if query:
-            return True
-        else:
-            return False
     else:
         query = query.filter(
             Vehicle.id == id,
-        ).first()
-        if query:
-            return True
-        else:
-            return False
+        )
+    return query
 
 
 def get_detail(id, db, current_user):
-    if check_exist_id(id, db, current_user):
-        detail = (
-            db.query(Vehicle)
-            .filter(
-                Vehicle.id == id,
-            )
-            .first()
-        )
+    vehicle = get_by_id(id, db, current_user).first()
+    if vehicle:
         data = {
-            "detail": jsonable_encoder(detail),
-            "charger": detail.charger,
-            "model": detail.vehicle_model,
+            "detail": jsonable_encoder(vehicle),
+            "charger": vehicle.charger,
+            "model": vehicle.vehicle_model,
         }
         return data
     else:
