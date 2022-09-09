@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
-from fastapi.encoders import jsonable_encoder
 
 from app.common.database import SessionLocal
 from app.models.company import Company
@@ -50,18 +49,16 @@ def get_date_from_period(expire_period):
         return next_twelve_months, None
 
 
-def get_company_name_from_user(current_user: User, db):
-    company_name_list = (
-        db.query(Company.name)
+def get_company_id_from_user(current_user: User, db):
+    company_id = (
+        db.query(Company.id)
         .join(Customer)
         .filter(
             Company.id == Customer.company_id,
-            Customer.system_user == current_user.username,
+            Customer.system_user == current_user.id,
         )
-        .all()
+        .first()
     )
-    company_name_list = jsonable_encoder(company_name_list)
-    if company_name_list == []:
+    if company_id is None:
         return []
-    company_name = company_name_list[0].get("name")
-    return [company_name]
+    return [company_id[0]]
