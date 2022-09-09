@@ -149,7 +149,6 @@ def get_by_id(id, db, current_user):
             SaleInformation.customer_id == Customer.id,
             Customer.company_id == Company.id,
             Company.name.in_(company_names),
-            Vehicle.id == id,
         )
     return query.first()
 
