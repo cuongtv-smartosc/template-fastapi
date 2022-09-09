@@ -16,7 +16,7 @@ from app.schemas.electric_vehicle import (
 )
 from app.schemas.response import resp
 from app.services.auth import get_current_user
-from app.services.electric_vehicle import get_vehicle_list
+from app.services.electric_vehicle import get_detail, get_vehicle_list
 
 vehicle_router = APIRouter()
 
@@ -47,3 +47,13 @@ async def get_vehicles(
         return resp.success(data=results)
     except ValidationError as e:
         raise ValidateException(e.errors())
+
+
+@vehicle_router.get("/{id}")
+async def get_vehicle_detail(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    data = get_detail(id, db, current_user)
+    return resp.success(data=data)

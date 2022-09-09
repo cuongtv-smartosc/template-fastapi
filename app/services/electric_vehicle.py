@@ -2,7 +2,8 @@ import math
 
 from fastapi.encoders import jsonable_encoder
 
-from app.common.util import check_role_supervisor, get_company_name_from_user
+from app.common.handle_error import NotFoundException
+from app.common.util import check_role_supervisor, get_company_id_from_user
 from app.models.company import Company
 from app.models.customer import Customer
 from app.models.division import Division
@@ -21,10 +22,9 @@ def vehicles_list_base_filter(group_by, query, db, current_user, params):
                 Company.name.in_(company_names),
             )
     else:
-        company_names = get_company_name_from_user(current_user, db)
-        query = query.join(Company).filter(
-            Customer.company_id == Company.id,
-            Company.name.in_(company_names),
+        company_id = get_company_id_from_user(current_user, db)
+        query = query.filter(
+            Customer.company_id.in_(company_id),
         )
     customer_names = params.get("customer_name")
     if customer_names is not None:
@@ -135,3 +135,28 @@ def get_vehicle_list(
         "list_edge": edges,
     }
     return results
+
+
+def get_by_id(id, db, current_user):
+    query = db.query(Vehicle).filter(
+        Vehicle.id == id,
+    )
+    if not check_role_supervisor(current_user):
+        company = get_company_id_from_user(current_user, db)
+        query = query.join(SaleInformation, Customer).filter(
+            Vehicle.sale_id == SaleInformation.id,
+            SaleInformation.customer_id == Customer.id,
+            Customer.company_id.in_(company),
+        )
+    return query.first()
+
+
+def get_detail(id, db, current_user):
+    vehicle = get_by_id(id, db, current_user)
+    if not vehicle:
+        raise NotFoundException(f"{id} is not existed")
+    return {
+        "detail": jsonable_encoder(vehicle),
+        "charger": vehicle.charger,
+        "model": vehicle.vehicle_model,
+    }

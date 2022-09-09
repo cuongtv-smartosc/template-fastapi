@@ -49,17 +49,16 @@ def get_date_from_period(expire_period):
         return next_twelve_months, None
 
 
-def get_company_name_from_user(current_user: User, db):
-    company_name_list = (
-        db.query(Company.name)
+def get_company_id_from_user(current_user: User, db):
+    company_id = (
+        db.query(Company.id)
         .join(Customer)
         .filter(
             Company.id == Customer.company_id,
-            Customer.system_user == current_user.username,
+            Customer.system_user == current_user.id,
         )
-        .all()
+        .first()
     )
-    if company_name_list is None:
+    if company_id is None:
         return []
-    else:
-        return company_name_list
+    return [company_id[0]]
