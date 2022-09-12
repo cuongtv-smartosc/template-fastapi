@@ -1,4 +1,3 @@
-from app.config import settings
 from tests.base_test import BaseTestCase, get_token_for_test
 from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
@@ -20,9 +19,9 @@ class GetSaleInformationTestCase(BaseTestCase):
         VehicleFactory.create_batch(25)
 
     def test_get_sale_information_success(self):
-        id = 1
+        vehicle_id = 1
         response = self.client.get(
-            f"{settings.API_PREFIX}/electric_vehicle/{id}/sale_information",
+            f"/api/electric_vehicle/{vehicle_id}/sale_information",
         )
         res = response.json()
         data = res.get("data")
@@ -31,9 +30,9 @@ class GetSaleInformationTestCase(BaseTestCase):
         assert data.get("customer_name") == "abc"
 
     def test_get_sale_information_validate_id_is_int(self):
-        id = "abc"
+        vehicle_id = "abc"
         response = self.client.get(
-            f"{settings.API_PREFIX}/electric_vehicle/{id}/sale_information",
+            f"/api/electric_vehicle/{vehicle_id}/sale_information",
         )
         res = response.json()
         data = res.get("message")
@@ -45,35 +44,35 @@ class GetSaleInformationTestCase(BaseTestCase):
         assert data[0].get("type") == "type_error.integer"
 
     def test_get_sale_information_not_found(self):
-        id = 29
+        vehicle_id = 29
         response = self.client.get(
-            f"{settings.API_PREFIX}/electric_vehicle/{id}/sale_information",
+            f"/api/electric_vehicle/{vehicle_id}/sale_information",
         )
         res = response.json()
         data = res.get("message")
         assert response.status_code != 200
         assert response.status_code == 404
-        assert data == f"{id} is not existed"
+        assert data == f"{vehicle_id} is not existed"
 
     def test_get_information_by_user_company_not_found(self):
-        id = 5
+        vehicle_id = 5
         token = get_token_for_test(username=user2.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
-            f"{settings.API_PREFIX}/electric_vehicle/{id}",
+            f"/api/electric_vehicle/{vehicle_id}/sale_information",
         )
         res = response.json()
         data = res.get("message")
         assert response.status_code != 200
         assert response.status_code == 404
-        assert data == f"{id} is not existed"
+        assert data == f"{vehicle_id} is not existed"
 
     def test_get_sale_information_by_user_company_success(self):
-        id = 3
+        vehicle_id = 3
         token = get_token_for_test(username=user2.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
-            f"{settings.API_PREFIX}/electric_vehicle/{id}/sale_information",
+            f"/api/electric_vehicle/{vehicle_id}/sale_information",
         )
         res = response.json()
         data = res.get("data")
