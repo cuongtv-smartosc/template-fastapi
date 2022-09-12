@@ -1,6 +1,8 @@
 from app.common.util import range_time_test_api
 from app.config import settings
 from tests.base_test import BaseTestCase, get_token_for_test
+from tests.factories.company import CompanyFactory
+from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.sale_information import SaleInformationFactory
 
@@ -173,7 +175,7 @@ class TestContractExpireReports(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
         UserFactory.create()
-        token = get_token_for_test()
+        token = get_token_for_test(UserFactory.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
@@ -260,7 +262,7 @@ class TestVehicleByLocations(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
         UserFactory.create()
-        token = get_token_for_test()
+        token = get_token_for_test(UserFactory.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
@@ -376,3 +378,42 @@ class TestVehicleByLocations(BaseTestCase):
         assert results[4]["number_of_vehicles"] == 3
         assert summary["current_page"] == 1
         assert summary["total_page"] == 2
+
+
+class TestGetTotalNumberOfCustomers(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        user = UserFactory.create(role_name="System Manager")
+        token = get_token_for_test(user.username)
+        self.client.headers = {"Authorization": f"Bearer {token}"}
+        customer = CustomerFactory
+
+        customer.create_batch(
+            3,
+            company_id=CompanyFactory(id="1512").id,
+            system_user=2,
+        )
+        customer.create_batch(5)
+
+    def test_with_check_role(self):
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_customers",
+            params=params,
+        )
+
+        data = response.json().get("data")
+        assert data["total_of_customers"] == 8
+
+    def test_no_check_role(self):
+        user = UserFactory.create(username="ad", role_name="Systems Manager")
+        token = get_token_for_test(user.username)
+        self.client.headers = {"Authorization": f"Bearer {token}"}
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_customers",
+            params=params,
+        )
+
+        data = response.json().get("data")
+        assert data["total_of_customers"] == 3

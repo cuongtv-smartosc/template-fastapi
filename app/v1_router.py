@@ -6,6 +6,7 @@ from app.api.v1.current_user_router import current_user_router
 from app.api.v1.index import router_index
 from app.api.v1.overview import (
     contract_expire_router,
+    get_total_overview_router,
     pdi_status_chart_router,
     sale_type_stats_router,
     vehicle_by_location_router,
@@ -70,4 +71,9 @@ api_v1_router.include_router(
 api_v1_router.include_router(
     contract_expire_router,
     prefix=f"{settings.API_PREFIX}/contract_expire_reports",
+)
+
+api_v1_router.include_router(
+    get_total_overview_router,
+    prefix=f"{settings.API_PREFIX}/get_total_overview",
 )
