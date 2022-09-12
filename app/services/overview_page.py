@@ -136,7 +136,7 @@ def contract_expire_report(
     db,
     current_user,
 ):
-    order_by = f"{sort_by} " f"{sort_order}"
+    order_by = f"{sort_by} {sort_order}"
     if sort_by == "contract_number":
         order_by = f"(0+contract_number) {sort_order}"
 
