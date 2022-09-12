@@ -1,6 +1,8 @@
 from app.common.util import range_time_test_api
 from app.config import settings
 from tests.base_test import BaseTestCase, get_token_for_test
+from tests.factories.company import CompanyFactory
+from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.sale_information import SaleInformationFactory
 
@@ -173,7 +175,7 @@ class TestContractExpireReports(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
         UserFactory.create()
-        token = get_token_for_test()
+        token = get_token_for_test(UserFactory.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
@@ -260,34 +262,41 @@ class TestVehicleByLocations(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
         UserFactory.create()
-        token = get_token_for_test()
+        token = get_token_for_test(UserFactory.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
+        global hanoi, hochiminh, hanam, haiduong, haiphong, hatay
+        hanoi = "Ha Noi"
+        hochiminh = "Ho Chi Minh"
+        hanam = "Ha Nam"
+        haiduong = "Hai Duong"
+        haiphong = "Hai Phong"
+        hatay = "Ha Tay"
 
         vehicle.create_batch(
             3,
-            sale_id=sale_infor(location="Ha Noi").id,
+            sale_id=sale_infor(location=hanoi).id,
         )
         vehicle.create_batch(
             4,
-            sale_id=sale_infor(location="Ha Nam").id,
+            sale_id=sale_infor(location=hanam).id,
         )
         vehicle.create_batch(
             5,
-            sale_id=sale_infor(location="Hai Duong").id,
+            sale_id=sale_infor(location=haiduong).id,
         )
         vehicle.create_batch(
             6,
-            sale_id=sale_infor(location="Hai Phong").id,
+            sale_id=sale_infor(location=haiphong).id,
         )
         vehicle.create_batch(
             7,
-            sale_id=sale_infor(location="Ho Chi Minh").id,
+            sale_id=sale_infor(location=hochiminh).id,
         )
         vehicle.create_batch(
             3,
-            sale_id=sale_infor(location="Ha Tay").id,
+            sale_id=sale_infor(location=hatay).id,
         )
 
     def test_vehicle_by_location_desc(self):
@@ -305,8 +314,8 @@ class TestVehicleByLocations(BaseTestCase):
         results = data.get("results")
         summary = data.get("summary")
 
-        assert results[0]["location"] == "Ho Chi Minh"
-        assert results[1]["location"] == "Hai Phong"
+        assert results[0]["location"] == hochiminh
+        assert results[1]["location"] == haiphong
         assert results[0]["number_of_vehicles"] == 7
         assert results[1]["number_of_vehicles"] == 6
         assert summary["current_page"] == 1
@@ -326,8 +335,8 @@ class TestVehicleByLocations(BaseTestCase):
         results = data.get("results")
         summary = data.get("summary")
 
-        assert results[0]["location"] == "Ha Noi"
-        assert results[1]["location"] == "Ha Tay"
+        assert results[0]["location"] == hanoi
+        assert results[1]["location"] == hatay
         assert results[0]["number_of_vehicles"] == 3
         assert results[1]["number_of_vehicles"] == 3
         assert summary["current_page"] == 1
@@ -347,13 +356,12 @@ class TestVehicleByLocations(BaseTestCase):
         results = data.get("results")
         summary = data.get("summary")
 
-        assert results[0]["location"] == "Ha Nam"
-        assert results[1]["location"] == "Ha Noi"
+        assert results[0]["location"] == hanam
+        assert results[1]["location"] == hanoi
         assert results[0]["number_of_vehicles"] == 4
         assert results[1]["number_of_vehicles"] == 3
         assert summary["current_page"] == 1
         assert summary["total_page"] == 3
-        assert 1 == 1
 
     def test_vehicle_by_location_no_filter(self):
         params = {}
@@ -364,11 +372,11 @@ class TestVehicleByLocations(BaseTestCase):
         data = response.json().get("data")
         results = data.get("results")
         summary = data.get("summary")
-        assert results[0]["location"] == "Ho Chi Minh"
-        assert results[1]["location"] == "Hai Phong"
-        assert results[2]["location"] == "Hai Duong"
-        assert results[3]["location"] == "Ha Nam"
-        assert results[4]["location"] == "Ha Noi"
+        assert results[0]["location"] == hochiminh
+        assert results[1]["location"] == haiphong
+        assert results[2]["location"] == haiduong
+        assert results[3]["location"] == hanam
+        assert results[4]["location"] == hanoi
         assert results[0]["number_of_vehicles"] == 7
         assert results[1]["number_of_vehicles"] == 6
         assert results[2]["number_of_vehicles"] == 5
@@ -376,3 +384,62 @@ class TestVehicleByLocations(BaseTestCase):
         assert results[4]["number_of_vehicles"] == 3
         assert summary["current_page"] == 1
         assert summary["total_page"] == 2
+
+
+class TestGetTotalNumberOfCustomers(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        user = UserFactory.create(role_name="System Manager")
+        global user1
+        global user2
+        user1 = UserFactory.create(username="test1", role_name="SCG")
+        user2 = UserFactory.create(username="test2", role_name="Wrong")
+        token = get_token_for_test(user.username)
+        self.client.headers = {"Authorization": f"Bearer {token}"}
+        customer = CustomerFactory
+
+        customer.create_batch(5)
+        customer.create_batch(
+            4,
+            company_id=CompanyFactory(id="2000").id,
+        )
+        customer.create_batch(
+            3,
+            company_id=CompanyFactory(id="1512").id,
+            system_user=2,
+        )
+
+    def test_with_check_role(self):
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_customers",
+            params=params,
+        )
+
+        data = response.json().get("data")
+        assert data["total_of_customers"] == 12
+
+    def test_no_check_role(self):
+        token1 = get_token_for_test(user1.username)
+        self.client.headers = {"Authorization": f"Bearer {token1}"}
+
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_customers",
+            params=params,
+        )
+
+        data = response.json().get("data")
+        assert data["total_of_customers"] == 3
+
+    def test_no_company(self):
+        token2 = get_token_for_test(user2.username)
+        self.client.headers = {"Authorization": f"Bearer {token2}"}
+
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_customers",
+            params=params,
+        )
+        data = response.json().get("data")
+        assert data["total_of_customers"] == 0

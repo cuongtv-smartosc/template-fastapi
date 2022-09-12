@@ -3,7 +3,11 @@ import math
 from sqlalchemy import func, text
 
 from app.common.chart import get_pie_chart
-from app.common.util import check_role_supervisor, get_date_from_period
+from app.common.util import (
+    check_role_supervisor,
+    get_company_id_from_user,
+    get_date_from_period,
+)
 from app.models.company import Company
 from app.models.customer import Customer
 from app.models.electric_vehicle import Vehicle
@@ -132,7 +136,7 @@ def contract_expire_report(
     db,
     current_user,
 ):
-    order_by = f"{sort_by} " f"{sort_order}"
+    order_by = f"{sort_by} {sort_order}"
     if sort_by == "contract_number":
         order_by = f"(0+contract_number) {sort_order}"
 
@@ -176,3 +180,19 @@ def contract_expire_report(
         "total_page": total_page,
     }
     return {"results": query, "summary": summary}
+
+
+def get_total_number_of_customer(db, current_user):
+    if not check_role_supervisor(current_user):
+        company_id = get_company_id_from_user(current_user, db)
+        if not company_id:
+            return {"total_of_customers": 0}
+        customers = (
+            db.query(Customer.id)
+            .filter(
+                Customer.company_id.in_(company_id),
+            )
+            .count()
+        )
+        return {"total_of_customers": customers}
+    return {"total_of_customers": db.query(Customer.id).count()}
