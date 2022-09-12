@@ -17,6 +17,7 @@ from app.schemas.electric_vehicle import (
 from app.schemas.response import resp
 from app.services.auth import get_current_user
 from app.services.electric_vehicle import get_detail, get_vehicle_list
+from app.services.sale_information import get_sale_information
 
 vehicle_router = APIRouter()
 
@@ -57,3 +58,13 @@ async def get_vehicle_detail(
 ):
     data = get_detail(id, db, current_user)
     return resp.success(data=data)
+
+
+@vehicle_router.get("/{id}/sale_information")
+async def get_sale_information_vehicle(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    sale_information = get_sale_information(id, db, current_user)
+    return resp.success(data=sale_information)
