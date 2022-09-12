@@ -266,30 +266,37 @@ class TestVehicleByLocations(BaseTestCase):
         self.client.headers = {"Authorization": f"Bearer {token}"}
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
+        global hanoi, hochiminh, hanam, haiduong, haiphong, hatay
+        hanoi = "Ha Noi"
+        hochiminh = "Ho Chi Minh"
+        hanam = "Ha Nam"
+        haiduong = "Hai Duong"
+        haiphong = "Hai Phong"
+        hatay = "Ha Tay"
 
         vehicle.create_batch(
             3,
-            sale_id=sale_infor(location="Ha Noi").id,
+            sale_id=sale_infor(location=hanoi).id,
         )
         vehicle.create_batch(
             4,
-            sale_id=sale_infor(location="Ha Nam").id,
+            sale_id=sale_infor(location=hanam).id,
         )
         vehicle.create_batch(
             5,
-            sale_id=sale_infor(location="Hai Duong").id,
+            sale_id=sale_infor(location=haiduong).id,
         )
         vehicle.create_batch(
             6,
-            sale_id=sale_infor(location="Hai Phong").id,
+            sale_id=sale_infor(location=haiphong).id,
         )
         vehicle.create_batch(
             7,
-            sale_id=sale_infor(location="Ho Chi Minh").id,
+            sale_id=sale_infor(location=hochiminh).id,
         )
         vehicle.create_batch(
             3,
-            sale_id=sale_infor(location="Ha Tay").id,
+            sale_id=sale_infor(location=hatay).id,
         )
 
     def test_vehicle_by_location_desc(self):
@@ -307,8 +314,8 @@ class TestVehicleByLocations(BaseTestCase):
         results = data.get("results")
         summary = data.get("summary")
 
-        assert results[0]["location"] == "Ho Chi Minh"
-        assert results[1]["location"] == "Hai Phong"
+        assert results[0]["location"] == hochiminh
+        assert results[1]["location"] == haiphong
         assert results[0]["number_of_vehicles"] == 7
         assert results[1]["number_of_vehicles"] == 6
         assert summary["current_page"] == 1
@@ -328,8 +335,8 @@ class TestVehicleByLocations(BaseTestCase):
         results = data.get("results")
         summary = data.get("summary")
 
-        assert results[0]["location"] == "Ha Noi"
-        assert results[1]["location"] == "Ha Tay"
+        assert results[0]["location"] == hanoi
+        assert results[1]["location"] == hatay
         assert results[0]["number_of_vehicles"] == 3
         assert results[1]["number_of_vehicles"] == 3
         assert summary["current_page"] == 1
@@ -349,13 +356,12 @@ class TestVehicleByLocations(BaseTestCase):
         results = data.get("results")
         summary = data.get("summary")
 
-        assert results[0]["location"] == "Ha Nam"
-        assert results[1]["location"] == "Ha Noi"
+        assert results[0]["location"] == hanam
+        assert results[1]["location"] == hanoi
         assert results[0]["number_of_vehicles"] == 4
         assert results[1]["number_of_vehicles"] == 3
         assert summary["current_page"] == 1
         assert summary["total_page"] == 3
-        assert 1 == 1
 
     def test_vehicle_by_location_no_filter(self):
         params = {}
@@ -366,11 +372,11 @@ class TestVehicleByLocations(BaseTestCase):
         data = response.json().get("data")
         results = data.get("results")
         summary = data.get("summary")
-        assert results[0]["location"] == "Ho Chi Minh"
-        assert results[1]["location"] == "Hai Phong"
-        assert results[2]["location"] == "Hai Duong"
-        assert results[3]["location"] == "Ha Nam"
-        assert results[4]["location"] == "Ha Noi"
+        assert results[0]["location"] == hochiminh
+        assert results[1]["location"] == haiphong
+        assert results[2]["location"] == haiduong
+        assert results[3]["location"] == hanam
+        assert results[4]["location"] == hanoi
         assert results[0]["number_of_vehicles"] == 7
         assert results[1]["number_of_vehicles"] == 6
         assert results[2]["number_of_vehicles"] == 5
