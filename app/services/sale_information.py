@@ -53,6 +53,7 @@ def get_sale_information(id, db, current_user):
     if not sale_information:
         raise NotFoundException(f"{id} is not existed")
     end_date = sale_information.get("end_date")
+    sale_information["remaining_day"] = None
     if end_date is not None:
         now = datetime.now().date()
         sale_information["remaining_day"] = (
@@ -61,5 +62,4 @@ def get_sale_information(id, db, current_user):
     sale_information["coordinates"] = get_list_coordinate(
         sale_information["coordinates"]
     )
-    sale_information["remaining_day"] = None
     return sale_information
