@@ -10,6 +10,8 @@ class GetSaleInformationTestCase(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
         user = UserFactory.create()
+        global user2
+        user2 = UserFactory.create(username="guest", role_name="")
         token = get_token_for_test(username=user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory.create(customer_name="abc", system_user="2")
@@ -18,7 +20,7 @@ class GetSaleInformationTestCase(BaseTestCase):
         VehicleFactory.create_batch(25)
 
     def test_get_sale_information_success(self):
-        id = 5
+        id = 1
         response = self.client.get(
             f"{settings.API_PREFIX}/electric_vehicle/{id}/sale_information",
         )
@@ -26,7 +28,7 @@ class GetSaleInformationTestCase(BaseTestCase):
         data = res.get("data")
         assert response.status_code == 200
         assert res["msg"] == "success"
-        # assert data.get("customer_name") == "abc"
+        assert data.get("customer_name") == "abc"
 
     def test_get_sale_information_validate_id_is_int(self):
         id = "abc"
@@ -55,8 +57,7 @@ class GetSaleInformationTestCase(BaseTestCase):
 
     def test_get_information_by_user_company_not_found(self):
         id = 5
-        user = UserFactory.create(username="guest", role_name="")
-        token = get_token_for_test(username=user.username)
+        token = get_token_for_test(username=user2.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"{settings.API_PREFIX}/electric_vehicle/{id}",
@@ -69,8 +70,7 @@ class GetSaleInformationTestCase(BaseTestCase):
 
     def test_get_sale_information_by_user_company_success(self):
         id = 3
-        user = UserFactory.create(username="guest", role_name="")
-        token = get_token_for_test(username=user.username)
+        token = get_token_for_test(username=user2.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"{settings.API_PREFIX}/electric_vehicle/{id}/sale_information",

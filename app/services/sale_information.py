@@ -16,7 +16,7 @@ def get_list_coordinate_from_geolocation_type(coordinates=None):
     try:
         coordinates = json.loads(coordinates)
         return coordinates
-    except:
+    except Exception:
         return []
 
 
