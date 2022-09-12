@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -62,3 +63,7 @@ def get_company_id_from_user(current_user: User, db):
     if company_id is None:
         return []
     return [company_id[0]]
+
+
+def json_load(key):
+    return json.loads(key)
