@@ -384,14 +384,19 @@ class TestVehicleByLocations(BaseTestCase):
         assert summary["total_page"] == 2
 
 
+def get_user():
+    user = UserFactory.create(role_name="SCG-Inter Administrator")
+    user1 = UserFactory.create(username="test1", role_name="SCG")
+    user2 = UserFactory.create(username="test2", role_name="Wrong")
+    return user, user1, user2
+
+
 class TestGetTotalNumberOfCustomers(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        user = UserFactory.create(role_name="System Manager")
         global user1
         global user2
-        user1 = UserFactory.create(username="test1", role_name="SCG")
-        user2 = UserFactory.create(username="test2", role_name="Wrong")
+        user, user1, user2 = get_user()
         token = get_token_for_test(user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
@@ -446,11 +451,9 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
 class TestGetTotalNumberOfVehicles(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        user = UserFactory.create(role_name="SCG-Inter Administrator")
         global user1
         global user2
-        user1 = UserFactory.create(username="test1", role_name="SCG")
-        user2 = UserFactory.create(username="test2", role_name="Wrong")
+        user, user1, user2 = get_user()
         token = get_token_for_test(user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
@@ -504,11 +507,9 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
 class TestGetTotalNumberOfContracts(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        user = UserFactory.create(role_name="SCG-Inter Fleet Manager")
         global user1
         global user2
-        user1 = UserFactory.create(username="test1", role_name="SCG")
-        user2 = UserFactory.create(username="test2", role_name="Wrong")
+        user, user1, user2 = get_user()
         token = get_token_for_test(user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
