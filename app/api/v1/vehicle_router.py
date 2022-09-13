@@ -14,10 +14,12 @@ from app.schemas.electric_vehicle import (
     VehicleGetListFilterString,
     VehicleGetListParams,
 )
+from app.schemas.electric_vehicle_history import VehicleHistoryGet
 from app.schemas.response import resp
 from app.services.auth import get_current_user
 from app.services.electric_vehicle import get_detail, get_vehicle_list
 from app.services.sale_information import get_sale_information
+from app.services.vehicle_history import get_list_status
 
 vehicle_router = APIRouter()
 
@@ -68,3 +70,24 @@ async def get_sale_information_vehicle(
 ):
     sale_information = get_sale_information(id, db, current_user)
     return resp.success(data=sale_information)
+
+
+@vehicle_router.get("/{id}/status")
+async def get_status(
+    id: int,
+    params: VehicleHistoryGet = Depends(),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    current_page = params.current_page
+    page_size = params.page_size
+    filters = params.status
+    status = get_list_status(
+        id,
+        current_page,
+        page_size,
+        filters,
+        db,
+        current_user,
+    )
+    return resp.success(data=status)
