@@ -110,6 +110,39 @@ class GetSaleInformationTestCase(BaseTestCase):
         assert data[0].get("loc")[1] == "current_page"
         assert data[0].get("type") == "type_error.integer"
 
+    def test_get_status_validate_current_page_is_ge_1(self):
+        vehicle_id = 1
+        params = {
+            "current_page": "-1",
+            "page_size": "12",
+        }
+        response = self.client.get(
+            f"/api/electric_vehicle/{vehicle_id}/status", params=params
+        )
+        res = response.json()
+        data = res.get("message")
+        assert response.status_code != 200
+        assert response.status_code == 422
+        msg = data[0].get("msg")
+        assert msg == "ensure this value is greater than or equal to 1"
+        assert data[0].get("loc")[0] == "query"
+        assert data[0].get("loc")[1] == "current_page"
+        assert data[0].get("type") == "value_error.number.not_ge"
+
+    def test_get_status_by_current_page_than_total_page(self):
+        vehicle_id = 1
+        params = {
+            "current_page": "100",
+            "page_size": "12",
+        }
+        response = self.client.get(
+            f"/api/electric_vehicle/{vehicle_id}/status", params=params
+        )
+        res = response.json()
+        data = res.get("data")
+        assert response.status_code == 200
+        assert data.get("data") == []
+
     def test_get_status_not_found_vehicle(self):
         vehicle_id = 20
         params = {
