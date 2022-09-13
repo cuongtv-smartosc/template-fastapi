@@ -5,8 +5,6 @@ from tests.factories.company import CompanyFactory
 from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.sale_information import SaleInformationFactory
-
-#
 from tests.factories.user import UserFactory
 
 
@@ -386,14 +384,19 @@ class TestVehicleByLocations(BaseTestCase):
         assert summary["total_page"] == 2
 
 
+def get_user():
+    user = UserFactory.create(role_name="SCG-Inter Administrator")
+    user1 = UserFactory.create(username="test1", role_name="SCG")
+    user2 = UserFactory.create(username="test2", role_name="Wrong")
+    return user, user1, user2
+
+
 class TestGetTotalNumberOfCustomers(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        user = UserFactory.create(role_name="System Manager")
         global user1
         global user2
-        user1 = UserFactory.create(username="test1", role_name="SCG")
-        user2 = UserFactory.create(username="test2", role_name="Wrong")
+        user, user1, user2 = get_user()
         token = get_token_for_test(user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
@@ -448,11 +451,9 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
 class TestGetTotalNumberOfVehicles(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        user = UserFactory.create(role_name="System Manager")
         global user1
         global user2
-        user1 = UserFactory.create(username="test1", role_name="SCG")
-        user2 = UserFactory.create(username="test2", role_name="Wrong")
+        user, user1, user2 = get_user()
         token = get_token_for_test(user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
@@ -501,3 +502,57 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
         )
         data = response.json().get("data")
         assert data["total_of_vehicles"] == 0
+
+
+class TestGetTotalNumberOfContracts(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        global user1
+        global user2
+        user, user1, user2 = get_user()
+        token = get_token_for_test(user.username)
+        self.client.headers = {"Authorization": f"Bearer {token}"}
+        customer = CustomerFactory
+        sale_infor = SaleInformationFactory
+
+        customer = customer.create(
+            company_id=CompanyFactory(id="1512").id,
+            system_user=2,
+        )
+
+        sale_infor.create_batch(5, customer_id=customer.id)
+
+        sale_infor.create_batch(4)
+
+    def test_with_check_role(self):
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_contracts",
+            params=params,
+        )
+        data = response.json().get("data")
+        assert data["total_of_contracts"] == 9
+
+    def test_no_check_role(self):
+        token1 = get_token_for_test(user1.username)
+        self.client.headers = {"Authorization": f"Bearer {token1}"}
+
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_contracts",
+            params=params,
+        )
+        data = response.json().get("data")
+        assert data["total_of_contracts"] == 5
+
+    def test_no_company(self):
+        token2 = get_token_for_test(user2.username)
+        self.client.headers = {"Authorization": f"Bearer {token2}"}
+
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_contracts",
+            params=params,
+        )
+        data = response.json().get("data")
+        assert data["total_of_contracts"] == 0
