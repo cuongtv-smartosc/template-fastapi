@@ -443,3 +443,61 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
         )
         data = response.json().get("data")
         assert data["total_of_customers"] == 0
+
+
+class TestGetTotalNumberOfVehicles(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        user = UserFactory.create(role_name="System Manager")
+        global user1
+        global user2
+        user1 = UserFactory.create(username="test1", role_name="SCG")
+        user2 = UserFactory.create(username="test2", role_name="Wrong")
+        token = get_token_for_test(user.username)
+        self.client.headers = {"Authorization": f"Bearer {token}"}
+        customer = CustomerFactory
+        sale_infor = SaleInformationFactory
+        vehicle = VehicleFactory
+
+        customer = customer.create(
+            company_id=CompanyFactory(id="1512").id,
+            system_user=2,
+        )
+
+        sale = sale_infor(customer_id=customer.id)
+        vehicle.create_batch(2, sale_id=sale.id)
+
+        vehicle.create_batch(4)
+
+    def test_with_check_role(self):
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_vehicles",
+            params=params,
+        )
+        data = response.json().get("data")
+        assert data["total_of_vehicles"] == 6
+
+    def test_no_check_role(self):
+        token1 = get_token_for_test(user1.username)
+        self.client.headers = {"Authorization": f"Bearer {token1}"}
+
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_vehicles",
+            params=params,
+        )
+        data = response.json().get("data")
+        assert data["total_of_vehicles"] == 2
+
+    def test_no_company(self):
+        token2 = get_token_for_test(user2.username)
+        self.client.headers = {"Authorization": f"Bearer {token2}"}
+
+        params = {}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/get_total_overview/total_of_vehicles",
+            params=params,
+        )
+        data = response.json().get("data")
+        assert data["total_of_vehicles"] == 0
