@@ -6,7 +6,7 @@ from tests.factories.sale_information import SaleInformationFactory
 from tests.factories.user import UserFactory
 
 
-class GetSaleInformationTestCase(BaseTestCase):
+class GetStatusTestCase(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
         user = UserFactory.create()
