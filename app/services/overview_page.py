@@ -196,3 +196,23 @@ def get_total_number_of_customer(db, current_user):
         )
         return {"total_of_customers": customers}
     return {"total_of_customers": db.query(Customer.id).count()}
+
+
+def get_total_number_of_vehicle(db, current_user):
+    if not check_role_supervisor(current_user):
+        company_id = get_company_id_from_user(current_user, db)
+        if not company_id:
+            return {"total_of_vehicles": 0}
+        vehicles = (
+            db.query(Vehicle.id)
+            .join(SaleInformation)
+            .join(Customer)
+            .filter(
+                Customer.company_id.in_(company_id),
+                Customer.id == SaleInformation.customer_id,
+                Vehicle.sale_id == SaleInformation.id,
+            )
+            .count()
+        )
+        return {"total_of_vehicles": vehicles}
+    return {"total_of_vehicles": db.query(Vehicle.id).count()}
