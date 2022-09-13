@@ -11,11 +11,21 @@ from tests.factories.user import UserFactory
 class TestSaleTypeStat(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
+        user = UserFactory.create(role_name="SCG-Inter Administrator")
+        global user1
+        user1 = UserFactory.create(username="test1", role_name="SCG")
+        token = get_token_for_test(user.username)
+        self.client.headers = {"Authorization": f"Bearer {token}"}
         sale_infor = SaleInformationFactory
-
+        customer = CustomerFactory
+        customer = customer.create(
+            company_id=CompanyFactory(id="1512").id,
+            system_user=2,
+        )
         sale_infor.create_batch(
             3,
             sale_type="rent",
+            customer_id=customer.id,
         )
         sale_infor.create_batch(
             7,
@@ -28,6 +38,7 @@ class TestSaleTypeStat(BaseTestCase):
         sale_infor.create_batch(
             1,
             sale_type="inventory_new",
+            customer_id=customer.id,
         )
 
     def test_sale_type_stat(self):
@@ -51,6 +62,31 @@ class TestSaleTypeStat(BaseTestCase):
             "#50CC65",
         ]
         assert result["percent"] == [15.0, 35.0, 45.0, 5.0]
+        assert len(result) == 4
+
+    def test_sale_type_stat_no_role(self):
+        token1 = get_token_for_test(user1.username)
+        self.client.headers = {"Authorization": f"Bearer {token1}"}
+        response = self.client.get(f"{settings.API_PREFIX}/sale_type_stats")
+
+        result = response.json().get("data")
+        data = result.get("data")
+        assert response.status_code == 200
+        assert result["type"] == "pie"
+        assert data["labels"] == [
+            "Rent",
+            "Sold",
+            "Inventory (Used)",
+            "Inventory (New)",
+        ]
+        assert data["datasets"]["values"] == [3, 0, 0, 1]
+        assert result["colors"] == [
+            "#0072DB",
+            "#469BFF",
+            "#AAAFC7",
+            "#50CC65",
+        ]
+        assert result["percent"] == [75.0, 0.0, 0.0, 25.0]
         assert len(result) == 4
 
 
@@ -116,6 +152,12 @@ class TestPdiStatusChart(BaseTestCase):
 
 
 class TestSaleTypeStatNoData(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        UserFactory.create()
+        token = get_token_for_test(UserFactory.username)
+        self.client.headers = {"Authorization": f"Bearer {token}"}
+
     def test_sale_type_stat(self):
         response = self.client.get(f"{settings.API_PREFIX}/sale_type_stats")
 
