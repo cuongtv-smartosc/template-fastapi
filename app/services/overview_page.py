@@ -43,6 +43,18 @@ PDI_STATUS_COLOR = [
     "rgba(80, 204, 101, 0.7)",
 ]
 
+OPERATION_STATUS_LABEL = {
+    "online": "Online",
+    "offline": "Offline",
+    "spare": "Spare",
+}
+
+OPERATION_STATUS_COLOR = [
+    "#50CC65",
+    "#AAAFC7",
+    "#0072DB",
+]
+
 
 def sale_type_stat(db, current_user):
     label_sale_type = list(SALE_TYPE_LABEL.values())
@@ -262,3 +274,41 @@ def get_total_number_of_contract(db, current_user):
         )
         return {"total_of_contracts": contracts}
     return {"total_of_contracts": db.query(SaleInformation.id).count()}
+
+
+def operation_status_report(db, current_user):
+    list_operation_status = list(OPERATION_STATUS_LABEL.values())
+
+    query = db.query(
+        Vehicle.operation_status,
+        func.count(Vehicle.id).label("count"),
+    )
+
+    if not check_role_supervisor(current_user):
+        company_id = get_company_id_from_user(current_user, db)
+        query = (
+            query.join(SaleInformation)
+            .join(Customer)
+            .filter(
+                Customer.company_id.in_(company_id),
+                SaleInformation.customer_id == Customer.id,
+                Vehicle.sale_id == SaleInformation.id,
+            )
+        )
+
+    data = (
+        query.group_by(
+            Vehicle.operation_status,
+        )
+        .order_by(text("count desc"))
+        .all()
+    )
+
+    chart = get_pie_chart(
+        data,
+        OPERATION_STATUS_COLOR,
+        "operation_status",
+        OPERATION_STATUS_LABEL,
+        list_operation_status,
+    )
+    return chart

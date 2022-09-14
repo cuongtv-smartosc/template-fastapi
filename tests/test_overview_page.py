@@ -38,6 +38,18 @@ pdi_status_chart_color = [
     "rgba(80, 204, 101, 0.7)",
 ]
 
+operation_status_label = [
+    "Online",
+    "Offline",
+    "Spare",
+]
+
+operation_status_color = [
+    "#50CC65",
+    "#AAAFC7",
+    "#0072DB",
+]
+
 
 class TestSaleTypeStat(BaseTestCase):
     def setUp(self) -> None:
@@ -570,3 +582,97 @@ class TestGetTotalNumberOfContracts(BaseTestCase):
         )
         data = response.json().get("data")
         assert data["total_of_contracts"] == 0
+
+
+class TestOperationStatus(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        vehicle = VehicleFactory
+        customer = CustomerFactory
+        sale_infor = SaleInformationFactory
+
+        customer = customer.create(
+            company_id=CompanyFactory(id="1512").id,
+            system_user=2,
+        )
+
+        sale = sale_infor.create(customer_id=customer.id)
+
+        vehicle.create_batch(
+            6,
+            operation_status="online",
+            sale_id=sale.id,
+        )
+        vehicle.create_batch(
+            4,
+            operation_status="offline",
+        )
+        vehicle.create_batch(
+            3,
+            operation_status="spare",
+            sale_id=sale.id,
+        )
+        vehicle.create_batch(
+            5,
+            operation_status="spare",
+        )
+
+    def test_operation_status(self):
+        response = self.client.get(
+            f"{settings.API_PREFIX}/operation_status_report",
+        )
+
+        result = response.json().get("data")
+        data = result.get("data")
+        assert response.status_code == 200
+        assert result["type"] == "pie"
+        assert data["labels"] == operation_status_label
+        assert data["datasets"]["values"] == [6, 4, 8]
+        assert result["colors"] == operation_status_color
+        assert result["percent"] == [
+            33.33333333333333,
+            22.22222222222222,
+            44.44444444444444,
+        ]
+        assert len(result) == 4
+
+    def test_operation_status_no_role(self):
+        token_compnay_user = get_token_for_test(self.company_user.username)
+        self.client.headers = {"Authorization": f"Bearer {token_compnay_user}"}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/operation_status_report",
+        )
+
+        result = response.json().get("data")
+        data = result.get("data")
+        assert response.status_code == 200
+        assert result["type"] == "pie"
+        assert data["labels"] == operation_status_label
+        assert data["datasets"]["values"] == [6, 0, 3]
+        assert result["colors"] == operation_status_color
+        assert result["percent"] == [
+            66.66666666666666,
+            0.0,
+            33.33333333333333,
+        ]
+        assert len(result) == 4
+
+
+class TestOperationStatusNoData(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+
+    def test_sale_type_stat(self):
+        response = self.client.get(
+            f"{settings.API_PREFIX}/operation_status_report",
+        )
+
+        result = response.json().get("data")
+        data = result.get("data")
+        assert response.status_code == 200
+        assert result["type"] == "pie"
+        assert data["labels"] == operation_status_label
+        assert data["datasets"]["values"] == [0, 0, 0]
+        assert result["colors"] == operation_status_color
+        assert result["percent"] == [0, 0, 0]
+        assert len(result) == 4

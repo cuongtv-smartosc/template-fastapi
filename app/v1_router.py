@@ -7,6 +7,7 @@ from app.api.v1.index import router_index
 from app.api.v1.overview import (
     contract_expire_router,
     get_total_overview_router,
+    operation_status_report_router,
     pdi_status_chart_router,
     sale_type_stats_router,
     vehicle_by_location_router,
@@ -76,4 +77,9 @@ api_v1_router.include_router(
 api_v1_router.include_router(
     get_total_overview_router,
     prefix=f"{settings.API_PREFIX}/get_total_overview",
+)
+
+api_v1_router.include_router(
+    operation_status_report_router,
+    prefix=f"{settings.API_PREFIX}/operation_status_report",
 )

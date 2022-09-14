@@ -20,7 +20,7 @@ def get_pie_chart(data, colors, search, dict_lable, label):
         "data": {
             "labels": label,
             "datasets": {
-                "name": "Number of Vehicles",
+                "name": f"Number of {search}",
                 "values": last_val,
             },
         },
