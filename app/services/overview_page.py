@@ -44,17 +44,28 @@ PDI_STATUS_COLOR = [
 ]
 
 
-def sale_type_stat(db):
+def sale_type_stat(db, current_user):
     label_sale_type = list(SALE_TYPE_LABEL.values())
-    data = (
-        db.query(
-            SaleInformation.sale_type,
-            func.count(SaleInformation.id).label("count"),
+    query = db.query(
+        SaleInformation.sale_type,
+        func.count(SaleInformation.id).label("count"),
+    )
+
+    if not check_role_supervisor(current_user):
+        company_id = get_company_id_from_user(current_user, db)
+        query = query.join(Customer).filter(
+            Customer.company_id.in_(company_id),
+            SaleInformation.customer_id == Customer.id,
         )
-        .group_by(SaleInformation.sale_type)
+
+    data = (
+        query.group_by(
+            SaleInformation.sale_type,
+        )
         .order_by(text("count desc"))
         .all()
     )
+
     chart = get_pie_chart(
         data,
         SALE_TYPE_COLOR,
