@@ -70,6 +70,26 @@ class TestSaleTypeStat(BaseTestCase):
         assert result["percent"] == [15.0, 35.0, 45.0, 5.0]
         assert len(result) == 4
 
+    def test_sale_type_stat_no_role(self):
+        token1 = get_token_for_test(self.company_user.username)
+        self.client.headers = {"Authorization": f"Bearer {token1}"}
+        response = self.client.get(f"{settings.API_PREFIX}/sale_type_stats")
+
+        result = response.json().get("data")
+        data = result.get("data")
+        assert response.status_code == 200
+        assert result["type"] == "pie"
+        assert data["labels"] == sale_type_stat_label
+        assert data["datasets"]["values"] == [3, 0, 0, 1]
+        assert result["colors"] == [
+            "#0072DB",
+            "#469BFF",
+            "#AAAFC7",
+            "#50CC65",
+        ]
+        assert result["percent"] == [75.0, 0.0, 0.0, 25.0]
+        assert len(result) == 4
+
 
 class TestPdiStatusChart(BaseTestCase):
     def setUp(self) -> None:
