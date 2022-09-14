@@ -3,7 +3,6 @@ from factory import LazyAttribute
 
 from app.common.database import SessionLocal
 from app.models.work_shift import WorkShift
-from tests.base_test import SessionTest
 from tests.factories.electric_vehicle import VehicleFactory
 
 

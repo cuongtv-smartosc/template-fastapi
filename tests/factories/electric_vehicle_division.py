@@ -3,7 +3,6 @@ from factory import LazyAttribute
 
 from app.common.database import SessionLocal
 from app.models.electric_vehicle_divison import VehicleDivision
-from tests.base_test import SessionTest
 from tests.factories.division import DivisionFactory
 from tests.factories.electric_vehicle import VehicleFactory
 

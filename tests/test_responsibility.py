@@ -3,25 +3,12 @@ from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.electric_vehicle_division import VehicleDivisionFactory
 from tests.factories.sale_information import SaleInformationFactory
-from tests.factories.user import UserFactory
 from tests.factories.work_shift import WorkShiftFactory
-
-
-def get_user():
-    user = UserFactory.create(role_name="SCG-Inter Administrator")
-    user1 = UserFactory.create(username="test1", role_name="SCG")
-    user2 = UserFactory.create(username="test2", role_name="Wrong")
-    return user, user1, user2
 
 
 class GetResponsibilityTestCase(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-
-        global user2
-        user, user2, _ = get_user()
-        token = get_token_for_test(username=user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory.create(customer_name="abc", system_user="2")
         sale_if = SaleInformationFactory.create(customer_id=customer.id)
         VehicleFactory.create_batch(2, sale_id=sale_if.id)
@@ -55,7 +42,7 @@ class GetResponsibilityTestCase(BaseTestCase):
         assert data == f"{vehicle_id} is not existed"
 
     def test_get_responsibility_by_user_company_success(self):
-        token = get_token_for_test(username=user2.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         vehicle_id = 2
         response = self.client.get(
@@ -70,7 +57,7 @@ class GetResponsibilityTestCase(BaseTestCase):
 
     def test_get_responsibility_by_user_company_not_found_vehicle(self):
         vehicle_id = 3
-        token = get_token_for_test(username=user2.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"/api/electric_vehicle/{vehicle_id}/responsibility",
