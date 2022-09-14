@@ -11,7 +11,7 @@ def get_responsibility(vehicle_id, db, current_user):
     vehicle = get_by_id(vehicle_id, db, current_user)
     if not vehicle:
         raise NotFoundException(f"{vehicle_id} is not existed")
-    div = (
+    divisions = (
         db.query(VehicleDivision.id, Division.name)
         .filter(
             VehicleDivision.division_id == Division.id,
@@ -19,7 +19,7 @@ def get_responsibility(vehicle_id, db, current_user):
         )
         .all()
     )
-    work_shift = (
+    work_shifts = (
         db.query(
             WorkShift.id,
             WorkShift.workings_day,
@@ -30,6 +30,6 @@ def get_responsibility(vehicle_id, db, current_user):
         .filter(WorkShift.vehicle_id == vehicle_id)
         .all()
     )
-    div = jsonable_encoder(div)
-    work_shift = jsonable_encoder(work_shift)
-    return {"zone": div, "workShift": work_shift}
+    divisions = jsonable_encoder(divisions)
+    work_shifts = jsonable_encoder(work_shifts)
+    return {"zone": divisions, "workShift": work_shifts}

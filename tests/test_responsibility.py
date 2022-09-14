@@ -7,12 +7,19 @@ from tests.factories.user import UserFactory
 from tests.factories.work_shift import WorkShiftFactory
 
 
+def get_user():
+    user = UserFactory.create(role_name="SCG-Inter Administrator")
+    user1 = UserFactory.create(username="test1", role_name="SCG")
+    user2 = UserFactory.create(username="test2", role_name="Wrong")
+    return user, user1, user2
+
+
 class GetResponsibilityTestCase(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        user = UserFactory.create()
+
         global user2
-        user2 = UserFactory.create(username="guest", role_name="")
+        user, user2, _ = get_user()
         token = get_token_for_test(username=user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory.create(customer_name="abc", system_user="2")
