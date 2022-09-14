@@ -101,10 +101,20 @@ class TestPdiStatusChart(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
         vehicle = VehicleFactory
+        customer = CustomerFactory
+        sale_infor = SaleInformationFactory
+
+        customer = customer.create(
+            company_id=CompanyFactory(id="1512").id,
+            system_user=2,
+        )
+
+        sale = sale_infor.create(customer_id=customer.id)
 
         vehicle.create_batch(
             5,
             forklift_pdi_status="shipping",
+            sale_id=sale.id,
         )
         vehicle.create_batch(
             4,
@@ -113,6 +123,7 @@ class TestPdiStatusChart(BaseTestCase):
         vehicle.create_batch(
             3,
             forklift_pdi_status="assembled",
+            sale_id=sale.id,
         )
         vehicle.create_batch(
             2,
@@ -140,6 +151,28 @@ class TestPdiStatusChart(BaseTestCase):
             10.0,
             0.0,
             30.0,
+        ]
+        assert len(result) == 4
+
+    def test_pdi_status_chart_no_role(self):
+        token1 = get_token_for_test(self.company_user.username)
+        self.client.headers = {"Authorization": f"Bearer {token1}"}
+        response = self.client.get(f"{settings.API_PREFIX}/pdi_status_charts")
+
+        result = response.json().get("data")
+        data = result.get("data")
+        assert response.status_code == 200
+        assert result["type"] == "pie"
+        assert data["labels"] == pdi_status_chart_label
+        assert data["datasets"]["values"] == [5, 0, 3, 0, 0, 0]
+        assert result["colors"] == pdi_status_chart_color
+        assert result["percent"] == [
+            62.5,
+            0.0,
+            37.5,
+            0.0,
+            0.0,
+            0.0,
         ]
         assert len(result) == 4
 

@@ -76,17 +76,34 @@ def sale_type_stat(db, current_user):
     return chart
 
 
-def pdi_status_chart(db):
+def pdi_status_chart(db, current_user):
     labels_pdi_status = list(PDI_STATUS_LABEL.values())
-    data = (
-        db.query(
-            Vehicle.forklift_pdi_status,
-            func.count(Vehicle.id).label("count"),
+
+    query = db.query(
+        Vehicle.forklift_pdi_status,
+        func.count(Vehicle.id).label("count"),
+    )
+
+    if not check_role_supervisor(current_user):
+        company_id = get_company_id_from_user(current_user, db)
+        query = (
+            query.join(SaleInformation)
+            .join(Customer)
+            .filter(
+                Customer.company_id.in_(company_id),
+                SaleInformation.customer_id == Customer.id,
+                Vehicle.sale_id == SaleInformation.id,
+            )
         )
-        .group_by(Vehicle.forklift_pdi_status)
+
+    data = (
+        query.group_by(
+            Vehicle.forklift_pdi_status,
+        )
         .order_by(text("count desc"))
         .all()
     )
+
     chart = get_pie_chart(
         data,
         PDI_STATUS_COLOR,
