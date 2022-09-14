@@ -8,12 +8,35 @@ from tests.factories.sale_information import SaleInformationFactory
 from tests.factories.user import UserFactory
 
 
+def get_user():
+    user = UserFactory.create(role_name="SCG-Inter Administrator")
+    user1 = UserFactory.create(username="test1", role_name="SCG")
+    user2 = UserFactory.create(username="test2", role_name="Wrong")
+    return user, user1, user2
+
+
+sale_type_stat_label = [
+    "Rent",
+    "Sold",
+    "Inventory (Used)",
+    "Inventory (New)",
+]
+
+pdi_status_chart = [
+    "Shipping",
+    "In Warehouse",
+    "Assembled",
+    "PDI completed",
+    "Asset in inventory",
+    "Delivered",
+]
+
+
 class TestSaleTypeStat(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        user = UserFactory.create(role_name="SCG-Inter Administrator")
         global user1
-        user1 = UserFactory.create(username="test1", role_name="SCG")
+        user, user1, _ = get_user()
         token = get_token_for_test(user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         sale_infor = SaleInformationFactory
@@ -48,12 +71,7 @@ class TestSaleTypeStat(BaseTestCase):
         data = result.get("data")
         assert response.status_code == 200
         assert result["type"] == "pie"
-        assert data["labels"] == [
-            "Rent",
-            "Sold",
-            "Inventory (Used)",
-            "Inventory (New)",
-        ]
+        assert data["labels"] == sale_type_stat_label
         assert data["datasets"]["values"] == [3, 7, 9, 1]
         assert result["colors"] == [
             "#0072DB",
@@ -73,12 +91,7 @@ class TestSaleTypeStat(BaseTestCase):
         data = result.get("data")
         assert response.status_code == 200
         assert result["type"] == "pie"
-        assert data["labels"] == [
-            "Rent",
-            "Sold",
-            "Inventory (Used)",
-            "Inventory (New)",
-        ]
+        assert data["labels"] == sale_type_stat_label
         assert data["datasets"]["values"] == [3, 0, 0, 1]
         assert result["colors"] == [
             "#0072DB",
@@ -123,14 +136,7 @@ class TestPdiStatusChart(BaseTestCase):
         data = result.get("data")
         assert response.status_code == 200
         assert result["type"] == "pie"
-        assert data["labels"] == [
-            "Shipping",
-            "In Warehouse",
-            "Assembled",
-            "PDI completed",
-            "Asset in inventory",
-            "Delivered",
-        ]
+        assert data["labels"] == pdi_status_chart
         assert data["datasets"]["values"] == [5, 4, 3, 2, 0, 6]
         assert result["colors"] == [
             "#469BFF",
@@ -165,12 +171,7 @@ class TestSaleTypeStatNoData(BaseTestCase):
         data = result.get("data")
         assert response.status_code == 200
         assert result["type"] == "pie"
-        assert data["labels"] == [
-            "Rent",
-            "Sold",
-            "Inventory (Used)",
-            "Inventory (New)",
-        ]
+        assert data["labels"] == sale_type_stat_label
         assert data["datasets"]["values"] == [0, 0, 0, 0]
         assert result["colors"] == [
             "#0072DB",
@@ -190,14 +191,7 @@ class TestPdiStatusChartNoData(BaseTestCase):
         data = result.get("data")
         assert response.status_code == 200
         assert result["type"] == "pie"
-        assert data["labels"] == [
-            "Shipping",
-            "In Warehouse",
-            "Assembled",
-            "PDI completed",
-            "Asset in inventory",
-            "Delivered",
-        ]
+        assert data["labels"] == pdi_status_chart
         assert data["datasets"]["values"] == [0, 0, 0, 0, 0, 0]
         assert result["colors"] == [
             "#469BFF",
@@ -424,13 +418,6 @@ class TestVehicleByLocations(BaseTestCase):
         assert results[4]["number_of_vehicles"] == 3
         assert summary["current_page"] == 1
         assert summary["total_page"] == 2
-
-
-def get_user():
-    user = UserFactory.create(role_name="SCG-Inter Administrator")
-    user1 = UserFactory.create(username="test1", role_name="SCG")
-    user2 = UserFactory.create(username="test2", role_name="Wrong")
-    return user, user1, user2
 
 
 class TestGetTotalNumberOfCustomers(BaseTestCase):
