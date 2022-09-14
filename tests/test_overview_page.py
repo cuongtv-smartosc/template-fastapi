@@ -5,15 +5,6 @@ from tests.factories.company import CompanyFactory
 from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.sale_information import SaleInformationFactory
-from tests.factories.user import UserFactory
-
-
-def get_user():
-    user = UserFactory.create(role_name="SCG-Inter Administrator")
-    user1 = UserFactory.create(username="test1", role_name="SCG")
-    user2 = UserFactory.create(username="test2", role_name="Wrong")
-    return user, user1, user2
-
 
 sale_type_stat_label = [
     "Rent",
@@ -35,10 +26,7 @@ pdi_status_chart = [
 class TestSaleTypeStat(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        global user1
-        user, user1, _ = get_user()
-        token = get_token_for_test(user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
+
         sale_infor = SaleInformationFactory
         customer = CustomerFactory
         customer = customer.create(
@@ -83,7 +71,7 @@ class TestSaleTypeStat(BaseTestCase):
         assert len(result) == 4
 
     def test_sale_type_stat_no_role(self):
-        token1 = get_token_for_test(user1.username)
+        token1 = get_token_for_test(self.user1.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
         response = self.client.get(f"{settings.API_PREFIX}/sale_type_stats")
 
@@ -160,9 +148,6 @@ class TestPdiStatusChart(BaseTestCase):
 class TestSaleTypeStatNoData(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        UserFactory.create()
-        token = get_token_for_test(UserFactory.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
 
     def test_sale_type_stat(self):
         response = self.client.get(f"{settings.API_PREFIX}/sale_type_stats")
@@ -208,9 +193,7 @@ class TestPdiStatusChartNoData(BaseTestCase):
 class TestContractExpireReports(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        UserFactory.create()
-        token = get_token_for_test(UserFactory.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
+
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
         vehicle.create_batch(
@@ -295,9 +278,7 @@ class TestContractExpireReports(BaseTestCase):
 class TestVehicleByLocations(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        UserFactory.create()
-        token = get_token_for_test(UserFactory.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
+
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
         global hanoi, hochiminh, hanam, haiduong, haiphong, hatay
@@ -423,13 +404,7 @@ class TestVehicleByLocations(BaseTestCase):
 class TestGetTotalNumberOfCustomers(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        global user1
-        global user2
-        user, user1, user2 = get_user()
-        token = get_token_for_test(user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
-
         customer.create_batch(5)
         customer.create_batch(
             4,
@@ -452,7 +427,7 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
         assert data["total_of_customers"] == 12
 
     def test_no_check_role(self):
-        token1 = get_token_for_test(user1.username)
+        token1 = get_token_for_test(self.user1.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
 
         params = {}
@@ -465,7 +440,7 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
         assert data["total_of_customers"] == 3
 
     def test_no_company(self):
-        token2 = get_token_for_test(user2.username)
+        token2 = get_token_for_test(self.user2.username)
         self.client.headers = {"Authorization": f"Bearer {token2}"}
 
         params = {}
@@ -480,11 +455,6 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
 class TestGetTotalNumberOfVehicles(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        global user1
-        global user2
-        user, user1, user2 = get_user()
-        token = get_token_for_test(user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
@@ -509,7 +479,7 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
         assert data["total_of_vehicles"] == 6
 
     def test_no_check_role(self):
-        token1 = get_token_for_test(user1.username)
+        token1 = get_token_for_test(self.user1.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
 
         params = {}
@@ -521,7 +491,7 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
         assert data["total_of_vehicles"] == 2
 
     def test_no_company(self):
-        token2 = get_token_for_test(user2.username)
+        token2 = get_token_for_test(self.user2.username)
         self.client.headers = {"Authorization": f"Bearer {token2}"}
 
         params = {}
@@ -536,11 +506,6 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
 class TestGetTotalNumberOfContracts(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        global user1
-        global user2
-        user, user1, user2 = get_user()
-        token = get_token_for_test(user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
         sale_infor = SaleInformationFactory
 
@@ -563,7 +528,7 @@ class TestGetTotalNumberOfContracts(BaseTestCase):
         assert data["total_of_contracts"] == 9
 
     def test_no_check_role(self):
-        token1 = get_token_for_test(user1.username)
+        token1 = get_token_for_test(self.user1.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
 
         params = {}
@@ -575,7 +540,7 @@ class TestGetTotalNumberOfContracts(BaseTestCase):
         assert data["total_of_contracts"] == 5
 
     def test_no_company(self):
-        token2 = get_token_for_test(user2.username)
+        token2 = get_token_for_test(self.user2.username)
         self.client.headers = {"Authorization": f"Bearer {token2}"}
 
         params = {}

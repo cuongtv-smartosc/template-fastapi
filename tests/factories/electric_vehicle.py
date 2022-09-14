@@ -1,8 +1,8 @@
 import factory.fuzzy
 from factory import LazyAttribute
 
+from app.common.database import SessionLocal
 from app.models.electric_vehicle import Vehicle
-from tests.base_test import SessionTest
 from tests.factories.charger import ChargerFactory
 from tests.factories.electric_vehicle_model import VehicleModelFactory
 from tests.factories.sale_information import SaleInformationFactory
@@ -11,7 +11,7 @@ from tests.factories.sale_information import SaleInformationFactory
 class VehicleFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Vehicle
-        sqlalchemy_session = SessionTest()
+        sqlalchemy_session = SessionLocal()
         sqlalchemy_session_persistence = "commit"
 
     edge_id = factory.fuzzy.FuzzyText("edge_id")
