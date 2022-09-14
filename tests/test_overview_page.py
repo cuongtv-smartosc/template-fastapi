@@ -407,7 +407,7 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
         assert data["total_of_customers"] == 12
 
     def test_no_check_role(self):
-        token1 = get_token_for_test(self.user1.username)
+        token1 = get_token_for_test(self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
 
         params = {}
@@ -420,7 +420,7 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
         assert data["total_of_customers"] == 3
 
     def test_no_company(self):
-        token2 = get_token_for_test(self.user2.username)
+        token2 = get_token_for_test(self.guest.username)
         self.client.headers = {"Authorization": f"Bearer {token2}"}
 
         params = {}
@@ -459,7 +459,7 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
         assert data["total_of_vehicles"] == 6
 
     def test_no_check_role(self):
-        token1 = get_token_for_test(self.user1.username)
+        token1 = get_token_for_test(self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
 
         params = {}
@@ -471,7 +471,7 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
         assert data["total_of_vehicles"] == 2
 
     def test_no_company(self):
-        token2 = get_token_for_test(self.user2.username)
+        token2 = get_token_for_test(self.guest.username)
         self.client.headers = {"Authorization": f"Bearer {token2}"}
 
         params = {}
@@ -508,7 +508,7 @@ class TestGetTotalNumberOfContracts(BaseTestCase):
         assert data["total_of_contracts"] == 9
 
     def test_no_check_role(self):
-        token1 = get_token_for_test(self.user1.username)
+        token1 = get_token_for_test(self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
 
         params = {}
@@ -520,7 +520,7 @@ class TestGetTotalNumberOfContracts(BaseTestCase):
         assert data["total_of_contracts"] == 5
 
     def test_no_company(self):
-        token2 = get_token_for_test(self.user2.username)
+        token2 = get_token_for_test(self.guest.username)
         self.client.headers = {"Authorization": f"Bearer {token2}"}
 
         params = {}

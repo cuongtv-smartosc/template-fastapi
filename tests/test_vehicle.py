@@ -185,7 +185,7 @@ class GetVehicleDetailTestCase(BaseTestCase):
         assert data == f"{vehicle_id} is not existed"
 
     def test_get_detail_by_user_company_success(self):
-        token = get_token_for_test(username=self.user1.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         vehicle_id = 3
         response = self.client.get(
@@ -203,7 +203,7 @@ class GetVehicleDetailTestCase(BaseTestCase):
         assert detail.get("model_id") == model.get("id")
 
     def test_get_detail_by_user_company_not_found(self):
-        token = get_token_for_test(username=self.user1.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         vehicle_id = 4
         response = self.client.get(

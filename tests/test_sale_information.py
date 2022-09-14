@@ -51,7 +51,7 @@ class GetSaleInformationTestCase(BaseTestCase):
 
     def test_get_information_by_user_company_not_found(self):
         vehicle_id = 5
-        token = get_token_for_test(username=self.user1.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"/api/electric_vehicle/{vehicle_id}/sale_information",
@@ -64,7 +64,7 @@ class GetSaleInformationTestCase(BaseTestCase):
 
     def test_get_sale_information_by_user_company_success(self):
         vehicle_id = 3
-        token = get_token_for_test(username=self.user1.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"/api/electric_vehicle/{vehicle_id}/sale_information",

@@ -159,7 +159,7 @@ class GetStatusTestCase(BaseTestCase):
             "current_page": "1",
             "page_size": "10",
         }
-        token = get_token_for_test(username=self.user1.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"/api/electric_vehicle/{vehicle_id}/status", params=params
@@ -179,7 +179,7 @@ class GetStatusTestCase(BaseTestCase):
             "current_page": "1",
             "page_size": "10",
         }
-        token = get_token_for_test(username=self.user1.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"/api/electric_vehicle/{vehicle_id}/status", params=params

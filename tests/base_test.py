@@ -12,10 +12,10 @@ from tests.factories.user import UserFactory
 
 
 def get_user():
-    user = UserFactory.create(role_name="SCG-Inter Administrator")
-    user1 = UserFactory.create(username="test1", role_name="SCG")
-    user2 = UserFactory.create(username="test2", role_name="Wrong")
-    return user, user1, user2
+    admin_user = UserFactory.create(role_name="SCG-Inter Administrator")
+    company_user = UserFactory.create(username="test1", role_name="SCG")
+    guest = UserFactory.create(username="test2", role_name="Wrong")
+    return admin_user, company_user, guest
 
 
 def get_token_for_test(username):
@@ -31,8 +31,8 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         DBBaseCustom.metadata.create_all(bind=engine)
-        self.user, self.user1, self.user2 = get_user()
-        token = get_token_for_test(self.user.username)
+        self.admin_user, self.company_user, self.guest = get_user()
+        token = get_token_for_test(self.admin_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
 
     def tearDown(self):
