@@ -155,8 +155,8 @@ class TestPdiStatusChart(BaseTestCase):
         assert len(result) == 4
 
     def test_pdi_status_chart_no_role(self):
-        token1 = get_token_for_test(self.company_user.username)
-        self.client.headers = {"Authorization": f"Bearer {token1}"}
+        token_compnay_user = get_token_for_test(self.company_user.username)
+        self.client.headers = {"Authorization": f"Bearer {token_compnay_user}"}
         response = self.client.get(f"{settings.API_PREFIX}/pdi_status_charts")
 
         result = response.json().get("data")
