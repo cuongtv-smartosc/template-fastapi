@@ -18,6 +18,7 @@ from app.schemas.electric_vehicle_history import VehicleHistoryGet
 from app.schemas.response import resp
 from app.services.auth import get_current_user
 from app.services.electric_vehicle import get_detail, get_vehicle_list
+from app.services.responsibility import get_responsibility
 from app.services.sale_information import get_sale_information
 from app.services.vehicle_history import get_list_status
 
@@ -91,3 +92,13 @@ async def get_status(
         current_user,
     )
     return resp.success(data=status)
+
+
+@vehicle_router.get("/{id}/responsibility")
+async def get_responsibility_vehicle(
+    id,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    data = get_responsibility(id, db, current_user)
+    return resp.success(data=data)
