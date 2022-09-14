@@ -5,17 +5,38 @@ from tests.factories.company import CompanyFactory
 from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.sale_information import SaleInformationFactory
-from tests.factories.user import UserFactory
+
+sale_type_stat_label = [
+    "Rent",
+    "Sold",
+    "Inventory (Used)",
+    "Inventory (New)",
+]
+
+pdi_status_chart = [
+    "Shipping",
+    "In Warehouse",
+    "Assembled",
+    "PDI completed",
+    "Asset in inventory",
+    "Delivered",
+]
 
 
 class TestSaleTypeStat(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        sale_infor = SaleInformationFactory
 
+        sale_infor = SaleInformationFactory
+        customer = CustomerFactory
+        customer = customer.create(
+            company_id=CompanyFactory(id="1512").id,
+            system_user=2,
+        )
         sale_infor.create_batch(
             3,
             sale_type="rent",
+            customer_id=customer.id,
         )
         sale_infor.create_batch(
             7,
@@ -28,6 +49,7 @@ class TestSaleTypeStat(BaseTestCase):
         sale_infor.create_batch(
             1,
             sale_type="inventory_new",
+            customer_id=customer.id,
         )
 
     def test_sale_type_stat(self):
@@ -37,12 +59,7 @@ class TestSaleTypeStat(BaseTestCase):
         data = result.get("data")
         assert response.status_code == 200
         assert result["type"] == "pie"
-        assert data["labels"] == [
-            "Rent",
-            "Sold",
-            "Inventory (Used)",
-            "Inventory (New)",
-        ]
+        assert data["labels"] == sale_type_stat_label
         assert data["datasets"]["values"] == [3, 7, 9, 1]
         assert result["colors"] == [
             "#0072DB",
@@ -87,14 +104,7 @@ class TestPdiStatusChart(BaseTestCase):
         data = result.get("data")
         assert response.status_code == 200
         assert result["type"] == "pie"
-        assert data["labels"] == [
-            "Shipping",
-            "In Warehouse",
-            "Assembled",
-            "PDI completed",
-            "Asset in inventory",
-            "Delivered",
-        ]
+        assert data["labels"] == pdi_status_chart
         assert data["datasets"]["values"] == [5, 4, 3, 2, 0, 6]
         assert result["colors"] == [
             "#469BFF",
@@ -116,6 +126,9 @@ class TestPdiStatusChart(BaseTestCase):
 
 
 class TestSaleTypeStatNoData(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+
     def test_sale_type_stat(self):
         response = self.client.get(f"{settings.API_PREFIX}/sale_type_stats")
 
@@ -123,12 +136,7 @@ class TestSaleTypeStatNoData(BaseTestCase):
         data = result.get("data")
         assert response.status_code == 200
         assert result["type"] == "pie"
-        assert data["labels"] == [
-            "Rent",
-            "Sold",
-            "Inventory (Used)",
-            "Inventory (New)",
-        ]
+        assert data["labels"] == sale_type_stat_label
         assert data["datasets"]["values"] == [0, 0, 0, 0]
         assert result["colors"] == [
             "#0072DB",
@@ -148,14 +156,7 @@ class TestPdiStatusChartNoData(BaseTestCase):
         data = result.get("data")
         assert response.status_code == 200
         assert result["type"] == "pie"
-        assert data["labels"] == [
-            "Shipping",
-            "In Warehouse",
-            "Assembled",
-            "PDI completed",
-            "Asset in inventory",
-            "Delivered",
-        ]
+        assert data["labels"] == pdi_status_chart
         assert data["datasets"]["values"] == [0, 0, 0, 0, 0, 0]
         assert result["colors"] == [
             "#469BFF",
@@ -172,9 +173,7 @@ class TestPdiStatusChartNoData(BaseTestCase):
 class TestContractExpireReports(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        UserFactory.create()
-        token = get_token_for_test(UserFactory.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
+
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
         vehicle.create_batch(
@@ -259,9 +258,7 @@ class TestContractExpireReports(BaseTestCase):
 class TestVehicleByLocations(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        UserFactory.create()
-        token = get_token_for_test(UserFactory.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
+
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
         global hanoi, hochiminh, hanam, haiduong, haiphong, hatay
@@ -384,23 +381,10 @@ class TestVehicleByLocations(BaseTestCase):
         assert summary["total_page"] == 2
 
 
-def get_user():
-    user = UserFactory.create(role_name="SCG-Inter Administrator")
-    user1 = UserFactory.create(username="test1", role_name="SCG")
-    user2 = UserFactory.create(username="test2", role_name="Wrong")
-    return user, user1, user2
-
-
 class TestGetTotalNumberOfCustomers(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        global user1
-        global user2
-        user, user1, user2 = get_user()
-        token = get_token_for_test(user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
-
         customer.create_batch(5)
         customer.create_batch(
             4,
@@ -423,7 +407,7 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
         assert data["total_of_customers"] == 12
 
     def test_no_check_role(self):
-        token1 = get_token_for_test(user1.username)
+        token1 = get_token_for_test(self.user1.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
 
         params = {}
@@ -436,7 +420,7 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
         assert data["total_of_customers"] == 3
 
     def test_no_company(self):
-        token2 = get_token_for_test(user2.username)
+        token2 = get_token_for_test(self.user2.username)
         self.client.headers = {"Authorization": f"Bearer {token2}"}
 
         params = {}
@@ -451,11 +435,6 @@ class TestGetTotalNumberOfCustomers(BaseTestCase):
 class TestGetTotalNumberOfVehicles(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        global user1
-        global user2
-        user, user1, user2 = get_user()
-        token = get_token_for_test(user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
         sale_infor = SaleInformationFactory
         vehicle = VehicleFactory
@@ -480,7 +459,7 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
         assert data["total_of_vehicles"] == 6
 
     def test_no_check_role(self):
-        token1 = get_token_for_test(user1.username)
+        token1 = get_token_for_test(self.user1.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
 
         params = {}
@@ -492,7 +471,7 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
         assert data["total_of_vehicles"] == 2
 
     def test_no_company(self):
-        token2 = get_token_for_test(user2.username)
+        token2 = get_token_for_test(self.user2.username)
         self.client.headers = {"Authorization": f"Bearer {token2}"}
 
         params = {}
@@ -507,11 +486,6 @@ class TestGetTotalNumberOfVehicles(BaseTestCase):
 class TestGetTotalNumberOfContracts(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        global user1
-        global user2
-        user, user1, user2 = get_user()
-        token = get_token_for_test(user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
         customer = CustomerFactory
         sale_infor = SaleInformationFactory
 
@@ -534,7 +508,7 @@ class TestGetTotalNumberOfContracts(BaseTestCase):
         assert data["total_of_contracts"] == 9
 
     def test_no_check_role(self):
-        token1 = get_token_for_test(user1.username)
+        token1 = get_token_for_test(self.user1.username)
         self.client.headers = {"Authorization": f"Bearer {token1}"}
 
         params = {}
@@ -546,7 +520,7 @@ class TestGetTotalNumberOfContracts(BaseTestCase):
         assert data["total_of_contracts"] == 5
 
     def test_no_company(self):
-        token2 = get_token_for_test(user2.username)
+        token2 = get_token_for_test(self.user2.username)
         self.client.headers = {"Authorization": f"Bearer {token2}"}
 
         params = {}

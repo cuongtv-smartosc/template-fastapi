@@ -3,17 +3,12 @@ from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.electric_vehicle_history import VehicleHistoryFactory
 from tests.factories.sale_information import SaleInformationFactory
-from tests.factories.user import UserFactory
 
 
 class GetStatusTestCase(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        user = UserFactory.create()
-        global user2
-        user2 = UserFactory.create(username="guest", role_name="")
-        token = get_token_for_test(username=user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
+
         customer = CustomerFactory.create(customer_name="abc", system_user="2")
         sale_if = SaleInformationFactory.create(customer_id=customer.id)
         VehicleFactory.create_batch(2, sale_id=sale_if.id)
@@ -164,7 +159,7 @@ class GetStatusTestCase(BaseTestCase):
             "current_page": "1",
             "page_size": "10",
         }
-        token = get_token_for_test(username=user2.username)
+        token = get_token_for_test(username=self.user1.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"/api/electric_vehicle/{vehicle_id}/status", params=params
@@ -184,7 +179,7 @@ class GetStatusTestCase(BaseTestCase):
             "current_page": "1",
             "page_size": "10",
         }
-        token = get_token_for_test(username=user2.username)
+        token = get_token_for_test(username=self.user1.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"/api/electric_vehicle/{vehicle_id}/status", params=params

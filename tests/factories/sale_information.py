@@ -3,15 +3,15 @@ import random
 import factory.fuzzy
 from factory import LazyAttribute
 
+from app.common.database import SessionLocal
 from app.models.sale_information import SaleInformation
-from tests.base_test import SessionTest
 from tests.factories.customer import CustomerFactory
 
 
 class SaleInformationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = SaleInformation
-        sqlalchemy_session = SessionTest()
+        sqlalchemy_session = SessionLocal()
         sqlalchemy_session_persistence = "commit"
 
     sale_type = factory.fuzzy.FuzzyChoice(
