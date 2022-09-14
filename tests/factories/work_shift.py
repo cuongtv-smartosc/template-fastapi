@@ -1,11 +1,11 @@
 import factory.fuzzy
 
+from app.common.database import SessionLocal
 from app.models.work_shift import WorkShift
-from tests.base_test import SessionTest
 
 
 class WorkShiftFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = WorkShift
-        sqlalchemy_session = SessionTest()
+        sqlalchemy_session = SessionLocal()
         sqlalchemy_session_persistence = "commit"

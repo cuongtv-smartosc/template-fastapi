@@ -2,26 +2,20 @@ from datetime import timedelta
 from unittest import TestCase
 
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import close_all_sessions
 
-from app.common.database import DBBaseCustom, get_db
-from app.config.settings import ACCESS_TOKEN_EXPIRE_MINUTES, setting
+from app.common.database import DBBaseCustom, engine
+from app.config.settings import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.services.auth import create_access_token
 from main import app
-
-setting.env = "local_test"
-env_yml = setting.get_config_env()
-engine_test = create_engine(env_yml.get("DB_URL"))
-SessionTest = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
+from tests.factories.user import UserFactory
 
 
-def _get_test_db():
-    try:
-        yield SessionTest()
-    finally:
-        pass
+def get_user():
+    admin_user = UserFactory.create(role_name="SCG-Inter Administrator")
+    company_user = UserFactory.create(username="test1", role_name="SCG")
+    guest = UserFactory.create(username="test2", role_name="Wrong")
+    return admin_user, company_user, guest
 
 
 def get_token_for_test(username):
@@ -33,12 +27,14 @@ def get_token_for_test(username):
 
 
 class BaseTestCase(TestCase):
-    app.dependency_overrides[get_db] = _get_test_db
     client = TestClient(app)
 
     def setUp(self):
-        DBBaseCustom.metadata.create_all(bind=engine_test)
+        DBBaseCustom.metadata.create_all(bind=engine)
+        self.admin_user, self.company_user, self.guest = get_user()
+        token = get_token_for_test(self.admin_user.username)
+        self.client.headers = {"Authorization": f"Bearer {token}"}
 
     def tearDown(self):
         close_all_sessions()
-        DBBaseCustom.metadata.drop_all(engine_test)
+        DBBaseCustom.metadata.drop_all(engine)

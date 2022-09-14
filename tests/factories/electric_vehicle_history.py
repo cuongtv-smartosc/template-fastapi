@@ -3,15 +3,15 @@ import random
 import factory.fuzzy
 from factory import LazyAttribute
 
+from app.common.database import SessionLocal
 from app.models.electric_vehicle_history import VehicleHistory
-from tests.base_test import SessionTest
 from tests.factories.electric_vehicle import VehicleFactory
 
 
 class VehicleHistoryFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = VehicleHistory
-        sqlalchemy_session = SessionTest()
+        sqlalchemy_session = SessionLocal()
         sqlalchemy_session_persistence = "commit"
 
     status = factory.fuzzy.FuzzyChoice(

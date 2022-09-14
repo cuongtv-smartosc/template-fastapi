@@ -2,17 +2,12 @@ from tests.base_test import BaseTestCase, get_token_for_test
 from tests.factories.customer import CustomerFactory
 from tests.factories.electric_vehicle import VehicleFactory
 from tests.factories.sale_information import SaleInformationFactory
-from tests.factories.user import UserFactory
 
 
 class GetSaleInformationTestCase(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        user = UserFactory.create()
-        global user2
-        user2 = UserFactory.create(username="guest", role_name="")
-        token = get_token_for_test(username=user.username)
-        self.client.headers = {"Authorization": f"Bearer {token}"}
+
         customer = CustomerFactory.create(customer_name="abc", system_user="2")
         sale_if = SaleInformationFactory.create(customer_id=customer.id)
         VehicleFactory.create_batch(3, sale_id=sale_if.id)
@@ -56,7 +51,7 @@ class GetSaleInformationTestCase(BaseTestCase):
 
     def test_get_information_by_user_company_not_found(self):
         vehicle_id = 5
-        token = get_token_for_test(username=user2.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"/api/electric_vehicle/{vehicle_id}/sale_information",
@@ -69,7 +64,7 @@ class GetSaleInformationTestCase(BaseTestCase):
 
     def test_get_sale_information_by_user_company_success(self):
         vehicle_id = 3
-        token = get_token_for_test(username=user2.username)
+        token = get_token_for_test(username=self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token}"}
         response = self.client.get(
             f"/api/electric_vehicle/{vehicle_id}/sale_information",
