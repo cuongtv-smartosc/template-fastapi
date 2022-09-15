@@ -21,8 +21,10 @@ def get_list_coordinate(coordinates=None):
 
 def get_by_id(id, db, current_user):
     query = db.query(
+        SaleInformation.id,
         SaleInformation.sale_type,
         SaleInformation.sale_order_number,
+        SaleInformation.customer_id,
         Customer.customer_name,
         Customer.address,
         SaleInformation.location,
