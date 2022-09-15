@@ -603,10 +603,7 @@ class TestOperationStatus(BaseTestCase):
             operation_status="online",
             sale_id=sale.id,
         )
-        vehicle.create_batch(
-            4,
-            operation_status="offline",
-        )
+
         vehicle.create_batch(
             3,
             operation_status="spare",
@@ -617,7 +614,11 @@ class TestOperationStatus(BaseTestCase):
             operation_status="spare",
         )
 
-    def test_operation_status(self):
+    def test_operation_status_full_status(self):
+        VehicleFactory.create_batch(
+            4,
+            operation_status="offline",
+        )
         response = self.client.get(
             f"{settings.API_PREFIX}/operation_status_report",
         )
@@ -673,4 +674,23 @@ class TestOperationStatus(BaseTestCase):
         assert data["datasets"]["values"] == [0, 0, 0]
         assert result["colors"] == operation_status_color
         assert result["percent"] == [0, 0, 0]
+        assert len(result) == 4
+
+    def test_operation_status_no_offline_status(self):
+        response = self.client.get(
+            f"{settings.API_PREFIX}/operation_status_report",
+        )
+
+        result = response.json().get("data")
+        data = result.get("data")
+        assert response.status_code == 200
+        assert result["type"] == "pie"
+        assert data["labels"] == operation_status_label
+        assert data["datasets"]["values"] == [6, 0, 8]
+        assert result["colors"] == operation_status_color
+        assert result["percent"] == [
+            42.857142857142854,
+            0.0,
+            57.14285714285714,
+        ]
         assert len(result) == 4
