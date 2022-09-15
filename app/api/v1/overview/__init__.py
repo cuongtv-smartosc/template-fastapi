@@ -1,3 +1,4 @@
+from .contract_expire_overview_router import contract_expire_overview_report
 from .contract_expire_report_router import contract_expire_router
 from .get_total_router import get_total_overview_router
 from .operation_status_report_router import operation_status_report_router
@@ -11,3 +12,4 @@ sale_type_stats_router = sale_type_stats_router
 vehicle_by_location_router = vehicle_by_location_router
 get_total_overview_router = get_total_overview_router
 operation_status_report_router = operation_status_report_router
+contract_expire_overview_report = contract_expire_overview_report
