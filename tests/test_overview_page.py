@@ -660,6 +660,7 @@ class TestOperationStatus(BaseTestCase):
     def test_operation_status_no_company(self):
         token_guest_user = get_token_for_test(self.guest.username)
         self.client.headers = {"Authorization": f"Bearer {token_guest_user}"}
+
         response = self.client.get(
             f"{settings.API_PREFIX}/operation_status_report",
         )
