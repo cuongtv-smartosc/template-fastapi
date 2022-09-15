@@ -55,6 +55,8 @@ OPERATION_STATUS_COLOR = [
     "#0072DB",
 ]
 
+count_desc = "count desc"
+
 
 def sale_type_stat(db, current_user):
     label_sale_type = list(SALE_TYPE_LABEL.values())
@@ -74,7 +76,7 @@ def sale_type_stat(db, current_user):
         query.group_by(
             SaleInformation.sale_type,
         )
-        .order_by(text("count desc"))
+        .order_by(text(count_desc))
         .all()
     )
 
@@ -112,7 +114,7 @@ def pdi_status_chart(db, current_user):
         query.group_by(
             Vehicle.forklift_pdi_status,
         )
-        .order_by(text("count desc"))
+        .order_by(text(count_desc))
         .all()
     )
 
@@ -300,7 +302,7 @@ def operation_status_report(db, current_user):
         query.group_by(
             Vehicle.operation_status,
         )
-        .order_by(text("count desc"))
+        .order_by(text(count_desc))
         .all()
     )
 
