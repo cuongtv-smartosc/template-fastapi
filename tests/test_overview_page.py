@@ -657,12 +657,9 @@ class TestOperationStatus(BaseTestCase):
         ]
         assert len(result) == 4
 
-
-class TestOperationStatusNoData(BaseTestCase):
-    def setUp(self) -> None:
-        super().setUp()
-
-    def test_sale_type_stat(self):
+    def test_operation_status_no_company(self):
+        token_guest_user = get_token_for_test(self.guest.username)
+        self.client.headers = {"Authorization": f"Bearer {token_guest_user}"}
         response = self.client.get(
             f"{settings.API_PREFIX}/operation_status_report",
         )
