@@ -8,7 +8,6 @@ from app.common.util import (
     get_company_id_from_user,
     get_date_from_period,
 )
-from app.models.company import Company
 from app.models.customer import Customer
 from app.models.electric_vehicle import Vehicle
 from app.models.sale_information import SaleInformation
@@ -56,6 +55,13 @@ OPERATION_STATUS_COLOR = [
 ]
 
 count_desc = "count desc"
+
+CONTRACT_EXPIRE_REPORT_OVERVIEW_COLOR = [
+    "#FC6563",
+    "#FFC459",
+    "#50CC65",
+    "#DDDFEA",
+]
 
 
 def sale_type_stat(db, current_user):
@@ -197,9 +203,9 @@ def contract_expire_report(
     )
 
     if not check_role_supervisor(current_user):
+        company_id = get_company_id_from_user(current_user, db)
         query = query.filter(
-            Customer.company_id == Company.id,
-            Customer.system_user == current_user.username,
+            Customer.company_id.in_(company_id),
         )
 
     from_date, to_date = get_date_from_period(expire_period)
@@ -314,3 +320,45 @@ def operation_status_report(db, current_user):
         list_operation_status,
     )
     return chart
+
+
+def contract_expire_overview_report(db, current_user):
+    period = [
+        "0-3 Months",
+        "3-6 Months",
+        "6-12 Months",
+        "Over 12 Months",
+    ]
+
+    query = (
+        db.query(
+            func.count(Vehicle.id),
+        )
+        .join(SaleInformation, Vehicle.sale_id == SaleInformation.id)
+        .join(Customer, SaleInformation.customer_id == Customer.id)
+    )
+    if not check_role_supervisor(current_user):
+        company_id = get_company_id_from_user(current_user, db)
+        query = query.filter(
+            Customer.company_id.in_(company_id),
+        )
+
+    values = []
+    for expire_period in period:
+        data = query
+        from_date, to_date = get_date_from_period(expire_period.lower())
+
+        data = data.filter(SaleInformation.end_date >= from_date)
+        if to_date is not None:
+            data = data.filter(SaleInformation.end_date <= to_date)
+
+        values.append(data.first()[0])
+
+    return {
+        "type": "pie",
+        "data": {
+            "labels": period,
+            "values": values,
+        },
+        "colors": CONTRACT_EXPIRE_REPORT_OVERVIEW_COLOR,
+    }

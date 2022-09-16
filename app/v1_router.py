@@ -5,6 +5,7 @@ from app.api.v1.charger_model_router import charger_model_router
 from app.api.v1.current_user_router import current_user_router
 from app.api.v1.index import router_index
 from app.api.v1.overview import (
+    contract_expire_overview_router,
     contract_expire_router,
     get_total_overview_router,
     operation_status_report_router,
@@ -82,4 +83,9 @@ api_v1_router.include_router(
 api_v1_router.include_router(
     operation_status_report_router,
     prefix=f"{settings.API_PREFIX}/operation_status_report",
+)
+
+api_v1_router.include_router(
+    contract_expire_overview_router,
+    prefix=f"{settings.API_PREFIX}/contract_expire_overview_report",
 )
