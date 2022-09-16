@@ -345,14 +345,14 @@ def contract_expire_overview_report(db, current_user):
 
     values = []
     for expire_period in period:
-        new_query = query
+        data = query
         from_date, to_date = get_date_from_period(expire_period.lower())
 
-        new_query = new_query.filter(SaleInformation.end_date >= from_date)
+        data = data.filter(SaleInformation.end_date >= from_date)
         if to_date is not None:
-            new_query = new_query.filter(SaleInformation.end_date <= to_date)
+            data = data.filter(SaleInformation.end_date <= to_date)
 
-        values.append(new_query.first()[0])
+        values.append(data.first()[0])
 
     return {
         "type": "pie",
