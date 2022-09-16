@@ -710,50 +710,54 @@ class TestOperationStatus(BaseTestCase):
         assert len(result) == 4
 
 
+def create_data():
+    customer = CustomerFactory
+    sale_infor = SaleInformationFactory
+    vehicle = VehicleFactory
+
+    customer = customer.create(
+        company_id=CompanyFactory(id="1512").id,
+        system_user=2,
+    )
+
+    vehicle.create_batch(
+        3,
+        sale_id=sale_infor(
+            end_date=range_time_test_api(44), customer_id=customer.id
+        ).id,
+    )
+    vehicle.create_batch(
+        5,
+        sale_id=sale_infor(
+            end_date=range_time_test_api(45),
+        ).id,
+    )
+    vehicle.create_batch(
+        5,
+        sale_id=sale_infor(
+            end_date=range_time_test_api(100),
+            customer_id=customer.id,
+        ).id,
+    )
+    vehicle.create(
+        sale_id=sale_infor(
+            end_date=range_time_test_api(190),
+        ).id,
+    )
+    vehicle.create_batch(
+        4,
+        sale_id=sale_infor(
+            end_date=range_time_test_api(395),
+        ).id,
+    )
+
+
 class TestContractExpireOverviewReport(BaseTestCase):
     def setUp(self) -> None:
         super().setUp()
-        customer = CustomerFactory
-        sale_infor = SaleInformationFactory
-        vehicle = VehicleFactory
-
-        customer = customer.create(
-            company_id=CompanyFactory(id="1512").id,
-            system_user=2,
-        )
-
-        vehicle.create_batch(
-            3,
-            sale_id=sale_infor(
-                end_date=range_time_test_api(44), customer_id=customer.id
-            ).id,
-        )
-        vehicle.create_batch(
-            5,
-            sale_id=sale_infor(
-                end_date=range_time_test_api(45),
-            ).id,
-        )
-        vehicle.create_batch(
-            5,
-            sale_id=sale_infor(
-                end_date=range_time_test_api(100),
-                customer_id=customer.id,
-            ).id,
-        )
-        vehicle.create(
-            sale_id=sale_infor(
-                end_date=range_time_test_api(190),
-            ).id,
-        )
-        vehicle.create_batch(
-            4,
-            sale_id=sale_infor(
-                end_date=range_time_test_api(395),
-            ).id,
-        )
 
     def test_contract_expire_overview_report(self):
+        create_data()
         response = self.client.get(
             f"{settings.API_PREFIX}/contract_expire_overview_report",
         )
@@ -768,6 +772,7 @@ class TestContractExpireOverviewReport(BaseTestCase):
         assert len(result) == 3
 
     def test_contract_expire_overview_report_company_role(self):
+        create_data()
         token_company_user = get_token_for_test(self.company_user.username)
         self.client.headers = {"Authorization": f"Bearer {token_company_user}"}
         response = self.client.get(
@@ -784,8 +789,23 @@ class TestContractExpireOverviewReport(BaseTestCase):
         assert len(result) == 3
 
     def test_contract_expire_overview_report_no_company(self):
+        create_data()
         token_guest_user = get_token_for_test(self.guest.username)
         self.client.headers = {"Authorization": f"Bearer {token_guest_user}"}
+        response = self.client.get(
+            f"{settings.API_PREFIX}/contract_expire_overview_report",
+        )
+
+        result = response.json().get("data")
+        data = result.get("data")
+        assert response.status_code == 200
+        assert result["type"] == "pie"
+        assert data["labels"] == contract_expire_overview_report_label
+        assert data["values"] == [0, 0, 0, 0]
+        assert result["colors"] == contract_expire_overview_report_color
+        assert len(result) == 3
+
+    def test_contract_expire_overview_report_no_data(self):
         response = self.client.get(
             f"{settings.API_PREFIX}/contract_expire_overview_report",
         )
