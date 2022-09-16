@@ -2,6 +2,7 @@ import json
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
+from fastapi.encoders import jsonable_encoder
 
 from app.common.database import SessionLocal
 from app.models.company import Company
@@ -67,3 +68,18 @@ def get_company_id_from_user(current_user: User, db):
 
 def json_load(key):
     return json.loads(key)
+
+
+def validate_unique_for_update(table, field, id, **kwargs):
+    session = SessionLocal()
+    value_validate = (
+        session.query(getattr(table, field), getattr(table, "id"))
+        .filter_by(**kwargs)
+        .first()
+    )
+    session.close()
+    value_validate = jsonable_encoder(value_validate)
+    if value_validate:
+        if not value_validate["id"] == id:
+            raise ValueError(f"""value {field} is existed""")
+    return kwargs[field]

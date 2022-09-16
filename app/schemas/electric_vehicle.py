@@ -1,12 +1,13 @@
 import json
 
 from pydantic import BaseModel, conint, constr, validator
+from pydantic.schema import date
 
-from app.schemas.base import BaseModelSchemas
+from app.schemas.base import BaseModelSchemas, BaseModelUpdate
 
 
 class VehicleBase(BaseModelSchemas):
-    id: str = None
+    delivering_date: date = None
 
 
 class VehicleResponse(VehicleBase):
@@ -100,3 +101,7 @@ class VehicleGetListFilterString(BaseModel):
         if sort_order not in ["asc", "desc"]:
             raise ValueError(f"Invalid value: {sort_order}")
         return sort_order
+
+
+class VehicleUpdate(BaseModelUpdate):
+    delivering_date: date = None

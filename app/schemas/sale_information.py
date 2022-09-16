@@ -1,10 +1,26 @@
 from pydantic import BaseModel, conint, constr, validator
+from pydantic.schema import date
 
-from app.schemas.base import BaseModelSchemas
+from app.common.util import validate_unique_for_update
+from app.models.customer import Customer
+from app.models.sale_information import SaleInformation
+from app.schemas.base import BaseModelSchemas, BaseModelUpdate
 
 
 class SaleInformationBase(BaseModelSchemas):
-    id: str = None
+    id: int = None
+    sale_order_number: str = None
+    sale_type: str = None
+    start_date: date = None
+    end_date: date = None
+    vehicle_warranty: int = None
+    battery_warranty: int = None
+    battery_maintenance: int = None
+    location: str = None
+    service: str = None
+    product_number: str = None
+    working_days: str = None
+    customer_id: int = None
 
 
 class SaleInformationResponse(SaleInformationBase):
@@ -16,7 +32,9 @@ class SaleInformationResponse(SaleInformationBase):
 class SaleInformationCreate(SaleInformationBase):
     """This is the serializer used for POST/PATCH requests"""
 
-    pass
+    customer_name: str = None
+    address: str = None
+    delivering_date: date = None
 
 
 class SaleInformationGet(BaseModel):
@@ -60,3 +78,40 @@ class SaleInformationFilter(BaseModel):
         if sort_order not in ["desc", "asc"]:
             raise ValueError(f"Invalid value: {sort_order}")
         return sort_order
+
+
+class SaleInformationUpdate(BaseModelUpdate):
+    id: int = None
+    sale_order_number: str = None
+    sale_type: str = None
+    start_date: date = None
+    end_date: date = None
+    vehicle_warranty: int = None
+    battery_warranty: int = None
+    battery_maintenance: int = None
+    location: str = None
+    service: str = None
+    product_number: str = None
+    working_days: str = None
+    customer_id: int = None
+    customer_name: str = None
+    address: str = None
+    delivering_date: date = None
+
+    @validator("sale_order_number")
+    def unique_check_sale_order_number(cls, value, values):
+        return validate_unique_for_update(
+            SaleInformation,
+            "sale_order_number",
+            values["id"],
+            sale_order_number=value,
+        )
+
+    @validator("customer_name")
+    def unique_check_customer_name(cls, value, values):
+        return validate_unique_for_update(
+            Customer,
+            "customer_name",
+            values["customer_id"],
+            customer_name=value,
+        )

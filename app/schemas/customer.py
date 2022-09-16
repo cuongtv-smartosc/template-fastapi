@@ -1,8 +1,9 @@
-from app.schemas.base import BaseModelSchemas
+from app.schemas.base import BaseModelSchemas, BaseModelUpdate
 
 
 class CusTomerBase(BaseModelSchemas):
-    id: str = None
+    customer_name: str = None
+    address: str = None
 
 
 class CusTomerResponse(CusTomerBase):
@@ -15,3 +16,8 @@ class CustomerCreate(CusTomerBase):
     """This is the serializer used for POST/PATCH requests"""
 
     pass
+
+
+class CustomerUpdate(BaseModelUpdate):
+    customer_name: str = None
+    address: str = None
