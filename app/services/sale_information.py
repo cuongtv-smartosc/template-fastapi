@@ -72,9 +72,18 @@ def get_sale_information(id, db, current_user):
 async def update_sale_information_detail(
     id, db, sale_information_body, vehicle_body, customer_body
 ):
+    sale_information = await sale_information_crud.get(
+        db,
+        sale_information_body.get("id"),
+    )
+    await sale_information_crud.update(
+        db=db,
+        obj_in=sale_information_body,
+        db_obj=sale_information,
+    )
     customer = await customer_crud.get(
         db,
-        sale_information_body.get("customer_id"),
+        sale_information.customer_id,
     )
     await customer_crud.update(
         db=db,
@@ -86,14 +95,5 @@ async def update_sale_information_detail(
         db=db,
         obj_in=vehicle_body,
         db_obj=vehicle,
-    )
-    sale_information = await sale_information_crud.get(
-        db,
-        sale_information_body.get("id"),
-    )
-    await sale_information_crud.update(
-        db=db,
-        obj_in=sale_information_body,
-        db_obj=sale_information,
     )
     return "success"
