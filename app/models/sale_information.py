@@ -43,5 +43,4 @@ class SaleInformation(DBBaseCustom):
     coordinates = Column(Text)
     working_days = Column(String(255))
     customer_id = Column(Integer, FK("customer.id"))
-    contract_no = Column(String(255))
     vehicle = relationship("Vehicle", backref="sale_information")

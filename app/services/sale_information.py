@@ -36,7 +36,6 @@ def get_by_id(id, db, current_user):
         SaleInformation.start_date,
         SaleInformation.end_date,
         SaleInformation.coordinates,
-        SaleInformation.contract_no,
     ).filter(
         SaleInformation.id == Vehicle.sale_id,
         SaleInformation.customer_id == Customer.id,
