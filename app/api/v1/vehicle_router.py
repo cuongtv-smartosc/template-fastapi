@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.common.database import get_db
 from app.common.handle_error import ValidateException
 from app.models.user import User
+from app.schemas.charger import ChargerUpdate
 from app.schemas.customer import CustomerUpdate
 from app.schemas.electric_vehicle import (
     VehicleGetListFilterList,
@@ -121,18 +122,19 @@ async def update_sale_information(
 ):
     try:
         data = jsonable_encoder(body_data)
-        data["modified"] = datetime.now().__str__()
+        data["modified"] = datetime.now()
         data["modified_by"] = current_user.username
         sale_information_body = SaleUpdate(**data).dict()
         vehicle_body = VehicleUpdate(**data).dict()
         customer_body = CustomerUpdate(**data).dict()
-        vehicle_body.update()
+        charger_body = ChargerUpdate(**data).dict()
         update_result = await update_sale_information_detail(
             id,
             db,
             sale_information_body,
             vehicle_body,
             customer_body,
+            charger_body,
         )
         return update_result
     except ValidationError as e:

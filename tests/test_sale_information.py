@@ -110,7 +110,8 @@ class UpdateSaleInformationTestCase(BaseTestCase):
             json=body,
         )
         res = response.json()
-        assert res == "success"
+        message = res.get("message")
+        assert message == "success"
         assert response.status_code == 200
 
     def test_update_sale_information_validate_unique_customer_name(self):
@@ -218,7 +219,7 @@ class UpdateSaleInformationTestCase(BaseTestCase):
             "address": "BangKok",
             "location": None,
             "delivering_date": "2022-11-22",
-            "vehicle_warranty": "a",
+            "vehicle_warranty": 1,
             "battery_warranty": None,
             "battery_maintenance": None,
             "service": None,
@@ -234,7 +235,66 @@ class UpdateSaleInformationTestCase(BaseTestCase):
         message = res.get("message")
         assert response.status_code != 200
         assert response.status_code == 422
-        assert message[0].get("loc")[0] == "body"
-        assert message[0].get("loc")[1] == "start_date"
+        assert message[0].get("loc")[0] == "start_date"
         assert message[0].get("msg") == "invalid date format"
-        assert message[0].get("type") == "value_error.date"
+        assert message[0].get("type") == "value_error"
+
+    def test_update_sale_information_validate_delivering_date_is_date(self):
+        vehicle_id = 1
+        body = {
+            "id": 1,
+            "sale_type": "Rent",
+            "sale_order_number": 2,
+            "customer_id": 1,
+            "customer_name": "test2",
+            "address": "BangKok",
+            "location": None,
+            "delivering_date": "a",
+            "vehicle_warranty": 1,
+            "battery_warranty": None,
+            "battery_maintenance": None,
+            "service": None,
+            "start_date": "2021-01-01",
+            "end_date": "2022-01-01",
+        }
+        response = self.client.patch(
+            f"/api/electric_vehicle/{vehicle_id}/sale_information",
+            json=body,
+        )
+        res = response.json()
+        message = res.get("message")
+        assert response.status_code != 200
+        assert response.status_code == 422
+        assert message[0].get("loc")[0] == "delivering_date"
+        assert message[0].get("msg") == "invalid date format"
+        assert message[0].get("type") == "value_error"
+
+    def test_update_sale_information_validate_end_date_is_date(self):
+        vehicle_id = 1
+        body = {
+            "id": 1,
+            "sale_type": "Rent",
+            "sale_order_number": 2,
+            "customer_id": 1,
+            "customer_name": "test2",
+            "address": "BangKok",
+            "location": None,
+            "delivering_date": None,
+            "vehicle_warranty": 1,
+            "battery_warranty": None,
+            "battery_maintenance": None,
+            "service": None,
+            "start_date": "2021-01-01",
+            "end_date": "2022",
+        }
+        response = self.client.patch(
+            f"/api/electric_vehicle/{vehicle_id}/sale_information",
+            json=body,
+        )
+        res = response.json()
+        message = res.get("message")
+        assert response.status_code != 200
+        assert response.status_code == 422
+        assert message[0].get("loc")[0] == "end_date"
+        assert message[0].get("msg") == "invalid date format"
+        assert message[0].get("type") == "value_error"

@@ -1,13 +1,13 @@
 import json
+from datetime import datetime
 
 from pydantic import BaseModel, conint, constr, validator
-from pydantic.schema import date
 
 from app.schemas.base import BaseModelSchemas, BaseModelUpdate
 
 
 class VehicleBase(BaseModelSchemas):
-    delivering_date: date = None
+    pass
 
 
 class VehicleResponse(VehicleBase):
@@ -42,8 +42,8 @@ class VehicleGetListParams(BaseModel):
     location: constr(min_length=1) | None = None
     forklift_pdi_status: constr(min_length=1) | None = None
     sale_order_number: constr(min_length=1) | None = None
-    period: constr(min_length=1) | None = None
-    offset: constr(min_length=1) | None = None
+    period: constr(min_length=1) | None = "today"
+    offset: constr(min_length=1) | None = "0"
     page: conint(ge=0) | None = 0
     number_of_record: conint(ge=1) | None = 5
     sort_by: constr(min_length=8, max_length=18) | None = "number_of_vehicles"
@@ -104,4 +104,17 @@ class VehicleGetListFilterString(BaseModel):
 
 
 class VehicleUpdate(BaseModelUpdate):
-    delivering_date: date = None
+    delivering_date: str = None
+    asset_register_date: str = None
+
+    @validator("delivering_date", "asset_register_date")
+    def validate_date_type(
+        cls,
+        value,
+    ):
+        if value:
+            try:
+                value = datetime.strptime(value, "%Y-%m-%d")
+            except ValueError:
+                raise ValueError("invalid date format")
+        return value

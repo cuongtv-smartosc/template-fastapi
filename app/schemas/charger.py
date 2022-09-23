@@ -1,4 +1,8 @@
-from app.schemas.base import BaseModelSchemas
+from datetime import datetime
+
+from pydantic import validator
+
+from app.schemas.base import BaseModelSchemas, BaseModelUpdate
 
 
 class ChargerBase(BaseModelSchemas):
@@ -15,3 +19,21 @@ class ChargerResponse(ChargerBase):
     """This the serializer exposed on the API"""
 
     pass
+
+
+class ChargerUpdate(BaseModelUpdate):
+    manufactoring_date: str = None
+
+    @validator(
+        "manufactoring_date",
+    )
+    def validate_date_type(
+        cls,
+        value,
+    ):
+        if value:
+            try:
+                value = datetime.strptime(value, "%Y-%m-%d")
+            except ValueError:
+                raise ValueError("invalid date format")
+        return value

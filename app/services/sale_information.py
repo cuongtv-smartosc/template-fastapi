@@ -5,6 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from app.common.handle_error import NotFoundException
 from app.common.util import check_role_supervisor, get_company_id_from_user
 from app.common.util import json_load as json_load
+from app.crud.charger_crud import charger_crud
 from app.crud.customer_crud import customer_crud
 from app.crud.sale_information_crud import sale_information_crud
 from app.crud.vehicle_crud import vehicle_crud
@@ -70,11 +71,23 @@ def get_sale_information(id, db, current_user):
 
 
 async def update_sale_information_detail(
-    id, db, sale_information_body, vehicle_body, customer_body
+    id, db, sale_information_body, vehicle_body, customer_body, charger_body
 ):
+    vehicle = await vehicle_crud.get(db, id)
+    await vehicle_crud.update(
+        db=db,
+        obj_in=vehicle_body,
+        db_obj=vehicle,
+    )
+    charger = await charger_crud.get(db, vehicle.charger_id)
+    await charger_crud.update(
+        db=db,
+        obj_in=charger_body,
+        db_obj=charger,
+    )
     sale_information = await sale_information_crud.get(
         db,
-        sale_information_body.get("id"),
+        vehicle.sale_id,
     )
     await sale_information_crud.update(
         db=db,
@@ -90,10 +103,4 @@ async def update_sale_information_detail(
         obj_in=customer_body,
         db_obj=customer,
     )
-    vehicle = await vehicle_crud.get(db, id)
-    await vehicle_crud.update(
-        db=db,
-        obj_in=vehicle_body,
-        db_obj=vehicle,
-    )
-    return "success"
+    return {"message": "success"}
