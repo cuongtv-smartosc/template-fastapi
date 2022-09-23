@@ -67,3 +67,17 @@ def get_company_id_from_user(current_user: User, db):
 
 def json_load(key):
     return json.loads(key)
+
+
+def validate_unique_for_update(table, field, id, **kwargs):
+    session = SessionLocal()
+    value_validate = (
+        session.query(getattr(table, field))
+        .filter(getattr(table, "id") != id)
+        .filter_by(**kwargs)
+        .first()
+    )
+    session.close()
+    if value_validate:
+        raise ValueError(f"""value {field} is existed""")
+    return kwargs[field]

@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
@@ -9,17 +10,25 @@ from sqlalchemy.orm import Session
 from app.common.database import get_db
 from app.common.handle_error import ValidateException
 from app.models.user import User
+from app.schemas.charger import ChargerUpdate
+from app.schemas.customer import CustomerUpdate
 from app.schemas.electric_vehicle import (
     VehicleGetListFilterList,
     VehicleGetListFilterString,
     VehicleGetListParams,
+    VehicleUpdate,
 )
 from app.schemas.electric_vehicle_history import VehicleHistoryGet
 from app.schemas.response import resp
+from app.schemas.sale_information import SaleInformationCreate
+from app.schemas.sale_information import SaleInformationUpdate as SaleUpdate
 from app.services.auth import get_current_user
 from app.services.electric_vehicle import get_detail, get_vehicle_list
 from app.services.responsibility import get_responsibility
-from app.services.sale_information import get_sale_information
+from app.services.sale_information import (
+    get_sale_information,
+    update_sale_information_detail,
+)
 from app.services.vehicle_history import get_list_status
 
 vehicle_router = APIRouter()
@@ -102,3 +111,31 @@ async def get_responsibility_vehicle(
 ):
     data = get_responsibility(id, db, current_user)
     return resp.success(data=data)
+
+
+@vehicle_router.patch("/{id}/sale_information")
+async def update_sale_information(
+    id: int,
+    body_data: SaleInformationCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        data = jsonable_encoder(body_data)
+        data["modified"] = datetime.now()
+        data["modified_by"] = current_user.username
+        sale_information_body = SaleUpdate(**data).dict()
+        vehicle_body = VehicleUpdate(**data).dict()
+        customer_body = CustomerUpdate(**data).dict()
+        charger_body = ChargerUpdate(**data).dict()
+        update_result = await update_sale_information_detail(
+            id,
+            db,
+            sale_information_body,
+            vehicle_body,
+            customer_body,
+            charger_body,
+        )
+        return update_result
+    except ValidationError as e:
+        raise ValidateException(e.errors())

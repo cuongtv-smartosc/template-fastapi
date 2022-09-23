@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from pydantic.schema import datetime
 
 
 class BaseModelSchemas(BaseModel):
@@ -6,3 +7,8 @@ class BaseModelSchemas(BaseModel):
     modified: str = None
     modified_by: str = None
     owner: str = None
+
+
+class BaseModelUpdate(BaseModel):
+    modified: datetime = None
+    modified_by: str = None
