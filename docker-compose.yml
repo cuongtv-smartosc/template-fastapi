@@ -2,20 +2,22 @@ version: '3.8'
 services:
   mysql_db:
     image: mysql:latest
-    container_name: db_mysql
+    container_name: mysql_db
     command:
       - --default-authentication-plugin=mysql_native_password
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
     restart: on-failure
     environment:
+      - MYSQL_DATABASE=EV
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_INITDB_SKIP_TZINFO=1
+    expose:
+      - "3306"
     ports:
       - '3306:3306'
     volumes:
       - mysql_db:/var/lib/mysql
-
   postgres_db:
     container_name: postgres_container
     image: postgres:latest
@@ -38,7 +40,19 @@ services:
     expose:
       - "6379"
     restart: on-failure
+  fastapi-docker:
+    container_name: fastapi-docker
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql_db
+
 volumes:
   mysql_db:
-  postgres_db:
   redis:
+  postgres_db:
+  fastapi-docker:

@@ -2,8 +2,8 @@ default: &default
   DB_DATABASE: EV
   DB_HOST: localhost
   DB_POST: 3306
-  DB_URL: mysql+pymysql://root:123456@localhost:3306/EV
-  DB_URL_Alembic: mysql+asyncmy://root:123456@localhost:3306/EV
+  DB_URL: mysql+pymysql://root:123456@mysql_db:3306/EV
+  DB_URL_Alembic: mysql+asyncmy://root:123456@mysql_db:3306/EV
   DB_USER: root
   DB_PASS: 123456
   ENVIRONMENT: local
@@ -21,7 +21,7 @@ local_test:
   <<: *default
   DB_DATABASE: db_test
   ENVIRONMENT: local_test
-  DB_URL: mysql+pymysql://root:123456@localhost:3306/db_test
+  DB_URL: mysql+pymysql://root:123456@mysql_db:3306/db_test
   SQLALCHEMY_ECHO: False
 
 local_dev:
