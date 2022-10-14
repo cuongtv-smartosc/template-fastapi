@@ -15,13 +15,9 @@ jobs:
         python-version: 3.10.7
     - name: Lint with flake8
       run: |
-          pip install flake8
-          flake8 .
-    - name: Archive flake8 coverage results
-      uses: actions/upload-artifact@v1
-      with:
-        name: flake8-coverage-report
-        path: reports/flake8/
+        pip install flake8
+        flake8 .
+      continue-on-error: true
 
   pytest:
     name: Unit Testing
