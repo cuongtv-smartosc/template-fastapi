@@ -31,5 +31,5 @@ jobs:
           username: ${{ secrets.GCR_USERNAME }}
           password: ${{ secrets.GCR_PASSWORD }}
           registry: ghcr.io
-          repository: alehpineda/fastapi_test
+          repository: cuongtv-smartosc/template-fastapi
           tags: latest
