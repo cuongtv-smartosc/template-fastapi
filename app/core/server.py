@@ -6,8 +6,9 @@ from starlette import status
 from starlette.middleware.cors import CORSMiddleware
 
 from app.common.database import engine
+from app.common.grafana import PrometheusMiddleware, setting_otlp, metrics
 from app.common.handle_error import APIException
-from app.config.settings import setting
+from app.config.settings import setting, APP_NAME, OTLP_GRPC_ENDPOINT
 from app.models.charger import Charger
 from app.models.charger_model import ChargerModel
 from app.models.company import Company
@@ -35,10 +36,12 @@ def create_app() -> FastAPI:
         version=env_yml.get("VERSION"),
         docs_url=None,
     )
+    setting_otlp(app, APP_NAME, OTLP_GRPC_ENDPOINT)
 
     register_cors(app, env_yml)
     register_router(app)
     register_exception(app)
+    register_middleware(app)
     create_table()
     return app
 
@@ -64,6 +67,7 @@ def register_router(app: FastAPI) -> None:
     :param app:
     :return:
     """
+    app.add_route("/metrics", metrics)
     app.include_router(api_v1_router)
 
 
@@ -114,3 +118,7 @@ def register_exception(app: FastAPI) -> None:
             status_code=status.HTTP_401_UNAUTHORIZED,
             content=jsonable_encoder({"message": exc.detail}),
         )
+
+
+def register_middleware(app: FastAPI) -> None:
+    app.add_middleware(PrometheusMiddleware, app_name=APP_NAME)

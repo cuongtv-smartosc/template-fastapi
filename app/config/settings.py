@@ -18,6 +18,8 @@ ENVIRONMENT = os.getenv("ENVIRONMENT")
 API_PREFIX = "/api"
 
 BASE_PATH = os.getenv("BASE_PATH")
+APP_NAME = os.getenv("APP_NAME", "app_fastapi")
+OTLP_GRPC_ENDPOINT = os.getenv("OTLP_GRPC_ENDPOINT", "http://tempo:4317")
 
 
 class Settings:

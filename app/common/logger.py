@@ -18,5 +18,14 @@ logging.basicConfig(
     # encoding="utf-8",
 )
 
+
+class EndpointFilter(logging.Filter):
+    # Uvicorn endpoint access log filter
+    def filter(self, record: logging.LogRecord) -> bool:
+        return record.getMessage().find("GET /metrics") == -1
+
+
+logging.getLogger("uvicorn.access").addFilter(EndpointFilter())
+
 logger = logging.getLogger("API")
 logger.setLevel(logging.INFO)
