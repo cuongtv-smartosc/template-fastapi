@@ -40,8 +40,13 @@ pre-commit installed at .git/hooks/pre-commit
 ```
 
 ## [Option] Run docker-compose
+Install [Loki Docker Driver](https://grafana.com/docs/loki/latest/clients/docker-driver/)
+```bash
+   docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
 ```
-docker-compose up -d
+Build application image and start all services with docker-compose
+```
+docker-compose up -d --build
 ```
 ## Run file import_data.py
 file import_data.py để create database and import data
